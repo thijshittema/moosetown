@@ -162,6 +162,15 @@ textarea{min-height:70px;resize:vertical}
 .mh:hover{opacity:1}
 .dp{width:10px;height:10px;border-radius:50%;background:var(--accent);pointer-events:none}
 .dp.first{width:18px;height:18px;background:var(--surface);border:3px solid var(--accent)}
+.shp.out{stroke:var(--danger)!important;stroke-width:3;stroke-dasharray:4 3}
+.el{position:absolute;transform:translate(calc(-50% + var(--nx,0) * 22px),calc(-50% + var(--ny,0) * 22px));font:600 11px/1 var(--font-data);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:2px 5px;white-space:nowrap;pointer-events:none}
+.el.edit{pointer-events:auto;cursor:pointer;border-color:var(--accent)}
+.el.edit:hover{background:var(--accent);color:var(--accent-ink)}
+.el.live{border-color:var(--accent);color:var(--accent)}
+.dline{stroke:var(--accent);stroke-width:2;stroke-dasharray:4 3;pointer-events:none}
+.flash{color:var(--danger);font-weight:700;font-size:.85rem}
+.shapeprev{width:140px;height:100px;flex:none;border:1px solid var(--line);border-radius:8px;background:var(--grass)}
+.shapeprev polygon{fill:var(--soil);stroke:var(--ink);stroke-width:1.5}
 .toolbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 /* chips & pills */
 .chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:.78rem;font-weight:700;
@@ -334,6 +343,83 @@ function labelPoint(pts){
   return best;
 }
 const fmtNum=v=>(Math.round(v*100)/100).toLocaleString('nl-NL');
+const fmtLen=v=>(Math.round(v*100)/100).toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2})+' m';
+const r3=v=>Math.round(v*1000)/1000;
+const outlineOf=g=>Array.isArray(g?.outline)&&g.outline.length>=3?g.outline:null;
+function onEdge(x,y,pts){for(let i=0;i<pts.length;i++)if(segDist(x,y,pts[i],pts[(i+1)%pts.length])<0.006)return true;return false}
+/* ligt een punt binnen de tuin (tuinvorm als die er is, anders de rechthoek) */
+function inGarden(g,x,y){
+  const W=+g.width,L=+g.length;
+  if(x<-0.001||y<-0.001||x>W+0.001||y>L+0.001)return false;
+  const o=outlineOf(g);return !o||inPoly(x,y,o)||onEdge(x,y,o);
+}
+/* past een vorm volledig binnen de tuin: randen bemonsterd per 10 cm, en geen hoek van de tuinvorm die in het bed steekt */
+function fitsGarden(g,pts){
+  for(let i=0;i<pts.length;i++){
+    const a=pts[i],b=pts[(i+1)%pts.length],n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/0.1));
+    for(let k=0;k<=n;k++){const t=k/n;if(!inGarden(g,a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t))return false}
+  }
+  const o=outlineOf(g);
+  if(o)for(const [x,y] of o)if(inPoly(x,y,pts)&&!onEdge(x,y,pts))return false;
+  return true;
+}
+const outsideBeds=g=>S.beds.filter(b=>b.gardenId===g.id&&!fitsGarden(g,shapeOf(b)));
+function moveTo(pts,x,y){const b=bbox(pts);return pts.map(([px,py])=>[r3(px-b.x+x),r3(py-b.y+y)])}
+function rotate90(pts){const b=bbox(pts);return moveTo(pts.map(([x,y])=>[-y,x]),b.x,b.y)}
+function mirrorX(pts){const b=bbox(pts);return moveTo(pts.map(([x,y])=>[-x,y]).reverse(),b.x,b.y)}
+/* zoek een plek waar de vorm past, bij voorkeur zonder andere bedden te raken */
+function findSpot(g,pts){
+  const bb=bbox(pts),W=+g.width,L=+g.length,others=allBedsOf(g.id).map(b=>shapeOf(b));
+  let fallback=null;
+  for(let y=0;y<=L-bb.h+1e-9;y+=0.25)for(let x=0;x<=W-bb.w+1e-9;x+=0.25){
+    const c=moveTo(pts,x,y);if(!fitsGarden(g,c))continue;
+    if(!others.some(o=>polysOverlap(c,o)))return {pts:c,free:true};
+    fallback=fallback||c;
+  }
+  return fallback?{pts:fallback,free:false}:null;
+}
+function segsCross(a,b,c,d){
+  const o=(p,q,r)=>(q[0]-p[0])*(r[1]-p[1])-(q[1]-p[1])*(r[0]-p[0]);
+  const d1=o(c,d,a),d2=o(c,d,b),d3=o(a,b,c),d4=o(a,b,d);
+  return ((d1>1e-9&&d2<-1e-9)||(d1<-1e-9&&d2>1e-9))&&((d3>1e-9&&d4<-1e-9)||(d3<-1e-9&&d4>1e-9));
+}
+/* overlappen twee vormen (aanraken telt niet) */
+function polysOverlap(A,B){
+  for(let i=0;i<A.length;i++)for(let j=0;j<B.length;j++)if(segsCross(A[i],A[(i+1)%A.length],B[j],B[(j+1)%B.length]))return true;
+  const ba=bbox(A),bb=bbox(B);
+  if(ba.x>=bb.x+bb.w||bb.x>=ba.x+ba.w||ba.y>=bb.y+bb.h||bb.y>=ba.y+ba.h)return false;
+  /* raster van proefpunten in het gedeelde vlak: ligt er één binnen allebei, dan overlappen ze */
+  const x0=Math.max(ba.x,bb.x),x1=Math.min(ba.x+ba.w,bb.x+bb.w),y0=Math.max(ba.y,bb.y),y1=Math.min(ba.y+ba.h,bb.y+bb.h);
+  const st=Math.max(0.05,Math.min(x1-x0,y1-y0)/6);
+  for(let x=x0+st/2;x<x1;x+=st)for(let y=y0+st/2;y<y1;y+=st)
+    if(inPoly(x,y,A)&&inPoly(x,y,B)&&!onEdge(x,y,A)&&!onEdge(x,y,B))return true;
+  return false;
+}
+/* vormen uit maten */
+function triangleFromSides(a,b,c){
+  if(!(a>0&&b>0&&c>0))return null;
+  if(a+b<=c+1e-9||a+c<=b+1e-9||b+c<=a+1e-9)return null;
+  const cx=(a*a+b*b-c*c)/(2*a),cy=Math.sqrt(Math.max(0,b*b-cx*cx));
+  return moveTo([[0,cy],[a,cy],[cx,0]],0,0);
+}
+function lShape(B,Lg,cw,cl){
+  if(!(B>0&&Lg>0&&cw>0&&cl>0)||cw>=B||cl>=Lg)return null;
+  return [[0,0],[B-cw,0],[B-cw,cl],[B,cl],[B,Lg],[0,Lg]];
+}
+function shapePreview(pts){
+  if(!pts)return `<svg class="shapeprev" viewBox="0 0 140 100" aria-hidden="true"></svg>`;
+  const b=bbox(pts),sc=Math.min(120/(b.w||1),80/(b.h||1)),ox=(140-b.w*sc)/2,oy=(100-b.h*sc)/2;
+  return `<svg class="shapeprev" viewBox="0 0 140 100" aria-hidden="true"><polygon points="${pts.map(([x,y])=>`${ox+(x-b.x)*sc},${oy+(y-b.y)*sc}`).join(' ')}"/></svg>`;
+}
+/* lengtelabels bij de zijden, iets naar buiten geschoven */
+function edgeLabels(pts,W,L,editable){
+  return pts.map((a,i)=>{
+    const b=pts[(i+1)%pts.length],len=Math.hypot(b[0]-a[0],b[1]-a[1]);if(len<0.05)return '';
+    const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;let nx=(b[1]-a[1])/len,ny=-(b[0]-a[0])/len;
+    if(pts.length>=3&&inPoly(mx+nx*0.02,my+ny*0.02,pts)){nx=-nx;ny=-ny}
+    return `<span class="el${editable?' edit':''}" ${editable?`data-act="edge-len" data-ei="${i}" title="Klik om de exacte lengte in te typen"`:''} style="left:${mx/W*100}%;top:${my/L*100}%;--nx:${nx.toFixed(3)};--ny:${ny.toFixed(3)}">${fmtLen(len)}</span>`;
+  }).join('');
+}
 const areaOf=b=>polyArea(shapeOf(b));
 function sizeText(b){const p=shapeOf(b),bb=bbox(p);return isRect(p)?`${fmtNum(bb.w)} × ${fmtNum(bb.h)} m · ${fmtNum(polyArea(p))} m²`:`vrije vorm · ${fmtNum(polyArea(p))} m²`}
 
@@ -563,29 +649,37 @@ function viewMap(){
   const outline=Array.isArray(g.outline)&&g.outline.length>=3?g.outline:null;
   const P=pts=>pts.map(q=>q.join(',')).join(' ');
   const order=all.slice().sort((a,b)=>(isPad(a)?0:1)-(isPad(b)?0:1));
-  const polys=order.map(b=>`<polygon class="shp ${isPad(b)?'pad':isKas(b)?'kas':'bed'}${b.id===S.sel?' sel':''}" data-act="select-bed" data-id="${esc(b.id)}" points="${P(shapeOf(b))}" vector-effect="non-scaling-stroke"><title>${esc(b.name)}</title></polygon>`).join('');
+  const outIds=new Set(outsideBeds(g).map(b=>b.id));
+  const polys=order.map(b=>`<polygon class="shp ${isPad(b)?'pad':isKas(b)?'kas':'bed'}${b.id===S.sel?' sel':''}${outIds.has(b.id)?' out':''}" data-act="select-bed" data-id="${esc(b.id)}" points="${P(shapeOf(b))}" vector-effect="non-scaling-stroke"><title>${esc(b.name)}</title></polygon>`).join('');
   const outside=outline?`<path class="outside" fill-rule="evenodd" d="M0 0H${W}V${L}H0Z M${outline.map(q=>q.join(' ')).join(' L')} Z"/><polygon class="gline" points="${P(outline)}" vector-effect="non-scaling-stroke"/>`:'';
   const d=S.draw;
-  const draft=d&&d.pts.length?`<polygon class="draft" points="${P(d.pts)}" vector-effect="non-scaling-stroke"/>`:'';
+  const draft=d?(d.pts.length?`<polygon class="draft" points="${P(d.pts)}" vector-effect="non-scaling-stroke"/>`:'')+`<line class="dline" id="dline" x1="0" y1="0" x2="0" y2="0" vector-effect="non-scaling-stroke" style="display:none"/>`:'';
   const labels=order.map(b=>{
     const [lx,ly]=labelPoint(shapeOf(b));
     const act=isPad(b)?[]:plantsOf(b.id).filter(p=>p.status!=='afgerond');
     return `<div class="lbl${isPad(b)?' padl':''}" style="left:${lx/W*100}%;top:${ly/L*100}%"><span class="bn">${esc(b.name)}${isKas(b)?' <span class="tag">kas</span>':''}</span>${act.length?`<span class="crops">${act.slice(0,3).map(p=>`<span class="dot" style="${fc(famOf(p))}" title="${STAGES[stageOf(p)]}">${stageIcon(stageOf(p),13,p.crop)}${esc(p.crop)}</span>`).join('')}${act.length>3?`<span class="dot">+${act.length-3}</span>`:''}</span>`:''}</div>`}).join('');
   const selB=S.layout&&!d&&S.sel?S.beds.find(b=>b.id===S.sel):null;
   const handles=selB?(()=>{const p=shapeOf(selB);return p.map(([x,y],i)=>`<span class="vh" data-vi="${i}" style="left:${x/W*100}%;top:${y/L*100}%" title="Sleep om te verplaatsen, dubbelklik om weg te halen"></span>`).join('')
-      +p.map(([x,y],i)=>{const [x2,y2]=p[(i+1)%p.length];return `<span class="mh" data-mi="${i}" style="left:${(x+x2)/2/W*100}%;top:${(y+y2)/2/L*100}%" title="Klik om hier een hoekpunt toe te voegen">+</span>`}).join('')})():'';
-  const dots=d?d.pts.map(([x,y],i)=>`<span class="dp${i===0&&d.pts.length>=3?' first':''}" style="left:${x/W*100}%;top:${y/L*100}%"></span>`).join(''):'';
+      +p.map(([x,y],i)=>{const [x2,y2]=p[(i+1)%p.length];return `<span class="mh" data-mi="${i}" style="left:${(x+x2)/2/W*100}%;top:${(y+y2)/2/L*100}%" title="Klik om hier een hoekpunt toe te voegen">+</span>`}).join('')
+      +edgeLabels(p,W,L,true)})():'';
+  const dots=d?d.pts.map(([x,y],i)=>`<span class="dp${i===0&&d.pts.length>=3?' first':''}" style="left:${x/W*100}%;top:${y/L*100}%"></span>`).join('')
+      +(d.pts.length>=2?edgeLabels(d.pts,W,L,false).split('</span>').slice(0,d.pts.length-1).join('</span>')+'</span>':'')
+      +`<span class="el live" id="dlen" style="display:none"></span>`:'';
   const area=beds.reduce((s,b)=>s+areaOf(b),0);
   const DRAWN={bed:'een bed',pad:'een pad',outline:'de vorm van de tuin'};
   const toolbar=!S.canWrite?'':d?`<div class="notice stack" style="margin:0;gap:6px"><span>Je tekent ${DRAWN[d.kind]}. Klik de hoekpunten één voor één aan op de plattegrond; schuin mag ook. Klik op het eerste punt of op Klaar om de vorm te sluiten.</span>
+      ${S.flash?`<span class="flash">${esc(S.flash)}</span>`:''}
       <div class="toolbar"><button class="btn small primary" data-act="draw-done"${d.pts.length<3?' disabled':''}>Klaar (${d.pts.length} ${d.pts.length===1?'punt':'punten'})</button><button class="btn small" data-act="draw-undo"${d.pts.length?'':' disabled'}>Laatste punt weg</button><button class="btn small ghost" data-act="draw-cancel">Annuleren</button></div></div>`
-    :S.layout?`<div class="notice stack" style="margin:0;gap:6px"><span>Sleep een bed of pad om het te verplaatsen. Kies een bed om de hoekpunten te zien: sleep een punt om de vorm te veranderen, klik op + voor een extra hoek, dubbelklik op een punt om het weg te halen. Alles springt per 25 cm en wordt direct opgeslagen.</span>
+    :S.layout?`<div class="notice stack" style="margin:0;gap:6px"><span>Sleep een bed of pad om het te verplaatsen. Kies een bed om de hoekpunten te zien: sleep een punt om de vorm te veranderen, klik op + voor een extra hoek, dubbelklik op een punt om het weg te halen. Klik op een lengte om de exacte maat in te typen. Alles springt per 25 cm en wordt direct opgeslagen.</span>
+      ${S.flash?`<span class="flash">${esc(S.flash)}</span>`:''}
+      ${selB?`<div class="toolbar"><b style="font-size:.85rem">${esc(selB.name)}:</b><button class="btn small" data-act="rotate">Draai 90°</button><button class="btn small" data-act="mirror">Spiegel</button></div>`:''}
       <div class="toolbar"><button class="btn small" data-act="draw" data-k="bed">Bed tekenen</button><button class="btn small" data-act="draw" data-k="pad">Pad tekenen</button><button class="btn small" data-act="draw" data-k="outline">${outline?'Tuinvorm opnieuw tekenen':'Tuinvorm tekenen'}</button>${outline?'<button class="btn small ghost danger" data-act="outline-clear">Tuinvorm wissen</button>':''}</div></div>`:'';
   return `<div class="work">
     <section class="mapwrap">
       <div class="maphead"><div><h2>${esc(g.name)}</h2><span class="muted data">${W} × ${L} m · ${beds.length} bedden · ${fmtNum(area)} m² beplantbaar</span></div>
         <div class="row w">${d?'':`<button class="btn small${S.layout?' primary':''}" data-act="layout">${S.layout?'Klaar met indelen':'Indeling aanpassen'}</button>`}${S.layout||d?'':`<button class="btn small" data-act="edit-garden">Tuin bewerken</button><button class="btn small primary" data-act="add-bed">+ Bed</button>`}</div></div>
       ${toolbar}
+      ${outIds.size?`<p class="notice" style="margin:0"><b>Buiten de tuin:</b> ${[...outIds].map(id=>esc(S.beds.find(b=>b.id===id).name)).join(', ')}. Deze ${outIds.size===1?'ligt':'liggen'} (deels) buiten de tuinvorm en ${outIds.size===1?'is':'zijn'} rood omlijnd. Verplaats of verklein ${outIds.size===1?'het':'ze'} via Indeling aanpassen.</p>`:''}
       <div class="map${S.layout?' editing':''}${d?' drawing':''}" id="map" data-w="${W}" data-l="${L}" style="aspect-ratio:${W}/${L};max-width:calc(70vh * ${(W/L).toFixed(4)});background-size:${100/W}% ${100/L}%">
         <svg viewBox="0 0 ${W} ${L}" preserveAspectRatio="none" aria-label="Plattegrond van ${esc(g.name)}">
           <defs>
@@ -863,7 +957,7 @@ function openModal(title,body,onSubmit,extra){
    ${body}<p class="err" id="merr" hidden></p><div class="row" style="justify-content:flex-end">${extra||''}<button type="button" class="btn" data-act="close-modal">Annuleren</button><button class="btn primary" type="submit">Opslaan</button></div></form></div>`;
   const f=$('#mform');
   f.addEventListener('submit',async e=>{e.preventDefault();const fd=Object.fromEntries(new FormData(f).entries());const btn=f.querySelector('[type=submit]');btn.disabled=true;
-    try{const msg=await onSubmit(fd);if(msg){showErr(msg);btn.disabled=false;return}closeModal()}catch(err){showErr(errText(err));btn.disabled=false}});
+    try{const msg=await onSubmit(fd);if(msg==='__keep')return;if(msg){showErr(msg);btn.disabled=false;return}closeModal()}catch(err){showErr(errText(err));btn.disabled=false}});
   const first=f.querySelector('input,select,textarea');first&&first.focus();
 }
 const showErr=m=>{const e=$('#merr');e.textContent=m;e.hidden=false};
@@ -898,33 +992,73 @@ function gardenForm(g){
   },del);
 }
 function bedForm(b,pre){
-  const g=G(),kind=pre?.kind||b?.kind||'bed',pad=kind==='pad';
+  const g=G(),kind=pre?.kind||b?.kind||'bed',pad=kind==='pad',isNew=!b;
   const drawn=pre?.shape||(b&&!isRect(shapeOf(b))?shapeOf(b):null);
   const rect=b?bbox(shapeOf(b)):null;
+  const num0=(n,v,a='')=>inp(n,v,`type="number" min="0" step="0.01" inputmode="decimal" ${a}`);
+  const shapeSel=isNew&&!drawn?fld('Vorm',`<select name="form" id="f-form"><option value="rect">Rechthoek</option><option value="tri">Driehoek (drie zijden)</option><option value="l">L-vorm</option><option value="draw">Zelf tekenen op de plattegrond</option></select>`,true):'';
   const posFields=drawn?`<p class="muted full" style="margin:0">Vrij getekende vorm · ${fmtNum(polyArea(drawn))} m². De vorm verander je via Indeling aanpassen.</p>`
-   :`${fld('Van links (m)',inp('x',rect?.x??0,'type="number" min="0" step="0.25" inputmode="decimal"'))}
-   ${fld('Van boven (m)',inp('y',rect?.y??0,'type="number" min="0" step="0.25" inputmode="decimal"'))}
-   ${fld('Breedte (m)',inp('w',rect?.w??(pad?0.75:1.2),'type="number" min="0.25" step="0.25" inputmode="decimal"'))}
-   ${fld('Lengte (m)',inp('h',rect?.h??3,'type="number" min="0.25" step="0.25" inputmode="decimal"'))}`;
-  openModal(b?(pad?'Pad bewerken':'Bed bewerken'):(pad?'Nieuw pad':'Nieuw bed'),`${drawn?'':`<p class="muted" style="margin:0">Posities in meters vanaf de linkerbovenhoek van ${esc(g.name)} (${g.width} × ${g.length} m).</p>`}<div class="fgrid">
+   :`<div class="fgrid full" data-form="rect">
+     ${fld('Breedte (m)',num0('w',rect?.w??(pad?0.75:1.2)))}
+     ${fld('Lengte (m)',num0('h',rect?.h??3))}</div>
+    ${isNew?`<div class="full stack" data-form="tri" hidden><div class="row" style="align-items:flex-start;gap:12px"><div class="fgrid" style="flex:1;min-width:0">
+     ${fld('Zijde a, onderkant (m)',num0('ta',''))}${fld('Zijde b, links (m)',num0('tb',''))}${fld('Zijde c, rechts (m)',num0('tc',''))}</div><div id="prev-tri">${shapePreview(null)}</div></div>
+     <p class="muted" style="margin:0;font-size:.8rem">Meet de drie zijden op. Na het plaatsen kun je het bed draaien of spiegelen.</p></div>
+    <div class="full stack" data-form="l" hidden><div class="row" style="align-items:flex-start;gap:12px"><div class="fgrid" style="flex:1;min-width:0">
+     ${fld('Totale breedte (m)',num0('lb',''))}${fld('Totale lengte (m)',num0('ll',''))}${fld('Hoek eruit: breedte (m)',num0('lcw',''))}${fld('Hoek eruit: lengte (m)',num0('lcl',''))}</div><div id="prev-l">${shapePreview(null)}</div></div>
+     <p class="muted" style="margin:0;font-size:.8rem">Een rechthoek waar rechtsboven een stuk uit is. Na het plaatsen kun je het bed draaien of spiegelen.</p></div>
+    <p class="muted full" data-form="draw" hidden style="margin:0">Na <b>Opslaan</b> klik je de hoekpunten aan op de plattegrond. Tijdens het tekenen zie je de lengte van elke zijde.</p>`:''}
+    <div class="fgrid full" data-form="rect tri l">
+     ${fld('Van links (m)',num0('x',rect?.x??'','placeholder="Automatisch"'))}
+     ${fld('Van boven (m)',num0('y',rect?.y??'','placeholder="Automatisch"'))}</div>`;
+  openModal(b?(pad?'Pad bewerken':'Bed bewerken'):(pad?'Nieuw pad':'Nieuw bed'),`<div class="fgrid">
    ${fld('Naam',inp('name',b?.name??(pad?'Pad':`Bed ${bedsOf(g.id).length+1}`),'required'),pad)}
    ${pad?'':fld('Soort',`<select name="env"><option value="buiten">Buitenbed</option><option value="kas"${isKas(b)?' selected':''}>Kas (onverwarmd)</option></select>`)}
+   ${shapeSel}
    ${posFields}
+   ${drawn?'':`<p class="muted full" style="margin:0;font-size:.8rem">Positie in meters vanaf de linkerbovenhoek van ${esc(g.name)}. Laat leeg om automatisch een plek te kiezen.</p>`}
    ${fld('Notitie',`<textarea name="notes" placeholder="${pad?'Bijv. grind, tegels, boomschors':'Bijv. halfschaduw, kleigrond'}">${esc(b?.notes||'')}</textarea>`,true)}</div>`,
   async d=>{
     if(!d.name.trim())return pad?'Geef het pad een naam.':'Geef het bed een naam.';
-    let geo;
-    if(drawn){const bb=bbox(drawn);geo={shape:drawn,x:bb.x,y:bb.y,w:bb.w,h:bb.h}}
-    else{
-      const x=num(d.x),y=num(d.y),w=num(d.w),h=num(d.h);
-      if(w<=0||h<=0)return 'Breedte en lengte moeten groter dan 0 zijn.';
-      if(x+w>g.width||y+h>g.length)return `Het ${pad?'pad':'bed'} valt buiten de tuin. De tuin is ${g.width} × ${g.length} m.`;
-      geo={shape:null,x,y,w,h};
+    const form=d.form||'rect';
+    if(form==='draw'){closeModal();S.layout=true;S.draw={kind,gid:g.id,pts:[],name:d.name.trim(),env:d.env,notes:d.notes.trim()};S.sel=null;render();return '__keep'}
+    let pts;
+    if(drawn)pts=drawn;
+    else if(form==='tri'){pts=triangleFromSides(num(d.ta),num(d.tb),num(d.tc));if(!pts)return 'Met deze drie zijden kun je geen driehoek maken. Elke zijde moet korter zijn dan de andere twee samen.'}
+    else if(form==='l'){pts=lShape(num(d.lb),num(d.ll),num(d.lcw),num(d.lcl));if(!pts)return 'Vul alle vier de maten in. Het stuk dat eruit gaat moet kleiner zijn dan de totale breedte en lengte.'}
+    else{const w=num(d.w),h=num(d.h);if(w<=0||h<=0)return 'Breedte en lengte moeten groter dan 0 zijn.';pts=[[0,0],[w,0],[w,h],[0,h]]}
+    if(!drawn){
+      const hasPos=String(d.x).trim()!==''&&String(d.y).trim()!=='';
+      if(hasPos){pts=moveTo(pts,num(d.x),num(d.y));if(!fitsGarden(g,pts))return `Op deze plek valt het ${pad?'pad':'bed'} (deels) buiten de tuin. Pas de positie aan, of laat de positie leeg.`}
+      else{const spot=findSpot(g,pts);if(!spot)return `Het ${pad?'pad':'bed'} past nergens in de tuin. Maak het kleiner of pas de tuin aan.`;pts=spot.pts;if(!spot.free)setTimeout(()=>{S.layout=true;flash('Er was geen vrije plek, dus het bed ligt nu over iets anders heen. Sleep het naar de goede plek.')},50)}
     }
+    const bb=bbox(pts),rectShape=isRect(pts);
+    const geo={shape:rectShape?null:pts,x:r3(bb.x),y:r3(bb.y),w:r3(bb.w),h:r3(bb.h)};
     const data={name:d.name.trim(),kind,env:pad?'buiten':(d.env==='kas'?'kas':'buiten'),...geo,notes:d.notes.trim()};
     if(b)await S.db.doc('beds/'+b.id).update(data);
     else{const ref=S.db.collection('beds').doc();await ref.set({...data,gardenId:g.id,createdBy:S.me,createdAt:new Date().toISOString()});S.sel=ref.id}
     schedule();
+  });
+  const sel=$('#f-form');
+  const upd=()=>{
+    const v=sel?sel.value:'rect';
+    document.querySelectorAll('#mform [data-form]').forEach(el=>{el.hidden=!el.dataset.form.split(' ').includes(v)});
+    const q=n=>num($('#f-'+n)?.value||0);
+    if($('#prev-tri'))$('#prev-tri').innerHTML=shapePreview(triangleFromSides(q('ta'),q('tb'),q('tc')));
+    if($('#prev-l'))$('#prev-l').innerHTML=shapePreview(lShape(q('lb'),q('ll'),q('lcw'),q('lcl')));
+  };
+  if(sel){sel.addEventListener('change',upd);$('#mform').addEventListener('input',upd);upd()}
+}
+function edgeLenForm(b,i){
+  const pts=shapeOf(b),a=pts[i],c=pts[(i+1)%pts.length],cur=Math.hypot(c[0]-a[0],c[1]-a[1]);
+  openModal('Lengte van deze zijde',`<p class="muted" style="margin:0">Nu ${fmtLen(cur)}. Typ de gemeten lengte; het hoekpunt aan het eind van deze zijde schuift mee, in dezelfde richting.</p>
+   <div class="fgrid">${fld('Lengte (m)',inp('len',(Math.round(cur*100)/100).toString(),'type="number" min="0.05" step="0.01" inputmode="decimal" required'),true)}</div>`,
+  async d=>{
+    const len=num(d.len);if(!(len>0))return 'Vul een lengte groter dan 0 in.';
+    const ux=(c[0]-a[0])/cur,uy=(c[1]-a[1])/cur,np=pts.map(q=>q.slice());
+    np[(i+1)%pts.length]=[r3(a[0]+ux*len),r3(a[1]+uy*len)];
+    if(!fitsGarden(G(),np))return 'Met deze lengte komt het bed buiten de tuin. Verschuif het bed eerst of kies een andere zijde.';
+    await saveShape(b,np);
   });
 }
 function plantForm(bedId,p,pre){
@@ -1035,10 +1169,17 @@ async function saveShape(b,pts){
   Object.assign(b,upd);schedule();
   try{await S.db.doc('beds/'+b.id).update(upd)}catch(err){if(err?.code==='invalid_argument'){S.canWrite=false;document.body.classList.add('readonly')}}
 }
+function flash(msg){S.flash=msg;render();clearTimeout(flash.t);flash.t=setTimeout(()=>{S.flash='';render()},4500)}
 async function finishDraw(){
   const d=S.draw;if(!d||d.pts.length<3)return;
+  if(d.kind!=='outline'&&!fitsGarden(G(),d.pts)){flash('De vorm loopt buiten de tuin. Haal het laatste punt weg of zet het anders.');return}
   S.draw=null;S.noClick=true;setTimeout(()=>{S.noClick=false},300);
   if(d.kind==='outline'){const g=S.gardens.find(x=>x.id===d.gid);if(g){g.outline=d.pts;schedule();await S.db.doc('gardens/'+g.id).update({outline:d.pts})}return}
+  if(d.name){
+    const g=G(),bb=bbox(d.pts),ref=S.db.collection('beds').doc();
+    await ref.set({name:d.name,kind:d.kind,env:d.kind==='pad'?'buiten':(d.env==='kas'?'kas':'buiten'),shape:d.pts,x:r3(bb.x),y:r3(bb.y),w:r3(bb.w),h:r3(bb.h),notes:d.notes||'',gardenId:g.id,createdBy:S.me,createdAt:new Date().toISOString()});
+    S.sel=ref.id;schedule();return;
+  }
   schedule();bedForm(null,{shape:d.pts,kind:d.kind});
 }
 document.addEventListener('pointerdown',e=>{
@@ -1054,6 +1195,9 @@ document.addEventListener('pointerdown',e=>{
     e.preventDefault();
     const p=mapPos(e),d=S.draw;
     if(d.pts.length>=3){const [fx,fy]=d.pts[0];if(Math.hypot((fx-p.rx)/p.W*p.r.width,(fy-p.ry)/p.L*p.r.height)<14){finishDraw();return}}
+    const g=G();
+    if(d.kind!=='outline'&&!inGarden(g,p.x,p.y)){flash('Dit punt ligt buiten de tuin.');return}
+    S.flash='';
     const last=d.pts[d.pts.length-1];
     if(!last||last[0]!==p.x||last[1]!==p.y)d.pts.push([p.x,p.y]);
     render();return;
@@ -1062,7 +1206,7 @@ document.addEventListener('pointerdown',e=>{
   const vh=e.target.closest('.vh'),mh=e.target.closest('.mh'),shp=e.target.closest('.shp');
   if(mh){
     e.preventDefault();const b=S.beds.find(x=>x.id===S.sel);if(!b)return;
-    const pts=shapeOf(b),i=+mh.dataset.mi,[x1,y1]=pts[i],[x2,y2]=pts[(i+1)%pts.length],np=[snap((x1+x2)/2),snap((y1+y2)/2)];
+    const pts=shapeOf(b),i=+mh.dataset.mi,[x1,y1]=pts[i],[x2,y2]=pts[(i+1)%pts.length],np=[r3((x1+x2)/2),r3((y1+y2)/2)];
     if(pts.some(q=>q[0]===np[0]&&q[1]===np[1]))return;
     pts.splice(i+1,0,np);saveShape(b,pts);return;
   }
@@ -1074,6 +1218,13 @@ document.addEventListener('pointerdown',e=>{
   e.preventDefault();
 });
 document.addEventListener('pointermove',e=>{
+  if(S.draw&&!drag){
+    const d=S.draw,last=d.pts[d.pts.length-1],ln=$('#dline'),lb=$('#dlen');if(!last||!ln||!lb)return;
+    const p=mapPos(e);if(!p||p.rx<-0.5||p.ry<-0.5||p.rx>p.W+0.5||p.ry>p.L+0.5){ln.style.display='none';lb.style.display='none';return}
+    ln.setAttribute('x1',last[0]);ln.setAttribute('y1',last[1]);ln.setAttribute('x2',p.x);ln.setAttribute('y2',p.y);ln.style.display='';
+    lb.textContent=fmtLen(Math.hypot(p.x-last[0],p.y-last[1]));lb.style.left=(last[0]+p.x)/2/p.W*100+'%';lb.style.top=(last[1]+p.y)/2/p.L*100+'%';lb.style.display='';
+    return;
+  }
   if(!drag)return;const d=drag;
   if(!d.moved&&Math.hypot(e.clientX-d.sx,e.clientY-d.sy)<4)return;
   d.moved=true;
@@ -1084,6 +1235,7 @@ document.addEventListener('pointermove',e=>{
     const dx=clamp(snap(p.rx-d.start[0]),-bb.x,d.W-bb.x-bb.w),dy=clamp(snap(p.ry-d.start[1]),-bb.y,d.L-bb.y-bb.h);
     pts=d.orig.map(([x,y])=>[Math.round((x+dx)*100)/100,Math.round((y+dy)*100)/100]);
   }else{pts=d.orig.map(q=>q.slice());pts[d.vi]=[p.x,p.y]}
+  if(!fitsGarden(G(),pts))return;
   d.pts=pts;
   const el=document.querySelector(`.shp[data-id="${CSS.escape(d.b.id)}"]`);if(el)el.setAttribute('points',pts.map(q=>q.join(',')).join(' '));
   document.querySelectorAll('.vh').forEach(h=>{const q=pts[+h.dataset.vi];if(q){h.style.left=q[0]/d.W*100+'%';h.style.top=q[1]/d.L*100+'%'}});
@@ -1120,6 +1272,10 @@ document.addEventListener('click',async e=>{
     case 'layout':S.layout=!S.layout;S.draw=null;render();break;
     case 'draw':S.draw={kind:el.dataset.k,gid:G().id,pts:[]};S.sel=null;render();break;
     case 'draw-done':await finishDraw();break;
+    case 'edge-len':{const b=S.beds.find(x=>x.id===S.sel);if(b)edgeLenForm(b,+el.dataset.ei);break}
+    case 'rotate':case 'mirror':{const b=S.beds.find(x=>x.id===S.sel);if(!b)break;const np=a==='rotate'?rotate90(shapeOf(b)):mirrorX(shapeOf(b));
+      if(!fitsGarden(G(),np)){const spot=findSpot(G(),np);if(!spot){flash('Zo past het bed niet in de tuin.');break}await saveShape(b,spot.pts);flash('Gedraaid en verplaatst zodat het binnen de tuin past.');break}
+      await saveShape(b,np);break}
     case 'draw-undo':if(S.draw){S.draw.pts.pop();render()}break;
     case 'draw-cancel':S.draw=null;render();break;
     case 'outline-clear':armed(el,async()=>{const g=G();g.outline=null;schedule();await S.db.doc('gardens/'+g.id).update({outline:null})});break;
