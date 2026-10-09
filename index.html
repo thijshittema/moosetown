@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>
+:root{color-scheme:light}
+html,body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>MooseTown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: sticky header with garden switch + tabs; map-first workspace with a detail column that stacks on phones. */
+:root{
+  --bg:#EFF2EC; --surface:#FFFFFF; --surface-2:#E4E9E0; --ink:#1B2A21; --muted:#56655B; --line:#CFD7CA;
+  --accent:#7A2E55; --accent-ink:#FFFFFF; --leaf:#2F6E3E; --warn:#A8591A; --danger:#B3261E;
+  --grass:#DCE6D3; --grass-line:#C7D4BD; --soil:#6E5039; --soil-2:#7E5D44; --soil-ink:#FFF7EE;
+  --glass:#D6ECF2; --glass-line:#A9CFDB; --glass-ink:#173A45; --seed:#B88A3E; --fruit:#C8402E;
+  --stake:#9A7B55; --c-red:#D9412F; --c-yellow:#E9B824; --c-pod:#3F8E36; --c-pea:#86C25A; --c-purple:#6B3A8C; --c-zuc:#2E6B2E; --c-cuc:#4F9A3E; --c-orange:#E8862A; --c-rib:#9C4F12; --c-cream:#EADCB8; --c-beet:#8E1F3E; --c-radish:#E0507A; --c-onion:#D9A441; --c-garlic:#F1EBDD; --c-kool:#5E8F86; --c-kale:#2F5A3A; --c-kohl:#A8CF8A; --c-broc:#3D6E3A; --c-potato:#CDA86A; --c-corn:#F2C230; --c-light:#A9D67A; --c-beanseed:#E9DFC8;
+  --f-kool:#2F6FA8; --f-nacht:#C0392B; --f-peul:#2E8B57; --f-scherm:#D17A12; --f-ui:#8E5BB5; --f-kom:#B59A12; --f-compo:#3C9C9C; --f-amarant:#A23B6B; --f-overig:#6F7A72;
+  --font-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --font-body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-data:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111713; --surface:#19211C; --surface-2:#222C25; --ink:#E3EAE1; --muted:#98A79C; --line:#2E3A32;
+  --accent:#D77EA9; --accent-ink:#1C0E15; --leaf:#7CC08A; --warn:#E3A060; --danger:#F08A80;
+  --grass:#1D2A21; --grass-line:#26352A; --soil:#4E3A2B; --soil-2:#5A4332; --soil-ink:#FBEFE2;
+  --glass:#1E3A44; --glass-line:#2F5866; --glass-ink:#DDF2F8; --seed:#D9AE62; --fruit:#F07A63;
+  --f-kool:#6FA8DC; --f-nacht:#EF7B6E; --f-peul:#6CCB94; --f-scherm:#F0A65A; --f-ui:#B892DA; --f-kom:#D9C45A; --f-compo:#6CC9C9; --f-amarant:#DC7AA7; --f-overig:#A3AFA7;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111713; --surface:#19211C; --surface-2:#222C25; --ink:#E3EAE1; --muted:#98A79C; --line:#2E3A32;
+  --accent:#D77EA9; --accent-ink:#1C0E15; --leaf:#7CC08A; --warn:#E3A060; --danger:#F08A80;
+  --grass:#1D2A21; --grass-line:#26352A; --soil:#4E3A2B; --soil-2:#5A4332; --soil-ink:#FBEFE2;
+  --glass:#1E3A44; --glass-line:#2F5866; --glass-ink:#DDF2F8; --seed:#D9AE62; --fruit:#F07A63;
+  --f-kool:#6FA8DC; --f-nacht:#EF7B6E; --f-peul:#6CCB94; --f-scherm:#F0A65A; --f-ui:#B892DA; --f-kom:#D9C45A; --f-compo:#6CC9C9; --f-amarant:#DC7AA7; --f-overig:#A3AFA7;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em;text-wrap:balance;margin:0}
+h2{font-size:1.35rem} h3{font-size:1.05rem}
+button,input,select,textarea{font:inherit;color:inherit}
+.data{font-family:var(--font-data);font-variant-numeric:tabular-nums;font-size:.85em}
+.muted{color:var(--muted)}
+.label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:10px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto}
+.brand h1{font-size:1.5rem}
+.brand svg{flex:none}
+.gsel{display:flex;gap:6px;align-items:center}
+.gsel select{max-width:13rem}
+.me{width:28px;height:28px;border-radius:50%;border:1px solid var(--line)}
+nav.tabs{max-width:1180px;margin:0 auto;padding-inline:16px;display:flex;gap:4px;overflow-x:auto}
+nav.tabs button{background:none;border:0;padding:8px 12px 10px;cursor:pointer;color:var(--muted);font-weight:700;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs button[aria-current="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+main{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:20px 60px}
+
+/* controls */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:700;font-size:.9rem}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ghost{background:transparent}
+.btn.small{padding:3px 9px;font-size:.8rem}
+.btn.danger{color:var(--danger)}
+.btn[data-armed]{background:var(--danger);color:var(--surface);border-color:var(--danger)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input,select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 9px;width:100%;min-width:0}
+textarea{min-height:70px;resize:vertical}
+.readonly .w{display:none!important}
+
+/* workspace */
+.work{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.work{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row.between{justify-content:space-between}
+.stack{display:flex;flex-direction:column;gap:8px}
+
+/* map */
+.mapwrap{display:flex;flex-direction:column;gap:8px;min-width:0}
+.maphead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.map{position:relative;width:100%;border-radius:var(--r);border:1px solid var(--line);
+  background-color:var(--grass);
+  background-image:linear-gradient(var(--grass-line) 1px,transparent 1px),linear-gradient(90deg,var(--grass-line) 1px,transparent 1px);
+  max-height:70vh}
+.bed{position:absolute;border-radius:6px;cursor:pointer;overflow:hidden;border:2px solid transparent;padding:6px;color:var(--soil-ink);
+  background:repeating-linear-gradient(0deg,var(--soil) 0 7px,var(--soil-2) 7px 12px);display:flex;flex-direction:column;gap:4px;text-align:left;font:inherit}
+.bed:hover{border-color:var(--soil-ink)}
+.bed[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.bed .bn{font-family:var(--font-display);font-weight:700;font-size:.85rem;line-height:1.1;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.bed .crops{display:flex;flex-wrap:wrap;gap:3px}
+.bed .dot{font-size:.68rem;padding:1px 6px;border-radius:99px;background:var(--surface);color:var(--ink);border-left:4px solid var(--fc);white-space:nowrap}
+.ruler{display:flex;justify-content:space-between;font-family:var(--font-data);font-size:.7rem;color:var(--muted)}
+
+.map.editing .bed{touch-action:none;cursor:move;border:2px dashed var(--soil-ink)}
+.map.editing .bed:active{cursor:grabbing}
+.bed .rz{position:absolute;right:0;bottom:0;width:22px;height:22px;cursor:nwse-resize;background:linear-gradient(135deg,transparent 50%,var(--accent) 50%)}
+.bed .sz{font-size:.68rem;background:var(--surface);color:var(--ink);border-radius:4px;padding:0 4px;align-self:flex-start}
+.chip.succ{cursor:pointer;font:inherit;font-size:.78rem;font-weight:700;color:inherit}
+.chip.succ:hover{border-color:var(--fc)}
+/* kas */
+.bed.kas{color:var(--glass-ink);background:linear-gradient(135deg,color-mix(in srgb,#fff 35%,transparent) 0 18%,transparent 18% 100%),repeating-linear-gradient(90deg,var(--glass) 0 22px,var(--glass-line) 22px 24px);border-color:var(--glass-line)}
+.bed.kas .bn{text-shadow:none}
+.tag{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:1px 6px;border-radius:4px;background:var(--glass);color:var(--glass-ink);border:1px solid var(--glass-line);vertical-align:middle}
+.b-k{background:var(--glass-line)}
+/* groeistadia */
+.stg{display:block;flex:none}
+.strip{display:flex;align-items:center;gap:2px;margin-top:4px;flex-wrap:wrap}
+.strip .st{display:inline-flex;padding:2px;border-radius:6px}
+.strip .st.past{opacity:.45}
+.strip .st.next{opacity:.18;filter:grayscale(1)}
+.strip .st.cur{background:color-mix(in srgb,var(--leaf) 16%,var(--surface));outline:1.5px solid var(--leaf)}
+.strip .stname{font-size:.78rem;font-weight:700;margin-left:6px}
+.bed .dot{display:inline-flex;align-items:center;gap:2px}
+.bed .dot .stg{width:13px;height:13px}
+/* weerbericht */
+.fc{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.fcd{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border-radius:8px;background:var(--surface-2);font-size:.8rem;min-width:0}
+.fcd.frost{background:color-mix(in srgb,var(--glass) 70%,var(--surface));outline:1px solid var(--glass-line)}
+.fcd .rain{font-size:.68rem;color:var(--muted);white-space:nowrap}
+/* taken */
+.item.todo{border-left:4px solid transparent;padding-left:8px}
+.item.todo.p1{border-left-color:var(--danger)}
+.item.todo.p2{border-left-color:var(--warn)}
+.item.todo.p3{border-left-color:var(--line)}
+.pill.pr1{color:var(--danger);border-color:var(--danger)}
+.pill.pr2{color:var(--warn);border-color:var(--warn)}
+/* chips & pills */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:.78rem;font-weight:700;
+  background:color-mix(in srgb,var(--fc,var(--f-overig)) 16%,var(--surface));border:1px solid color-mix(in srgb,var(--fc,var(--f-overig)) 45%,var(--surface));white-space:nowrap}
+.chip.warn{outline:2px dashed var(--warn);outline-offset:1px}
+.pill{font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid var(--line);background:var(--surface-2);white-space:nowrap}
+.pill.s-gepland{border-color:var(--muted)}
+.pill.s-gezaaid{background:color-mix(in srgb,var(--leaf) 18%,var(--surface));border-color:var(--leaf)}
+.pill.s-uitgeplant{background:color-mix(in srgb,var(--leaf) 30%,var(--surface));border-color:var(--leaf)}
+.pill.s-oogst{background:color-mix(in srgb,var(--warn) 25%,var(--surface));border-color:var(--warn)}
+.pill.s-afgerond{opacity:.7}
+.late{color:var(--danger);font-weight:700}
+
+/* lists */
+.list{display:flex;flex-direction:column}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.item .when{font-family:var(--font-data);font-size:.8rem;color:var(--muted);min-width:4.2rem}
+.item .main{min-width:0}
+.item .main b{font-weight:700}
+.item .sub{font-size:.85rem;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface-2);border-radius:8px;padding:10px}
+.stat .v{font-family:var(--font-data);font-size:1.3rem;font-weight:600}
+
+/* tables */
+.tscroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+.cal td,.cal th{padding:6px 4px;text-align:center}
+.cal td:first-child,.cal th:first-child{text-align:left;padding-left:10px;white-space:nowrap}
+.cal .now{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.bars{display:flex;flex-direction:column;gap:2px;min-width:22px}
+.bars i{display:block;height:5px;border-radius:3px}
+.b-bi{background:repeating-linear-gradient(90deg,var(--accent) 0 4px,transparent 4px 6px)}
+.b-bu{background:var(--leaf)}
+.b-o{background:var(--warn)}
+.b-x{background:transparent}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.82rem;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:18px;height:6px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.hbar{height:8px;border-radius:4px;background:var(--warn)}
+
+/* empty */
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:32px 20px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;max-width:640px}
+.notice{background:color-mix(in srgb,var(--warn) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--warn) 50%,var(--surface));border-radius:8px;padding:8px 12px;font-size:.88rem}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(10,16,12,.45);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:16px}
+@media (min-width:640px){.overlay{align-items:center}}
+.modal{background:var(--surface);border-radius:14px;width:100%;max-width:520px;max-height:88vh;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:12px;border:1px solid var(--line)}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fgrid .full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field span{font-size:.8rem;font-weight:700;color:var(--muted)}
+.err{color:var(--danger);font-size:.88rem}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.filters button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:3px 10px;font-size:.82rem;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+@media (prefers-reduced-motion:no-preference){.bed,.btn{transition:border-color .15s,box-shadow .15s}}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="2" y="16" width="26" height="11" rx="3" fill="var(--soil)"/><path d="M15 16 C15 10 15 8 15 6" stroke="var(--leaf)" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M15 10 C10 10 8 6 8 4 C12 4 15 6 15 10Z" fill="var(--leaf)"/><path d="M15 8 C19 8 22 5 22 3 C18 3 15 5 15 8Z" fill="var(--leaf)"/></svg>
+      <h1>MooseTown</h1>
+    </div>
+    <div class="gsel" id="gsel"></div>
+    <div class="row" style="gap:4px"><button class="btn small ghost" id="who" data-act="profile" title="Je naam aanpassen" hidden></button><button class="btn small ghost" id="logout" data-act="logout" hidden>Uitloggen</button></div>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Weergaven">
+    <button data-act="view" data-v="kaart">Plattegrond</button>
+    <button data-act="view" data-v="planning">Planning</button>
+    <button data-act="view" data-v="logboek">Logboek &amp; oogst</button>
+    <button data-act="view" data-v="rotatie">Rotatie</button>
+  </nav>
+</header>
+<main id="main"><p class="muted">Tuinen laden…</p></main>
+<div id="modalroot"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="supabase-koppeling.js"></script>
+<script>
+/* ---------- reference data: Dutch sowing calendar (months 1–12) ---------- */
+const MONTHS=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+const FAM={
+  kool:{n:'Koolachtigen',c:'--f-kool'}, nacht:{n:'Nachtschade',c:'--f-nacht'}, peul:{n:'Peulvruchten',c:'--f-peul'},
+  scherm:{n:'Schermbloemen',c:'--f-scherm'}, ui:{n:'Uien & look',c:'--f-ui'}, kom:{n:'Komkommerachtigen',c:'--f-kom'},
+  compo:{n:'Composieten',c:'--f-compo'}, amarant:{n:'Bieten & spinazie',c:'--f-amarant'}, overig:{n:'Overig',c:'--f-overig'}
+};
+const R=(a,b)=>{const o=[];for(let m=a;;m=m%12+1){o.push(m);if(m===b)break}return o};
+// s:[cm tussen rijen, cm in de rij]  w:winterhard (mag na half november nog staan)  k:zaai-/plantmaanden in een onverwarmde kas
+const CROPS=[
+ {n:'Tomaat',f:'nacht',d:120,bi:[2,3,4],bu:[5,6],o:R(7,10),s:[60,50],k:[4,5]},
+ {n:'Paprika',f:'nacht',d:140,bi:[2,3],bu:[5,6],o:R(8,10),s:[50,40],k:[4,5]},
+ {n:'Aubergine',f:'nacht',d:140,bi:[2,3],bu:[5,6],o:R(8,10),s:[60,50],k:[4,5]},
+ {n:'Aardappel',f:'nacht',d:100,bi:[],bu:[4,5],o:R(7,9),s:[70,35],k:[3,4]},
+ {n:'Courgette',f:'kom',d:60,bi:[4,5],bu:[5,6],o:R(7,9),s:[100,100],k:[4,5]},
+ {n:'Komkommer',f:'kom',d:65,bi:[4,5],bu:[5,6],o:R(7,9),s:[100,60],k:[4,5,6]},
+ {n:'Pompoen',f:'kom',d:120,bi:[4,5],bu:[5,6],o:[9,10],s:[150,150],k:[4,5]},
+ {n:'Stamboon',f:'peul',d:65,bi:[],bu:[5,6,7],o:R(7,9),s:[40,10],k:[4,5,6,7,8]},
+ {n:'Stokboon',f:'peul',d:75,bi:[4],bu:[5,6],o:R(7,10),s:[60,20],k:[4,5,6]},
+ {n:'Doperwt',f:'peul',d:75,bi:[],bu:[3,4,5],o:[6,7],s:[50,5],k:[2,3,4]},
+ {n:'Tuinboon',f:'peul',d:100,bi:[],bu:[2,3,4],o:[6,7],s:[50,15],k:[2,3]},
+ {n:'Peen',f:'scherm',d:90,bi:[],bu:R(3,7),o:R(6,11),s:[20,3],k:[2,3,4,5,6,7,8]},
+ {n:'Pastinaak',f:'scherm',d:130,bi:[],bu:[3,4,5],o:R(10,12),s:[30,10],w:true,k:[3,4]},
+ {n:'Knolselderij',f:'scherm',d:170,bi:[2,3],bu:[5],o:R(9,11),s:[40,40],k:[4,5]},
+ {n:'Venkel',f:'scherm',d:85,bi:[],bu:[6,7],o:R(8,10),s:[40,25],k:[4,5,6,7,8]},
+ {n:'Peterselie',f:'scherm',d:80,bi:[],bu:R(3,7),o:R(6,11),s:[25,15],w:true,k:[2,3,4,5,6,7,8]},
+ {n:'Ui (plantuitjes)',f:'ui',d:115,bi:[],bu:[3,4],o:[7,8],s:[25,10],k:[2,3]},
+ {n:'Prei',f:'ui',d:160,bi:[2,3],bu:[5,6,7],o:R(9,2),s:[30,12],w:true,k:[4,5,6,7]},
+ {n:'Knoflook',f:'ui',d:240,bi:[],bu:[10,11],o:[6,7],s:[25,12],w:true,k:[10,11]},
+ {n:'Sla',f:'compo',d:55,bi:[2,3],bu:R(3,8),o:R(5,10),s:[30,30],k:[1,2,3,4,5,6,7,8,9,10]},
+ {n:'Andijvie',f:'compo',d:75,bi:[],bu:[6,7],o:R(8,10),s:[35,30],k:[5,6,7,8]},
+ {n:'Spinazie',f:'amarant',d:45,bi:[],bu:[3,4,8,9],o:[4,5,6,9,10],s:[20,5],k:[2,3,4,9,10]},
+ {n:'Rode biet',f:'amarant',d:75,bi:[],bu:R(4,7),o:R(6,10),s:[25,10],k:[3,4,5,6,7,8]},
+ {n:'Snijbiet',f:'amarant',d:60,bi:[],bu:R(4,7),o:R(6,11),s:[40,30],k:[3,4,5,6,7,8]},
+ {n:'Broccoli',f:'kool',d:90,bi:[3,4],bu:R(4,6),o:R(7,10),s:[50,50],k:[3,4,5,6]},
+ {n:'Boerenkool',f:'kool',d:130,bi:[],bu:[5,6],o:R(10,2),s:[60,50],w:true,k:[5,6]},
+ {n:'Spruitkool',f:'kool',d:170,bi:[3,4],bu:[5],o:R(10,1),s:[70,60],w:true,k:[4,5]},
+ {n:'Koolrabi',f:'kool',d:60,bi:[],bu:R(4,7),o:R(6,9),s:[30,25],k:[2,3,4,5,6,7,8]},
+ {n:'Radijs',f:'kool',d:28,bi:[],bu:R(3,9),o:R(4,10),s:[15,3],k:[2,3,4,5,6,7,8,9,10]},
+ {n:'Veldsla',f:'overig',d:60,bi:[],bu:[8,9],o:R(10,3),s:[15,8],w:true,k:[8,9,10,11]},
+ {n:'Mais',f:'overig',d:100,bi:[4,5],bu:[5,6],o:[8,9],s:[60,30],k:[]},
+ {n:'Basilicum',f:'overig',d:60,bi:[3,4,5],bu:[6],o:R(6,9),s:[25,25],k:[4,5,6,7]}
+];
+const cropBy=n=>CROPS.find(c=>c.n===n);
+const FLOW=['gepland','gezaaid','uitgeplant','oogst','afgerond'];
+const SLABEL={gepland:'Gepland',gezaaid:'Gezaaid',uitgeplant:'Uitgeplant',oogst:'In oogst',afgerond:'Afgerond'};
+const NEXT={gepland:'Gezaaid',gezaaid:'Uitgeplant',uitgeplant:'Oogst begonnen',oogst:'Afronden'};
+const LTYPES={notitie:'Notitie',oogst:'Oogst',water:'Water gegeven',bemesten:'Bemest',plaag:'Plaag/ziekte',werk:'Onderhoud'};
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const toISO=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today=()=>toISO(new Date());
+const parse=iso=>{const [y,m,d]=String(iso).split('-').map(Number);return new Date(y,(m||1)-1,d||1)};
+const addDays=(iso,n)=>{const d=parse(iso);d.setDate(d.getDate()+n);return toISO(d)};
+const diff=(a,b)=>Math.round((parse(b)-parse(a))/864e5);
+const THISY=new Date().getFullYear();
+const fmt=iso=>{if(!iso)return '—';const d=parse(iso);const s=`${d.getDate()} ${MONTHS[d.getMonth()]}`;return d.getFullYear()===THISY?s:`${s} ’${String(d.getFullYear()).slice(2)}`};
+const famOf=p=>p.family||cropBy(p.crop)?.f||'overig';
+const fc=f=>`--fc:var(${(FAM[f]||FAM.overig).c})`;
+const expHarvest=p=>p.harvestDate||(p.sowDate?addDays(p.sowDate,cropBy(p.crop)?.d||80):'');
+const grams=g=>g>=1000?`${(g/1000).toLocaleString('nl-NL',{maximumFractionDigits:1})} kg`:`${Math.round(g)} g`;
+const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isFinite(n)?n:0};
+/* plantafstand: rijen over de korte kant, planten langs de lange kant */
+function capacity(b,c){
+  if(!b||!c?.s)return null;
+  const short=Math.min(b.w,b.h)*100,long=Math.max(b.w,b.h)*100;
+  const rows=Math.max(1,Math.floor(short/c.s[0])),per=Math.max(1,Math.floor(long/c.s[1]));
+  return {rows,per,n:rows*per};
+}
+/* dicht gezaaide gewassen (≤10 cm in de rij): tel per meter rij, niet per vol bed */
+const dense=c=>!!c?.s&&c.s[1]<=10;
+const perMeter=c=>Math.floor(100/c.s[1]);
+const capText=(b,c)=>{const k=capacity(b,c);if(!k)return '';
+  if(dense(c))return `±${perMeter(c)} per meter rij (${c.s[1]} cm in de rij, ${c.s[0]} cm tussen de rijen). Een rij over de volle lengte van dit bed is ±${k.per.toLocaleString('nl-NL')}. Zaai in porties van een paar meter; het hele bed vol (${k.n.toLocaleString('nl-NL')}) is zelden de bedoeling`;
+  return `${k.n.toLocaleString('nl-NL')} planten (${k.rows} ${k.rows===1?'rij':'rijen'} × ${k.per}) bij ${c.s[0]} cm tussen de rijen en ${c.s[1]} cm in de rij`};
+/* opvolgteelt: wat past er na de huidige teelt nog dit seizoen */
+const isKas=b=>b?.env==='kas';
+const sowWin=(c,b)=>isKas(b)?(c.k||c.bu):c.bu;
+const SEASON_END=(y,b)=>isKas(b)?`${y}-12-15`:`${y}-11-15`;
+/* maanden als leesbare reeksen: [3,4,5,8] -> "mrt–mei, aug" */
+function fmtMonths(arr){
+  if(!arr||!arr.length)return '—';
+  const a=[...new Set(arr)].sort((x,y)=>x-y),runs=[];let st=a[0],pr=a[0];
+  for(const m of a.slice(1).concat(99)){if(m===pr+1){pr=m;continue}runs.push(st===pr?MONTHS[st-1]:`${MONTHS[st-1]}–${MONTHS[pr-1]}`);st=pr=m}
+  return runs.join(', ');
+}
+/* groeistadia */
+const STAGES=['Zaaivoor','Zaadje','Kiemplant','Jonge plant','Volgroeid','Oogst'];
+function stageOf(p){
+  if(p.status==='gepland')return 0;
+  if(p.status==='oogst'||p.status==='afgerond')return 5;
+  const h=expHarvest(p);let st=1;
+  if(p.sowDate&&h){const tot=Math.max(1,diff(p.sowDate,h)),f=diff(p.sowDate,today())/tot;st=f<0.12?1:f<0.3?2:f<0.6?3:f<1?4:5}
+  if(p.status==='uitgeplant')st=Math.max(st,3);
+  return st;
+}
+/* ---- groei-icoontjes per gewas: groeivorm + gewaskleuren ---- */
+const _L=(cx,cy,rx,ry,rot,c='var(--leaf)')=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" transform="rotate(${rot} ${cx} ${cy})" fill="${c}"/>`;
+const _C=(cx,cy,r,c)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${c}"/>`;
+const _P=(d,c='var(--leaf)',w=1.6)=>`<path d="${d}" stroke="${c}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+const _F=(d,c)=>`<path d="${d}" fill="${c}"/>`;
+const SOIL=`<path d="M2 18.5h20v3.5H2z" fill="var(--soil)"/>`;
+const FORM={
+  Tomaat:['stake','tomato'],Stokboon:['stake','bean'],Doperwt:['stake','pea'],
+  Paprika:['bush','pepper'],Aubergine:['bush','aubergine'],Stamboon:['bush','bean'],Tuinboon:['bush','bean'],Basilicum:['bush','basil'],
+  Courgette:['vine','zucchini'],Komkommer:['vine','cucumber'],Pompoen:['vine','pumpkin'],
+  Peen:['root','carrot'],Pastinaak:['root','parsnip'],'Rode biet':['root','beet'],Radijs:['root','radish'],Knolselderij:['root','celeriac'],
+  'Ui (plantuitjes)':['allium','onion'],Knoflook:['allium','garlic'],Prei:['allium','leek'],
+  Sla:['rosette','lettuce'],Andijvie:['rosette','endive'],Spinazie:['rosette','spinach'],Veldsla:['rosette','lamb'],Snijbiet:['rosette','chard'],Peterselie:['rosette','parsley'],
+  Broccoli:['brassica','broccoli'],Boerenkool:['brassica','kale'],Spruitkool:['brassica','sprouts'],Koolrabi:['brassica','kohlrabi'],
+  Aardappel:['bush','potato'],Mais:['stalk','corn'],Venkel:['fennel','fennel']
+};
+/* tekent [plant boven de grond, opbrengst boven, opbrengst onder de grond] */
+function plantArt(form,k,ripe){
+  let a='',top='',under='';
+  if(form==='stake'){
+    a=_P('M17.5 21V2.5','var(--stake)',1.3)+_P('M12 18.5C10.8 14 13 10 12 3')+_P('M12 12.5h5.5M12 7.5h5.5','var(--stake)',.6)
+     +_L(8.8,15,3,1.5,-25)+_L(15,13.6,2.8,1.4,25)+_L(9.2,10.2,2.8,1.4,-30)+_L(14.6,8.4,2.4,1.3,30)+_L(10.6,4.6,2.1,1.1,-40);
+    if(ripe){
+      if(k==='tomato')top=_C(9.4,12.9,1.9,'var(--c-red)')+_C(14.6,11,1.7,'var(--c-red)')+_C(10.2,7.4,1.5,'var(--c-red)');
+      else{const c=k==='pea'?'var(--c-pea)':'var(--c-pod)',rx=k==='pea'?1.1:.75;top=_L(9.7,13.2,rx,2.9,12,c)+_L(14.2,11.4,rx,2.7,-12,c)+_L(10.1,7.4,rx,2.4,10,c)}
+    }
+  }else if(form==='bush'){
+    a=_P('M12 18.5V8')+_L(7.8,15.2,3.4,1.8,-20)+_L(16.2,14.6,3.4,1.8,20)+_L(8.4,11,3,1.6,-30)+_L(15.6,10,3,1.6,30)+_L(12,6.6,2.3,2.5,0);
+    if(k==='basil')a=_P('M12 18.5V7')+_L(8.6,15,2.6,2,-20)+_L(15.4,14.6,2.6,2,20)+_L(9,10.6,2.4,1.9,-25)+_L(15,10,2.4,1.9,25)+_L(12,6.4,2,2.3,0);
+    if(ripe){
+      if(k==='pepper')top=`<rect x="8.2" y="11.6" width="2.6" height="4.2" rx="1.2" fill="var(--c-red)"/><rect x="13.4" y="10.6" width="2.6" height="4.2" rx="1.2" fill="var(--c-yellow)"/>`;
+      else if(k==='aubergine')top=_L(9.4,14.4,1.6,2.9,12,'var(--c-purple)')+_L(14.8,13.4,1.5,2.7,-12,'var(--c-purple)');
+      else if(k==='bean')top=_L(9.4,14.6,.75,2.8,8,'var(--c-pod)')+_L(11.6,14.2,.75,2.8,-4,'var(--c-pod)')+_L(14.6,13.8,.75,2.6,-10,'var(--c-pod)');
+      else if(k==='basil')top=_L(12,5,1.6,2,0,'var(--c-light)')+_L(9.2,9.6,1.6,1.2,-25,'var(--c-light)')+_L(14.8,9,1.6,1.2,25,'var(--c-light)');
+      else if(k==='potato')under=_L(8.6,20.6,1.9,1.2,0,'var(--c-potato)')+_L(14.6,21,2.1,1.3,10,'var(--c-potato)')+_L(11.6,21.4,1.4,.9,0,'var(--c-potato)');
+    }
+  }else if(form==='vine'){
+    a=_P('M12 18.5V11')+_C(7.8,14.4,3.6,'var(--leaf)')+_C(16,13.4,3.9,'var(--leaf)')+_C(12,9.4,3.1,'var(--leaf)')+_P('M7.8 14.4l-2 1.6M16 13.4l2.2 1.4M12 9.4v-2','var(--bg)',.6);
+    if(ripe){
+      if(k==='zucchini')top=_L(14.2,17.3,4,1.3,-6,'var(--c-zuc)');
+      else if(k==='cucumber')top=_L(8.6,17.4,3.3,1.05,6,'var(--c-cuc)')+_L(15.6,17.6,3,1,-6,'var(--c-cuc)');
+      else top=_C(15.4,16,3,'var(--c-orange)')+_P('M15.4 13.1v5.8M13.6 13.8c-.8 1.3-.8 3.2 0 4.5M17.2 13.8c.8 1.3.8 3.2 0 4.5','var(--c-rib)',.5);
+    }
+  }else if(form==='root'){
+    if(k==='carrot'||k==='parsnip')a=_P('M12 18.5L8 7.5M12 18.5L12 4.5M12 18.5L16 7.5',undefined,1)+_C(8,7.5,1.3,'var(--leaf)')+_C(12,4.5,1.4,'var(--leaf)')+_C(16,7.5,1.3,'var(--leaf)')+_C(9.5,11.5,1.1,'var(--leaf)')+_C(14.5,11.5,1.1,'var(--leaf)');
+    else{const st=k==='beet'?'var(--c-beet)':'var(--leaf)';a=_P('M12 18.5L9 12M12 18.5V10M12 18.5L15 12',st,1)+_L(8.4,10.6,1.7,3.4,-25)+_L(15.6,10.6,1.7,3.4,25)+_L(12,8,1.7,3.8,0)}
+    const col={carrot:'var(--c-orange)',parsnip:'var(--c-cream)',beet:'var(--c-beet)',radish:'var(--c-radish)',celeriac:'var(--c-cream)'}[k];
+    if(ripe){
+      if(k==='carrot'||k==='parsnip')under=_F('M10.2 18.3h3.6L12 24z',col);
+      else if(k==='celeriac')top=_C(12,18.3,2.9,col)+_P('M10.5 17.2h.01M13.4 18.6h.01','var(--soil)',1);
+      else top=_C(12,19.2,k==='radish'?1.9:2.5,col);
+    }else a+=(k==='carrot'||k==='parsnip')?_F('M10.6 18.5a1.4 1.1 0 0 1 2.8 0z',col):'';
+  }else if(form==='allium'){
+    if(k==='leek')a=_P('M12 13C10.5 9 9 7 7 4',undefined,2.1)+_P('M12 12C12.6 8 14 6 16.5 3.5',undefined,2.1)+_P('M12 13C13.5 10 15 9.5 17.5 9',undefined,1.8)+`<rect x="10.9" y="${ripe?9.5:12}" width="2.2" height="${ripe?9:6.5}" rx="1" fill="var(--c-garlic)"/>`;
+    else a=_P('M12 18.5C11.4 12 10 8 8.6 4')+_P('M12 18.5C12 12 12.4 7 13 3')+_P('M12 18.5C13 13 14.6 9 16.4 5.4');
+    if(ripe){
+      if(k==='onion')top=_C(12,17.6,2.7,'var(--c-onion)')+_P('M12 14.9v-1','var(--c-onion)',.8);
+      else if(k==='garlic')top=_F('M12 14.2c2.6 1.5 3.2 3.2 2.6 4.6h-5.2c-.6-1.4 0-3.1 2.6-4.6z','var(--c-garlic)')+_P('M12 15.2v3.4','var(--c-rib)',.4);
+    }
+  }else if(form==='rosette'){
+    if(k==='parsley'){a=_P('M12 18.5L8.5 11M12 18.5L12 8.5M12 18.5L15.5 11',undefined,.9);for(const [x,y] of [[8.5,11],[12,8.5],[15.5,11],[10,13.5],[14,13.5]])a+=_C(x-.8,y,1.1,'var(--leaf)')+_C(x+.8,y,1.1,'var(--leaf)')+_C(x,y-.9,1.1,'var(--leaf)');if(ripe)top=_C(12,7.6,1,'var(--c-light)')+_C(8.5,10.1,.9,'var(--c-light)')+_C(15.5,10.1,.9,'var(--c-light)')}
+    else if(k==='chard'){a=_P('M12 18.5L8.5 11M12 18.5V9M12 18.5L15.5 11','var(--c-red)',1.2)+_L(8,9.4,2,3.2,-20)+_L(16,9.4,2,3.2,20)+_L(12,7,2,3.4,0);if(ripe)top=_L(6.6,13.4,1.7,2.6,-50)+_L(17.4,13.4,1.7,2.6,50)}
+    else{
+      const c=k==='spinach'?'var(--c-kale)':'var(--leaf)',s=k==='lamb'?.75:1,T=v=>12+(v-12)*s,Y=v=>18.5+(v-18.5)*s;
+      a=_L(T(8.4),Y(16.2),3.4*s,2*s,-15,c)+_L(T(15.6),Y(16.2),3.4*s,2*s,15,c)+_L(T(9.8),Y(13.6),3*s,2.2*s,-35,c)+_L(T(14.2),Y(13.6),3*s,2.2*s,35,c)+_L(T(12),Y(12.4),2.2*s,2.9*s,0,c);
+      if(k==='endive')a+=_P(`M${T(6)} ${Y(15)}l1-.8 1 .8 1-.8M${T(14)} ${Y(12.4)}l1-.8 1 .8 1-.8`,'var(--c-light)',.6);
+      if(ripe)top=_C(12,Y(14.6),2.1*s,'var(--c-light)')+(k==='lettuce'?_L(T(5.8),Y(17.4),2.2*s,1.4*s,-10)+_L(T(18.2),Y(17.4),2.2*s,1.4*s,10):'');
+    }
+  }else if(form==='brassica'){
+    if(k==='kale'){a=_P('M12 18.5V5',undefined,1.4);for(const [x,y] of [[8.6,15],[15.4,13.6],[8.8,10.4],[15.2,9],[11,5.6],[13.4,4.6]])a+=_C(x-1,y,1.4,'var(--c-kale)')+_C(x+1,y,1.4,'var(--c-kale)')+_C(x,y-1.1,1.4,'var(--c-kale)');if(ripe)top=_C(12,4,1.4,'var(--c-kale)')+_P('M7.6 14.2l2 .2M14.4 12.8l2 .2','var(--c-light)',.5)}
+    else if(k==='sprouts'){a=_P('M12 18.5V5',undefined,2)+_L(8.6,5,3.2,1.6,-20,'var(--c-kool)')+_L(15.4,5,3.2,1.6,20,'var(--c-kool)')+_L(12,3.4,2.2,1.4,0,'var(--c-kool)');if(ripe)for(const [x,y] of [[10.6,16],[13.4,14.4],[10.6,12.8],[13.4,11.2],[10.6,9.6],[13.4,8]])top+=_C(x,y,1.05,'var(--c-pea)')}
+    else if(k==='kohlrabi'){const r=ripe?3.2:2;a=_P(`M10.6 ${18.5-r}L8 9M12 ${18.5-r*1.4}V6.5M13.4 ${18.5-r}L16 9`,'var(--c-kohl)',1)+_L(7.6,8.4,1.8,1.2,-30,'var(--c-kool)')+_L(12,6,1.3,1.8,0,'var(--c-kool)')+_L(16.4,8.4,1.8,1.2,30,'var(--c-kool)')+_C(12,18.5-r*.8,r,'var(--c-kohl)')}
+    else{a=_P('M12 18.5V10',undefined,1.6)+_L(7.4,14.6,3.6,2,-20,'var(--c-kool)')+_L(16.6,14.6,3.6,2,20,'var(--c-kool)')+_L(8.6,10.4,3.1,1.8,-40,'var(--c-kool)')+_L(15.4,10.4,3.1,1.8,40,'var(--c-kool)');if(ripe)top=_C(10.8,8.6,1.9,'var(--c-broc)')+_C(13.2,8.6,1.9,'var(--c-broc)')+_C(12,6.8,2,'var(--c-broc)')}
+  }else if(form==='stalk'){
+    a=_P('M12 18.5V3',undefined,1.8)+_P('M12 15.5C9.5 13.6 7.4 13.6 4.6 15.4M12 12C14.6 10.2 16.8 10.2 19.4 12M12 8.2C9.8 6.6 8 6.6 5.8 8',undefined,1.3);
+    if(ripe)top=_L(14.2,9.8,1.5,2.8,18,'var(--leaf)')+_L(13.8,9.2,1.2,2.8,18,'var(--c-corn)')+_P('M12 3l-1.6-1.8M12 3l1.6-1.8M12 3V1','var(--stake)',.7);
+  }else if(form==='fennel'){
+    a=_P('M12 17L8.6 6M12 17V3.5M12 17L15.4 6M12 13L9.6 9.6M12 13l2.4-3.4',undefined,.9)+_L(12,17.6,ripe?3.2:1.6,ripe?2.1:1.2,0,'var(--c-cream)');
+  }
+  return {a,top,under};
+}
+function stageIcon(i,size=22,crop){
+  const fm=FORM[crop],grass=fm&&(fm[0]==='allium'||fm[0]==='stalk'),fam=cropBy(crop)?.f;
+  let art;
+  if(i===0)art=`<path d="M2 18.5h7l3 2.5 3-2.5h7v3.5H2z" fill="var(--soil)"/><path d="M5 16.5h3M16 16.5h3" stroke="var(--muted)" stroke-width="1.2" stroke-linecap="round"/>`;
+  else if(i===1)art=SOIL+(crop==='Knoflook'?_F('M12 17.2c1.6.9 1.9 2.4 1.5 3.6h-3c-.4-1.2-.1-2.7 1.5-3.6z','var(--c-garlic)'):fam==='peul'?_L(12,20.1,2.4,1.5,0,'var(--c-beanseed)'):crop==='Aardappel'?_L(12,20.2,2.4,1.5,0,'var(--c-potato)'):_L(12,20,2.1,1.3,0,'var(--seed)'))+_P('M12 17.5v-1.5',undefined,1.4);
+  else if(!fm||i===2&&!grass){
+    if(i===2)art=SOIL+_P('M12 18.5V13')+_L(9.6,12.6,2.6,1.5,-20)+_L(14.4,12.6,2.6,1.5,20);
+    else{const L=_L;art=SOIL+_P('M12 18.5V'+(i===3?8:3.5))+(i===3?L(8.8,14.5,3,1.6,-30)+L(15.2,13,3,1.6,30)+L(9.3,9.8,2.8,1.5,-35)+L(14.7,8.6,2.6,1.4,35):L(7.6,15,4,2,-25)+L(16.4,14,4,2,25)+L(7.8,10.2,3.8,1.9,-30)+L(16.2,9.2,3.8,1.9,30)+L(9.6,5.6,3,1.6,-40)+L(14.4,4.8,3,1.6,40))+(i===5?_C(9.2,12.6,2,'var(--fruit)')+_C(15.2,11.4,2,'var(--fruit)'):'');}
+  }else if(i===2)art=SOIL+_P('M12 18.5C11.8 15 11.2 13 10.4 11',undefined,1.5)+(crop==='Prei'||fm[0]==='stalk'?_P('M12 18.5C12.4 16 13 14.6 13.8 13.6',undefined,1.3):'');
+  else{
+    const {a,top,under}=plantArt(fm[0],fm[1],i===5);
+    const body=i===3?`<g transform="translate(12 18.5) scale(.62) translate(-12 -18.5)">${a}</g>`:a+top;
+    art=body+SOIL+under+(i===3?'':'');
+    if(i>=4&&(fm[0]==='root'||fm[1]==='onion'||fm[1]==='garlic'||fm[1]==='kohlrabi'||fm[1]==='celeriac'))art=a+SOIL+top+under;
+  }
+  return `<svg class="stg" width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true">${art}</svg>`;
+}
+function stageStrip(p){
+  const cur=stageOf(p);
+  return `<div class="strip" role="img" aria-label="Groeistadium: ${STAGES[cur]}">${STAGES.map((n,i)=>`<span class="st ${i<cur?'past':i===cur?'cur':'next'}" title="${n}">${stageIcon(i,22,p.crop)}</span>`).join('')}<span class="stname">${STAGES[cur]}${cur===5&&p.status!=='oogst'&&p.status!=='afgerond'?' — oogstrijp?':''}</span></div>`;
+}
+function successors(bedId){
+  const b=S.beds.find(x=>x.id===bedId);
+  const open=plantsOf(bedId).filter(p=>p.status!=='afgerond');
+  let start=today();
+  open.forEach(p=>{const h=expHarvest(p);if(h&&h>start)start=h});
+  const y=parse(start).getFullYear(),m=parse(start).getMonth()+1,m2=m%12+1;
+  const blocked=new Set(open.map(famOf));
+  const sowFor=c=>sowWin(c,b).includes(m)?start:`${m===12?y+1:y}-${pad(m2)}-01`;
+  const list=CROPS.filter(c=>{
+    const win=sowWin(c,b);
+    if(!(win.includes(m)||win.includes(m2)))return false;
+    if(blocked.has(c.f)&&c.f!=='overig')return false;
+    if(rotWarn(bedId,c.f,y+(m>=10?1:0)).length)return false;
+    const sow=sowFor(c);
+    return c.w||addDays(sow,c.d)<=SEASON_END(parse(sow).getFullYear(),b);
+  }).map(c=>({c,sow:sowFor(c),cap:capacity(b,c)})).sort((a,b2)=>a.c.d-b2.c.d);
+  return {start,open,list};
+}
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+/* ---------- state ---------- */
+const S={gardens:[],beds:[],plantings:[],logs:[],weather:[],loaded:{},db:null,user:null,me:null,canWrite:true,
+  gid:store.get('mt.gid'),view:store.get('mt.view')||'kaart',sel:null,logFilter:'alle',calMine:false,status:'laden'};
+const G=()=>S.gardens.find(g=>g.id===S.gid);
+const bedsOf=gid=>S.beds.filter(b=>b.gardenId===gid).sort((a,b)=>String(a.name).localeCompare(b.name,'nl',{numeric:true}));
+const plantsOf=bid=>S.plantings.filter(p=>p.bedId===bid);
+let raf=0; const schedule=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;render()})};
+
+/* ---------- boot ---------- */
+(async function boot(){
+  const c=window.MT;
+  const db=c?.use?await c.use('db'):null;
+  if(!db){S.status='geen-db';render();return}
+  S.db=db;
+  ['gardens','beds','plantings','logs','weather'].forEach(col=>{
+    db.collection(col).onSnapshot(snap=>{S[col]=snap.docs.map(d=>({id:d.id,...d.data()}));S.loaded[col]=true;if(Object.keys(S.loaded).length===5)S.status='ok';schedule()},
+      err=>{S.status='fout';S.err=err?.code;schedule()});
+  });
+  const user=await c.use('user');S.user=user;
+  if(user){
+    const me=await user.me();S.me=me.id;
+    S.myName=me.name;const who=$('#who');who.textContent=me.name||'Mijn profiel';who.hidden=false;$('#logout').hidden=false;
+    const cw=await user.can('data.write');S.canWrite=cw!==false;
+    document.body.classList.toggle('readonly',!S.canWrite);schedule();
+  }
+})();
+
+/* ---------- render ---------- */
+function render(){
+  if(drag)return;
+  document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-current',String(b.dataset.v===S.view)));
+  const m=$('#main');
+  if(S.status==='geen-db'){m.innerHTML=`<div class="empty"><h2>Geen verbinding met de database</h2><p class="muted">Controleer of config.js de juiste Supabase-gegevens bevat en herlaad de pagina.</p></div>`;$('#gsel').innerHTML='';return}
+  if(S.status==='fout'){m.innerHTML=`<div class="empty"><h2>De tuingegevens konden niet worden geladen</h2><p class="muted">Herlaad de pagina. Blijft dit gebeuren, controleer dan of je nog bent ingelogd en of de database bereikbaar is.</p></div>`;return}
+  if(S.status==='laden'){m.innerHTML=`<p class="muted">Tuinen laden…</p>`;return}
+  if(!G()&&S.gardens.length){S.gid=S.gardens.slice().sort((a,b)=>String(a.name).localeCompare(b.name))[0].id}
+  renderGardenSelect();
+  const ro=!S.canWrite?`<p class="notice">Je kunt deze tuinen bekijken, maar niet wijzigen. Vraag de eigenaar om je als bijdrager toe te voegen.</p>`:'';
+  if(!S.gardens.length){m.innerHTML=ro+emptyState();return}
+  loadForecast(G());
+  const views={kaart:viewMap,planning:viewPlanning,logboek:viewLog,rotatie:viewRotation};
+  m.innerHTML=ro+(views[S.view]||viewMap)();
+  resolveNames();
+}
+function renderGardenSelect(){
+  const el=$('#gsel');
+  if(!S.gardens.length){el.innerHTML='';return}
+  const gs=S.gardens.slice().sort((a,b)=>String(a.name).localeCompare(b.name,'nl'));
+  el.innerHTML=`<label class="label" for="gpick">Tuin</label><select id="gpick">${gs.map(g=>`<option value="${esc(g.id)}"${g.id===S.gid?' selected':''}>${esc(g.name)}</option>`).join('')}</select>
+  <button class="btn small ghost w" data-act="add-garden" title="Tuin toevoegen">+ Tuin</button>`;
+}
+function emptyState(){
+  return `<div class="empty"><span class="label">Nog geen tuinen</span><h2>Leg je eerste moestuin vast</h2>
+  <p class="muted">Geef de tuin een naam en afmetingen in meters. Daarna teken je de bedden op de plattegrond en houd je per bed bij wat er groeit, wanneer je zaait en wat je oogst. Iedereen met wie je deze pagina deelt, werkt mee in dezelfde tuinen.</p>
+  <div class="row w"><button class="btn primary" data-act="add-garden">Tuin toevoegen</button><button class="btn" data-act="load-example">Voorbeeldtuin laden</button></div></div>`;
+}
+
+/* ---------- plattegrond ---------- */
+function viewMap(){
+  const g=G(); const beds=bedsOf(g.id);
+  if(S.sel&&!beds.find(b=>b.id===S.sel))S.sel=null;
+  const W=g.width||8,L=g.length||6;
+  const bedEls=beds.map(b=>{
+    const act=plantsOf(b.id).filter(p=>p.status!=='afgerond'&&(p.year||THISY)>=THISY-0);
+    return `<button class="bed${isKas(b)?' kas':''}" data-act="select-bed" data-id="${esc(b.id)}" aria-pressed="${b.id===S.sel}"
+      style="left:${b.x/W*100}%;top:${b.y/L*100}%;width:${b.w/W*100}%;height:${b.h/L*100}%">
+      <span class="bn">${esc(b.name)}${isKas(b)?' <span class="tag">kas</span>':''}</span>
+      ${S.layout?`<span class="sz data">${b.w} × ${b.h} m</span><span class="rz" aria-hidden="true"></span>`:''}
+      <span class="crops">${act.slice(0,4).map(p=>`<span class="dot" style="${fc(famOf(p))}" title="${STAGES[stageOf(p)]}">${stageIcon(stageOf(p),13,p.crop)}${esc(p.crop)}</span>`).join('')}${act.length>4?`<span class="dot">+${act.length-4}</span>`:''}</span></button>`}).join('');
+  const area=beds.reduce((s,b)=>s+b.w*b.h,0);
+  return `<div class="work">
+    <section class="mapwrap">
+      <div class="maphead"><div><h2>${esc(g.name)}</h2><span class="muted data">${W} × ${L} m · ${beds.length} bedden · ${area.toLocaleString('nl-NL')} m² beplantbaar</span></div>
+        <div class="row w">${beds.length?`<button class="btn small${S.layout?' primary':''}" data-act="layout">${S.layout?'Klaar met indelen':'Indeling aanpassen'}</button>`:''}${S.layout?'':`<button class="btn small" data-act="edit-garden">Tuin bewerken</button><button class="btn small primary" data-act="add-bed">+ Bed</button>`}</div></div>
+      ${S.layout?`<p class="notice" style="margin:0">Sleep een bed om het te verplaatsen, of trek aan de hoek rechtsonder om het groter of kleiner te maken. Alles springt per 25 cm en wordt direct opgeslagen.</p>`:''}
+      <div class="map${S.layout?' editing':''}" style="aspect-ratio:${W}/${L};background-size:${100/W}% ${100/L}%">${bedEls}</div>
+      <div class="ruler"><span>0 m</span><span>raster = 1 m</span><span>${W} m</span></div>
+      ${beds.length?'':`<p class="muted">Nog geen bedden. Voeg een bed toe met positie en maat in meters, gemeten vanaf de linkerbovenhoek.</p>`}
+    </section>
+    <aside class="panel">${S.sel?bedDetail(S.sel):gardenSummary(g)}</aside>
+  </div>`;
+}
+function gardenSummary(g){
+  const ps=S.plantings.filter(p=>p.gardenId===g.id);
+  const active=ps.filter(p=>p.status!=='afgerond'&&p.status!=='gepland').length;
+  const planned=ps.filter(p=>p.status==='gepland').length;
+  const harvestG=S.logs.filter(l=>l.gardenId===g.id&&l.type==='oogst'&&l.unit==='g'&&String(l.date).startsWith(THISY)).reduce((s,l)=>s+num(l.amount),0);
+  const todos=todo(g.id).slice(0,6);
+  return `<div><span class="label">Overzicht</span><h3>Wat speelt er in ${esc(g.name)}</h3></div>
+  <div class="stats"><div class="stat"><div class="v">${active}</div><div class="muted">groeit nu</div></div>
+  <div class="stat"><div class="v">${planned}</div><div class="muted">gepland</div></div>
+  <div class="stat"><div class="v">${harvestG?grams(harvestG):'0 g'}</div><div class="muted">oogst ${THISY}</div></div></div>
+  <div class="stack"><div class="row between"><span class="label">Wat moet ik nu doen</span><button class="btn small ghost" data-act="view" data-v="planning">Alle taken</button></div>${todos.length?`<div class="list">${todos.map(todoRow).join('')}</div>`:`<p class="muted">Niets te doen op dit moment. Kies een bed op de plattegrond en voeg een gewas toe.</p>`}</div>
+  <p class="muted" style="font-size:.85rem">Tik op een bed voor details, planning en logboek.</p>`;
+}
+function bedDetail(id){
+  const b=S.beds.find(x=>x.id===id); const ps=plantsOf(id);
+  const now=ps.filter(p=>p.status!=='afgerond').sort((a,b)=>String(a.sowDate).localeCompare(b.sowDate));
+  const logs=S.logs.filter(l=>l.bedId===id).sort((a,b)=>String(b.date).localeCompare(a.date)).slice(0,5);
+  const years=[THISY-3,THISY-2,THISY-1,THISY];
+  const hist=years.map(y=>{const fams=[...new Set(ps.filter(p=>(p.year||THISY)===y).map(famOf))];return `<div class="row"><span class="data muted" style="width:3rem">${y}</span>${fams.length?fams.map(f=>`<span class="chip" style="${fc(f)}">${FAM[f].n}</span>`).join(''):'<span class="muted">—</span>'}</div>`}).join('');
+  return `<div class="row between"><div><span class="label">${isKas(b)?'Kas · onverwarmd':'Bed · buiten'}</span><h3>${esc(b.name)}</h3><span class="data muted">${b.w} × ${b.h} m · ${(b.w*b.h).toLocaleString('nl-NL')} m²</span></div>
+    <button class="btn small ghost" data-act="deselect" aria-label="Sluiten">✕</button></div>
+  ${b.notes?`<p class="muted" style="margin:0">${esc(b.notes)}</p>`:''}
+  ${isKas(b)?`<p class="notice" style="margin:0">In de kas zaai je eerder en oogst je langer door, tot half december. Het regent er niet: geef zelf water en zet op zonnige dagen deuren of ramen open tegen schimmel.</p>`:''}
+  <div class="stack"><div class="row between"><span class="label">Nu in dit bed</span><button class="btn small primary w" data-act="add-plant" data-bed="${esc(id)}">+ Gewas</button></div>
+  ${now.length?`<div class="list">${now.map(plantRow).join('')}</div>`:'<p class="muted">Leeg. Voeg een gewas toe om het zaai- en oogstmoment bij te houden.</p>'}</div>
+  ${succBlock(id)}
+  <div class="stack"><span class="label">Rotatie per jaar</span>${hist}</div>
+  <div class="stack"><div class="row between"><span class="label">Logboek</span><button class="btn small w" data-act="add-log" data-bed="${esc(id)}">+ Notitie</button></div>
+  ${logs.length?`<div class="list">${logs.map(logRow).join('')}</div>`:'<p class="muted">Nog geen notities voor dit bed.</p>'}</div>
+  <div class="row w"><button class="btn small" data-act="edit-bed" data-id="${esc(id)}">Bed bewerken</button><button class="btn small danger" data-act="del-bed" data-id="${esc(id)}">Bed verwijderen</button></div>`;
+}
+function succBlock(id){
+  const {start,open,list}=successors(id);
+  const after=open.length?`na ${open.map(p=>esc(p.crop)).join(', ')} · vrij vanaf ± ${fmt(start)}`:`bed is nu vrij`;
+  const body=list.length?`<div class="row">${list.slice(0,8).map(x=>`<button class="chip succ" style="${fc(x.c.f)}" data-act="succ" data-bed="${esc(id)}" data-crop="${esc(x.c.n)}" data-date="${x.sow}" title="${x.c.d} dagen tot oogst${x.c.w?', winterhard':''}">${x.c.n}${x.cap?` <span class="data">${dense(x.c)?`±${perMeter(x.c)}/m`:`±${x.cap.n}`}</span>`:''}${x.c.w?' ❄':''}</button>`).join('')}</div>`
+    :`<p class="muted" style="margin:0">Er past dit seizoen geen gewas meer dat nog op tijd oogstbaar is. Zaai een groenbemester, zoals facelia of winterrogge, of laat het bed afgedekt overwinteren.</p>`;
+  return `<div class="stack"><div class="row between"><span class="label">Opvolgteelt</span><span class="muted" style="font-size:.8rem">${after}</span></div>${body}
+   ${list.length?`<p class="muted" style="margin:0;font-size:.8rem">Oogstbaar vóór half november of winterhard (❄), zonder rotatieconflict. Getal = planten in het hele bed, of per meter rij (/m) voor gewassen die je dicht zaait. Tik om te plannen.</p>`:''}</div>`;
+}
+function plantRow(p){
+  const h=expHarvest(p);
+  const sub=(p.status==='gepland'?`zaaien ${fmt(p.sowDate)}`:`gezaaid ${fmt(p.sowDate)} · oogst vanaf ${fmt(h)}`)+(p.count?` · ${esc(p.count)} planten`:'');
+  return `<div class="item"><span class="chip" style="${fc(famOf(p))}">${esc(p.crop)}</span>
+   <div class="main"><div>${p.variety?esc(p.variety):''} <span class="pill s-${p.status}">${SLABEL[p.status]||p.status}</span></div><div class="sub">${sub}</div>${stageStrip(p)}</div>
+   <div class="row w">${NEXT[p.status]?`<button class="btn small" data-act="next" data-id="${esc(p.id)}">${NEXT[p.status]}</button>`:''}
+   <button class="btn small ghost" data-act="add-log" data-bed="${esc(p.bedId)}" data-plant="${esc(p.id)}" title="Notitie of oogst">＋</button>
+   <button class="btn small ghost" data-act="edit-plant" data-id="${esc(p.id)}" title="Bewerken">✎</button></div></div>`;
+}
+
+/* ---------- takenlijst: wat moet ik nu doen ---------- */
+const WEATHER={normaal:'Gewoon weer',vorst:'Vorst verwacht',droog:'Warm en droog',regen:'Veel regen',storm:'Storm of harde wind'};
+/* weerbericht van Open-Meteo (gratis, geen sleutel), per tuin met coördinaten, hooguit eens per uur */
+S.fc={};
+const WD=['zo','ma','di','wo','do','vr','za'];
+function fcKind(days){
+  const n=days.slice(0,3),rain=n.reduce((s,x)=>s+(x.rain||0),0);
+  if(n.some(x=>x.min!=null&&x.min<=1))return 'vorst';
+  if(n.some(x=>x.gust!=null&&x.gust>=75))return 'storm';
+  if(rain>=15)return 'regen';
+  if(n.some(x=>x.max!=null&&x.max>=24)&&rain<2)return 'droog';
+  return 'normaal';
+}
+async function loadForecast(g){
+  if(!g||g.lat==null||g.lon==null||g.lat===''||g.lon==='')return;
+  const key=g.lat+','+g.lon,c=S.fc[g.id];
+  if(c&&c.key===key&&Date.now()-c.at<3600e3)return;
+  S.fc[g.id]={key,at:Date.now(),loading:true};
+  try{
+    const u=`https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(g.lat)}&longitude=${encodeURIComponent(g.lon)}&daily=temperature_2m_min,temperature_2m_max,precipitation_sum,wind_gusts_10m_max&timezone=Europe%2FAmsterdam&forecast_days=7`;
+    const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);
+    const d=(await r.json()).daily;
+    const days=d.time.map((t,i)=>({d:t,min:d.temperature_2m_min[i],max:d.temperature_2m_max[i],rain:d.precipitation_sum[i],gust:d.wind_gusts_10m_max[i]}));
+    S.fc[g.id]={key,at:Date.now(),days,kind:fcKind(days)};
+  }catch(e){console.warn('Weer ophalen mislukt',e);S.fc[g.id]={key,at:Date.now(),error:true}}
+  schedule();
+}
+function weatherOf(gid){
+  const w=S.weather.find(x=>x.id===gid);
+  if(w&&w.kind&&w.setAt&&diff(String(w.setAt).slice(0,10),today())<=7)return {...w,manual:true};
+  const f=S.fc[gid];
+  if(f&&f.days)return {kind:f.kind,auto:true};
+  return {kind:'normaal'};
+}
+const TENDER=new Set(['Tomaat','Paprika','Aubergine','Courgette','Komkommer','Pompoen','Stamboon','Stokboon','Basilicum','Mais','Aardappel']);
+const SUPPORT=new Set(['Tomaat','Stokboon','Doperwt','Komkommer','Paprika','Aubergine']);
+const EARTHUP=new Set(['Aardappel','Prei']);
+const PICK=new Set(['Courgette','Komkommer','Stamboon','Stokboon','Tomaat','Doperwt']);
+const SLUGS=new Set(['Sla','Andijvie','Courgette','Komkommer','Spinazie','Snijbiet','Broccoli','Koolrabi','Boerenkool','Spruitkool','Stamboon']);
+/* klaar = er is binnen `days` dagen een logregel met deze taakcode */
+const doneRecently=(key,days)=>S.logs.some(l=>l.taskKey===key&&l.date&&diff(l.date,today())<=days);
+function todo(gid){
+  const out=[],t=today(),m=new Date().getMonth()+1,wx=weatherOf(gid).kind;
+  const beds=bedsOf(gid),bedName=id=>S.beds.find(b=>b.id===id)?.name||'?';
+  const add=(prio,key,title,detail,extra={})=>{if(key&&extra.every&&doneRecently(key,extra.every))return;out.push({prio,key,title,detail,...extra})};
+  // zaai- en oogstmomenten
+  tasks(gid).filter(x=>!(x.kind==='Oogst verwacht'&&x.date<t)).forEach(x=>add(x.date<t?1:x.date<=addDays(t,7)?2:3,null,`${x.kind}: ${x.p.crop}`,`${bedName(x.p.bedId)} · ${x.date<t?'te laat, gepland '+fmt(x.date):fmt(x.date)}`,{plant:x.p,date:x.date}));
+  S.plantings.filter(p=>p.gardenId===gid&&p.status!=='afgerond'&&p.status!=='gepland').forEach(p=>{
+    const c=cropBy(p.crop),st=stageOf(p),b=S.beds.find(x=>x.id===p.bedId),bn=bedName(p.bedId),out_=!isKas(b);
+    if(st===5&&p.status!=='oogst')add(2,null,`Kijk of ${p.crop} oogstbaar is`,`${bn} · verwachte oogst was ${fmt(expHarvest(p))}`,{plant:p});
+    if(p.status==='oogst'&&PICK.has(p.crop)&&c?.o.includes(m))add(2,'pick:'+p.id,`${p.crop} plukken`,`${bn} · elke 2 à 3 dagen, dan blijft de plant dragen`,{every:2,plant:p});
+    if(p.status==='oogst'&&diff(expHarvest(p),t)>60)add(3,null,`Is ${p.crop} uitgeoogst?`,`${bn} · rond af, dan komt het bed vrij voor opvolgteelt`,{plant:p});
+    if(c&&dense(c)&&st===2)add(2,'thin:'+p.id,`${p.crop} uitdunnen`,`${bn} · houd ±${c.s[1]} cm tussen de plantjes`,{every:999,plant:p});
+    if(SUPPORT.has(p.crop)&&st>=3&&st<=4)add(2,'support:'+p.id,`${p.crop} opbinden of steun geven`,`${bn}`,{every:14,plant:p});
+    if(p.crop==='Tomaat'&&st>=3&&m>=6&&m<=9)add(2,'dief:'+p.id,'Dieven uit de tomaten halen',`${bn} · de scheuten in de oksels van de bladeren`,{every:7,plant:p});
+    if(EARTHUP.has(p.crop)&&st>=3&&st<=4)add(3,'earth:'+p.id,`${p.crop} aanaarden`,`${bn} · grond tegen de stengels ophogen`,{every:21,plant:p});
+    if(out_&&TENDER.has(p.crop)&&(wx==='vorst'||m>=10||m<=4))add(wx==='vorst'?1:2,'frost:'+p.id,`${p.crop} beschermen of binnenhalen`,`${bn} · ${wx==='vorst'?'vorst verwacht, ':''}dit gewas kan niet tegen vorst. Oogst wat rijp is of dek af met vliesdoek`,{every:3,plant:p});
+    if(wx==='regen'&&SLUGS.has(p.crop)&&st>=2&&st<=4)add(2,'slak:'+p.id,`Let op slakken bij ${p.crop}`,`${bn} · na veel regen zijn ze actief, vooral bij jonge planten`,{every:4,plant:p});
+    if(wx==='storm'&&SUPPORT.has(p.crop)&&st>=3)add(1,'storm:'+p.id,`Steunen van ${p.crop} controleren`,`${bn} · storm verwacht`,{every:3,plant:p});
+  });
+  beds.forEach(b=>{
+    const act=plantsOf(b.id).filter(p=>p.status!=='afgerond'&&p.status!=='gepland');
+    const growing=m>=4&&m<=9;
+    if(act.length){
+      const wDays=isKas(b)?(growing?2:6):(wx==='droog'?2:null);
+      if(wDays&&wx!=='regen'||isKas(b)&&wDays){const key='water:'+b.id;if(!S.logs.some(l=>l.bedId===b.id&&l.type==='water'&&diff(l.date,t)<wDays))add(isKas(b)&&growing||wx==='droog'?1:2,key,`Water geven: ${b.name}`,isKas(b)?'in de kas regent het niet':'warm en droog weer',{bed:b,water:true})}
+      if(isKas(b)&&(wx==='droog'||growing&&m>=5&&m<=8))add(2,'lucht:'+b.id,`Kas luchten: ${b.name}`,'zet op zonnige dagen deur of ramen open tegen schimmel en hitte',{every:1,bed:b});
+      if(isKas(b)&&wx==='storm')add(1,'kasdicht:'+b.id,`Kas dichtdoen: ${b.name}`,'storm verwacht, sluit deuren en ramen',{every:1,bed:b});
+    }else{
+      if(m>=3&&m<=8)add(3,'leeg:'+b.id,`${b.name} staat leeg`,'kijk bij opvolgteelt wat er nu nog in kan',{every:14,bed:b,open:true});
+      if(m>=9&&m<=11&&!isKas(b))add(3,'groen:'+b.id,`${b.name} klaarmaken voor de winter`,'zaai een groenbemester of dek de grond af met blad of compost',{every:30,bed:b,open:true});
+    }
+  });
+  return out.sort((a,b)=>a.prio-b.prio||String(a.date||'').localeCompare(String(b.date||'')));
+}
+const PRIO={1:'Nu',2:'Deze week',3:'Binnenkort'};
+function todoRow(x){
+  const btn=x.plant&&!x.key&&NEXT[x.plant.status]&&x.title.startsWith('Zaaien')?`<button class="btn small" data-act="next" data-id="${esc(x.plant.id)}">${NEXT[x.plant.status]}</button>`
+    :x.key?`<button class="btn small" data-act="todo-done" data-key="${esc(x.key)}" data-bed="${esc(x.bed?.id||x.plant?.bedId||'')}" data-plant="${esc(x.plant?.id||'')}" data-water="${x.water?1:''}" data-title="${esc(x.title)}">Gedaan</button>`
+    :x.plant?`<button class="btn small" data-act="select-bed" data-id="${esc(x.plant.bedId)}" data-goto="1">Bekijk</button>`:'';
+  const icon=x.plant?stageIcon(stageOf(x.plant),22,x.plant.crop):`<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18.5h18v3H3z" fill="var(--soil)"/></svg>`;
+  return `<div class="item todo p${x.prio}"><span class="when">${icon}</span>
+   <div class="main"><div><b>${esc(x.title)}</b> <span class="pill pr${x.prio}">${PRIO[x.prio]}</span></div><div class="sub">${esc(x.detail)}</div></div>
+   <div class="row w">${btn}</div></div>`;
+}
+function weatherBar(gid){
+  const w=weatherOf(gid),g=S.gardens.find(x=>x.id===gid),f=S.fc[gid];
+  const hasLoc=g&&g.lat!=null&&g.lon!=null&&g.lat!=='';
+  const strip=f&&f.days?`<div class="fc">${f.days.map(x=>{const dd=parse(x.d);return `<div class="fcd${x.min!=null&&x.min<=1?' frost':''}"><span class="label">${WD[dd.getDay()]}</span><span class="data">${Math.round(x.max)}°</span><span class="data muted">${Math.round(x.min)}°</span><span class="data rain">${x.rain>=0.5?(Math.round(x.rain*10)/10).toLocaleString('nl-NL')+' mm':'droog'}</span></div>`}).join('')}</div>`
+    :hasLoc?(f&&f.error?`<p class="muted" style="margin:0;font-size:.8rem">Het weerbericht kon niet worden opgehaald. Kies hieronder zelf het weer.</p>`:`<p class="muted" style="margin:0;font-size:.8rem">Weerbericht ophalen…</p>`):'';
+  return `<div class="stack" style="gap:6px"><div class="row between"><span class="label">Weer deze week</span>${w.manual?`<span class="muted" style="font-size:.78rem">zelf ingesteld ${fmt(String(w.setAt).slice(0,10))}, geldt 7 dagen</span>`:''}</div>
+   ${strip}
+   <div class="filters w">${f&&f.days?`<button data-act="weather-auto" aria-pressed="${!w.manual}">Volg weerbericht${!w.manual?': '+WEATHER[w.kind].toLowerCase():''}</button>`:''}${Object.entries(WEATHER).map(([k,v])=>`<button data-act="weather" data-v="${k}" aria-pressed="${!!w.manual&&w.kind===k}">${v}</button>`).join('')}</div>
+   <p class="muted" style="margin:0;font-size:.8rem">${f&&f.days?'MooseTown leest de komende drie dagen uit het weerbericht van Open-Meteo. Kies zelf een weertype om dat een week lang te overschrijven.':hasLoc?'Kies wat het weerbericht zegt; de taken passen zich aan.':'Kies wat het weerbericht zegt; de taken passen zich aan. Vul bij Tuin bewerken de coördinaten in, dan haalt MooseTown het weerbericht zelf op.'}</p></div>`;
+}
+
+/* ---------- planning ---------- */
+function tasks(gid){
+  const t=today(),end=addDays(t,42),out=[];
+  S.plantings.filter(p=>p.gardenId===gid).forEach(p=>{
+    const b=S.beds.find(x=>x.id===p.bedId);const bn=b?b.name:'?';
+    if(p.status==='gepland'&&p.sowDate&&p.sowDate<=end)out.push({date:p.sowDate,kind:'Zaaien / planten',p,bn});
+    if((p.status==='gezaaid'||p.status==='uitgeplant')){const h=expHarvest(p);if(h&&h<=end)out.push({date:h,kind:'Oogst verwacht',p,bn})}
+  });
+  return out.sort((a,b)=>a.date.localeCompare(b.date));
+}
+function taskRow(x){
+  const late=x.date<today();
+  return `<div class="item"><span class="when ${late?'late':''}">${late?'te laat':fmt(x.date)}</span>
+  <div class="main"><b>${x.kind}</b>: <span class="chip" style="${fc(famOf(x.p))}">${esc(x.p.crop)}</span> <span class="sub">in ${esc(x.bn)}</span></div>
+  <div class="w">${NEXT[x.p.status]?`<button class="btn small" data-act="next" data-id="${esc(x.p.id)}">${NEXT[x.p.status]}</button>`:''}</div></div>`;
+}
+function viewPlanning(){
+  const g=G(); const m=new Date().getMonth()+1; const nm=m%12+1;
+  const ts=todo(g.id);
+  const mine=new Set(S.plantings.filter(p=>p.gardenId===g.id).map(p=>p.crop));
+  const crops=S.calMine?CROPS.filter(c=>mine.has(c.n)):CROPS;
+  const nowOut=CROPS.filter(c=>c.bu.includes(m)), nowIn=CROPS.filter(c=>c.bi.includes(m)), nowKas=CROPS.filter(c=>(c.k||[]).includes(m));
+  const hasKas=bedsOf(g.id).some(isKas);
+  const cal=crops.map(c=>`<tr><td><span class="chip" style="${fc(c.f)}">${c.n}</span></td>${MONTHS.map((_,i)=>{const k=i+1;return `<td class="${k===m?'now':''}"><div class="bars"><i class="${c.bi.includes(k)?'b-bi':'b-x'}"></i><i class="${c.bu.includes(k)?'b-bu':'b-x'}"></i><i class="${c.o.includes(k)?'b-o':'b-x'}"></i>${hasKas?`<i class="${(c.k||[]).includes(k)?'b-k':'b-x'}"></i>`:''}</div></td>`}).join('')}<td class="data muted">${c.d}</td></tr>`).join('');
+  return `<div class="work">
+   <section class="panel"><div><span class="label">${esc(g.name)} · ${fmt(today())}</span><h2>Wat moet ik nu doen</h2></div>
+    ${weatherBar(g.id)}
+    ${ts.length?`<div class="list">${ts.map(todoRow).join('')}</div>`:`<p class="muted">Niets te doen op dit moment. Plan een gewas vanuit een bed op de plattegrond.</p>`}
+    <p class="muted" style="margin:0;font-size:.8rem">Taken komen uit wat er in je bedden staat, het groeistadium, de maand, het gekozen weer en je logboek. "Gedaan" zet een regel in het logboek, zodat de taak een tijdje verdwijnt.</p></section>
+   <aside class="panel"><div><span class="label">Kan nu (${MONTHS[m-1]})</span><h3>Zaaien of planten deze maand</h3></div>
+    <div class="stack"><span class="muted" style="font-size:.85rem">Buiten</span><div class="row">${nowOut.map(c=>`<span class="chip" style="${fc(c.f)}">${c.n}</span>`).join('')||'<span class="muted">Niets buiten deze maand.</span>'}</div></div>
+    ${hasKas?`<div class="stack"><span class="muted" style="font-size:.85rem">In de kas</span><div class="row">${nowKas.map(c=>`<span class="chip" style="${fc(c.f)}">${c.n}</span>`).join('')||'<span class="muted">Niets in de kas deze maand.</span>'}</div></div>`:''}
+    <div class="stack"><span class="muted" style="font-size:.85rem">Binnen voorzaaien</span><div class="row">${nowIn.map(c=>`<span class="chip" style="${fc(c.f)}">${c.n}</span>`).join('')||'<span class="muted">Niets binnen deze maand.</span>'}</div></div>
+    <p class="muted" style="font-size:.85rem;margin:0">Volgende maand (${MONTHS[nm-1]}) buiten: ${CROPS.filter(c=>c.bu.includes(nm)).map(c=>c.n).join(', ')||'niets'}.</p></aside>
+  </div>
+  <section class="stack" style="margin-top:24px">
+   <div class="row between"><div><span class="label">Richtlijn voor Nederland, onverwarmde volle grond</span><h2>Zaaikalender</h2></div>
+    <div class="filters"><button data-act="calmine" aria-pressed="${!S.calMine}">Alle gewassen</button><button data-act="calmine" data-v="1" aria-pressed="${S.calMine}">Alleen in deze tuin</button></div></div>
+   <div class="legend"><span><i class="b-bi"></i>binnen voorzaaien</span><span><i class="b-bu"></i>buiten zaaien / uitplanten</span><span><i class="b-o"></i>oogsten</span>${hasKas?'<span><i class="b-k"></i>zaaien / planten in de kas</span>':''}<span class="data">dgn = dagen zaai tot oogst</span></div>
+   <div class="tscroll"><table class="cal"><thead><tr><th>Gewas</th>${MONTHS.map((x,i)=>`<th class="${i+1===m?'now':''}">${x}</th>`).join('')}<th>dgn</th></tr></thead><tbody>${cal||`<tr><td colspan="14" class="muted">Nog geen gewassen in deze tuin.</td></tr>`}</tbody></table></div>
+  </section>`;
+}
+
+/* ---------- logboek ---------- */
+function logRow(l){
+  const b=S.beds.find(x=>x.id===l.bedId);
+  const amt=l.type==='oogst'&&l.amount?(l.unit==='g'?grams(num(l.amount)):`${esc(l.amount)} ${esc(l.unit)}`):'';
+  return `<div class="item"><span class="when">${fmt(l.date)}</span>
+   <div class="main"><div><b>${LTYPES[l.type]||'Notitie'}</b>${l.crop?` · ${esc(l.crop)}`:''}${amt?` · <span class="data">${amt}</span>`:''}</div>
+   <div class="sub">${l.text?esc(l.text)+' · ':''}${b?esc(b.name)+' · ':''}<span data-uid="${esc(l.createdBy||'')}"></span></div></div>
+   <button class="btn small ghost danger w" data-act="del-log" data-id="${esc(l.id)}" title="Verwijderen">✕</button></div>`;
+}
+function viewLog(){
+  const g=G();
+  let logs=S.logs.filter(l=>l.gardenId===g.id).sort((a,b)=>String(b.date).localeCompare(a.date)||String(b.createdAt).localeCompare(a.createdAt));
+  if(S.logFilter!=='alle')logs=logs.filter(l=>l.type===S.logFilter);
+  const hy=S.logs.filter(l=>l.gardenId===g.id&&l.type==='oogst'&&String(l.date).startsWith(THISY));
+  const agg={};hy.forEach(l=>{const k=(l.crop||'Onbekend')+'|'+l.unit;agg[k]=(agg[k]||0)+num(l.amount)});
+  const rows=Object.entries(agg).map(([k,v])=>{const [crop,unit]=k.split('|');return {crop,unit,v}}).sort((a,b)=>(b.unit==='g')-(a.unit==='g')||b.v-a.v);
+  const maxG=Math.max(1,...rows.filter(r=>r.unit==='g').map(r=>r.v));
+  return `<div class="work">
+   <section class="panel"><div class="row between"><div><span class="label">${esc(g.name)}</span><h2>Logboek</h2></div><button class="btn primary w" data-act="add-log">+ Notitie of oogst</button></div>
+    <div class="filters">${['alle',...Object.keys(LTYPES)].map(t=>`<button data-act="logfilter" data-v="${t}" aria-pressed="${S.logFilter===t}">${t==='alle'?'Alles':LTYPES[t]}</button>`).join('')}</div>
+    ${logs.length?`<div class="list">${logs.slice(0,150).map(logRow).join('')}</div>`:`<p class="muted">Nog niets vastgelegd. Noteer wat je doet in de tuin: water geven, bemesten, plagen, en vooral wat je oogst.</p>`}</section>
+   <aside class="panel"><div><span class="label">Oogst ${THISY}</span><h3>Opbrengst per gewas</h3></div>
+    ${rows.length?`<div class="stack">${rows.map(r=>`<div class="stack" style="gap:3px"><div class="row between"><span>${esc(r.crop)}</span><span class="data">${r.unit==='g'?grams(r.v):`${r.v.toLocaleString('nl-NL')} ${esc(r.unit)}`}</span></div>${r.unit==='g'?`<div class="hbar" style="width:${Math.max(2,r.v/maxG*100)}%"></div>`:''}</div>`).join('')}</div>`:`<p class="muted">Nog geen oogst geregistreerd dit jaar.</p>`}</aside>
+  </div>`;
+}
+
+/* ---------- rotatie ---------- */
+function rotWarn(bedId,fam,year,exclId){
+  if(fam==='overig')return [];
+  return S.plantings.filter(p=>p.bedId===bedId&&p.id!==exclId&&famOf(p)===fam&&(p.year||THISY)<year&&(p.year||THISY)>=year-3).map(p=>p.year);
+}
+function viewRotation(){
+  const g=G(); const beds=bedsOf(g.id); const years=[THISY-3,THISY-2,THISY-1,THISY,THISY+1];
+  const fams=Object.keys(FAM).filter(f=>f!=='overig');
+  const rows=beds.map(b=>{
+    const ps=plantsOf(b.id);
+    const cells=years.map(y=>{const list=ps.filter(p=>(p.year||THISY)===y);
+      return `<td>${list.length?`<div class="row" style="gap:4px">${list.map(p=>{const w=rotWarn(b.id,famOf(p),y,p.id);return `<span class="chip${w.length?' warn':''}" style="${fc(famOf(p))}" title="${w.length?`${FAM[famOf(p)].n} stond hier ook in ${[...new Set(w)].join(', ')}`:FAM[famOf(p)].n}">${esc(p.crop)}${w.length?' !':''}</span>`}).join('')}</div>`:'<span class="muted">—</span>'}</td>`}).join('');
+    const used=new Set(ps.filter(p=>(p.year||THISY)>=THISY-2&&(p.year||THISY)<=THISY).map(famOf));
+    const ok=fams.filter(f=>!used.has(f));
+    return `<tr><td><b>${esc(b.name)}</b>${isKas(b)?' <span class="tag">kas</span>':''}</td>${cells}<td>${ok.length?`<div class="row" style="gap:4px">${ok.slice(0,4).map(f=>`<span class="chip" style="${fc(f)}">${FAM[f].n}</span>`).join('')}</div>`:'<span class="muted">alles recent gebruikt</span>'}</td></tr>`;
+  }).join('');
+  return `<section class="stack"><div><span class="label">${esc(g.name)}</span><h2>Gewasrotatie</h2>
+   <p class="muted" style="max-width:65ch">Zet dezelfde plantenfamilie niet binnen drie jaar terug in hetzelfde bed; zo blijven bodemziekten en plagen beperkt. Een gestippelde rand met ! betekent dat de familie daar kort geleden ook stond.${bedsOf(g.id).some(isKas)?' In een kas is wisselen lastig omdat je er vaak elk jaar tomaten of komkommers wilt. Wissel dan binnen de kas van plek, of vervang na drie jaar de bovenste 20 cm grond.':''}</p></div>
+   <div class="legend">${fams.map(f=>`<span class="chip" style="${fc(f)}">${FAM[f].n}</span>`).join('')}</div>
+   <div class="tscroll"><table><thead><tr><th>Bed</th>${years.map(y=>`<th>${y}${y===THISY?' · nu':''}</th>`).join('')}<th>Geschikt voor ${THISY+1}</th></tr></thead>
+   <tbody>${rows||`<tr><td colspan="7" class="muted">Nog geen bedden in deze tuin.</td></tr>`}</tbody></table></div></section>`;
+}
+
+/* ---------- names ---------- */
+async function resolveNames(){
+  const els=[...document.querySelectorAll('[data-uid]')].filter(e=>e.dataset.uid);
+  if(!els.length||!S.user)return;
+  const ps=await S.user.profiles([...new Set(els.map(e=>e.dataset.uid))]);
+  els.forEach(e=>{const p=ps[e.dataset.uid];e.textContent=p?.isMe?'jij':(p?.name||'iemand')});
+}
+
+/* ---------- modal forms ---------- */
+function openModal(title,body,onSubmit,extra){
+  const root=$('#modalroot');
+  root.innerHTML=`<div class="overlay" data-act="close-modal-bg"><form class="modal" id="mform" novalidate><div class="row between"><h2>${esc(title)}</h2><button type="button" class="btn small ghost" data-act="close-modal" aria-label="Sluiten">✕</button></div>
+   ${body}<p class="err" id="merr" hidden></p><div class="row" style="justify-content:flex-end">${extra||''}<button type="button" class="btn" data-act="close-modal">Annuleren</button><button class="btn primary" type="submit">Opslaan</button></div></form></div>`;
+  const f=$('#mform');
+  f.addEventListener('submit',async e=>{e.preventDefault();const fd=Object.fromEntries(new FormData(f).entries());const btn=f.querySelector('[type=submit]');btn.disabled=true;
+    try{const msg=await onSubmit(fd);if(msg){showErr(msg);btn.disabled=false;return}closeModal()}catch(err){showErr(errText(err));btn.disabled=false}});
+  const first=f.querySelector('input,select,textarea');first&&first.focus();
+}
+const showErr=m=>{const e=$('#merr');e.textContent=m;e.hidden=false};
+const closeModal=()=>{$('#modalroot').innerHTML=''};
+function errText(err){
+  if(err?.code==='invalid_argument')return 'Opslaan is geweigerd door de database. Log opnieuw in en probeer het nog eens.';
+  if(err?.code==='quota_exceeded')return 'De opslag is vol. Verwijder oude notities en probeer het opnieuw.';
+  return 'Opslaan lukte niet. Probeer het zo nog eens.';
+}
+const fld=(label,html,full)=>`<label class="field${full?' full':''}"><span>${label}</span>${html}</label>`;
+const inp=(name,val,attrs='')=>`<input name="${name}" id="f-${name}" value="${esc(val??'')}" ${attrs}>`;
+
+function gardenForm(g){
+  const del=g?`<button type="button" class="btn danger" data-act="del-garden" data-id="${esc(g.id)}" style="margin-right:auto">Tuin verwijderen</button>`:'';
+  openModal(g?'Tuin bewerken':'Nieuwe tuin',`<div class="fgrid">
+   ${fld('Naam',inp('name',g?.name,'required placeholder="Bijv. Volkstuin De Horst"'),true)}
+   ${fld('Breedte (m)',inp('width',g?.width??8,'type="number" min="1" max="200" step="0.5" inputmode="decimal"'))}
+   ${fld('Lengte (m)',inp('length',g?.length??6,'type="number" min="1" max="200" step="0.5" inputmode="decimal"'))}
+   ${fld('Locatie of notitie',inp('place',g?.place,'placeholder="Optioneel"'),true)}
+   ${fld('Breedtegraad',inp('lat',g?.lat??'','inputmode="decimal" placeholder="Bijv. 52.37"'))}
+   ${fld('Lengtegraad',inp('lon',g?.lon??'','inputmode="decimal" placeholder="Bijv. 4.90"'))}
+   <p class="muted full" style="margin:0;font-size:.8rem">Met coördinaten haalt MooseTown zelf het weerbericht op. Je vindt ze in Google Maps: rechtsklik op je tuin en klik op de getallen bovenaan.</p></div>`,
+  async d=>{
+    if(!d.name.trim())return 'Geef de tuin een naam.';
+    const lat=d.lat.trim()?num(d.lat):null,lon=d.lon.trim()?num(d.lon):null;
+    if((lat===null)!==(lon===null))return 'Vul beide coördinaten in, of laat ze allebei leeg.';
+    if(lat!==null&&(Math.abs(lat)>90||Math.abs(lon)>180))return 'Deze coördinaten kloppen niet. De breedtegraad ligt tussen −90 en 90, de lengtegraad tussen −180 en 180.';
+    const data={name:d.name.trim(),width:Math.max(1,num(d.width)),length:Math.max(1,num(d.length)),place:d.place.trim(),lat,lon};
+    if(g){await S.db.doc('gardens/'+g.id).update(data)}
+    else{const ref=S.db.collection('gardens').doc();await ref.set({...data,createdBy:S.me,createdAt:new Date().toISOString()});S.gid=ref.id;store.set('mt.gid',ref.id);S.view='kaart'}
+    schedule();
+  },del);
+}
+function bedForm(b){
+  const g=G();
+  openModal(b?'Bed bewerken':'Nieuw bed',`<p class="muted" style="margin:0">Posities in meters vanaf de linkerbovenhoek van ${esc(g.name)} (${g.width} × ${g.length} m).</p><div class="fgrid">
+   ${fld('Naam',inp('name',b?.name??`Bed ${bedsOf(g.id).length+1}`,'required'))}
+   ${fld('Soort',`<select name="env"><option value="buiten">Buitenbed</option><option value="kas"${isKas(b)?' selected':''}>Kas (onverwarmd)</option></select>`)}
+   ${fld('Van links (m)',inp('x',b?.x??0,'type="number" min="0" step="0.25" inputmode="decimal"'))}
+   ${fld('Van boven (m)',inp('y',b?.y??0,'type="number" min="0" step="0.25" inputmode="decimal"'))}
+   ${fld('Breedte (m)',inp('w',b?.w??1.2,'type="number" min="0.25" step="0.25" inputmode="decimal"'))}
+   ${fld('Lengte (m)',inp('h',b?.h??3,'type="number" min="0.25" step="0.25" inputmode="decimal"'))}
+   ${fld('Notitie',`<textarea name="notes" placeholder="Bijv. halfschaduw, kleigrond">${esc(b?.notes||'')}</textarea>`,true)}</div>`,
+  async d=>{
+    const x=num(d.x),y=num(d.y),w=num(d.w),h=num(d.h);
+    if(!d.name.trim())return 'Geef het bed een naam.';
+    if(w<=0||h<=0)return 'Breedte en lengte moeten groter dan 0 zijn.';
+    if(x+w>g.width||y+h>g.length)return `Het bed valt buiten de tuin. De tuin is ${g.width} × ${g.length} m.`;
+    const data={name:d.name.trim(),env:d.env==='kas'?'kas':'buiten',x,y,w,h,notes:d.notes.trim()};
+    if(b)await S.db.doc('beds/'+b.id).update(data);
+    else{const ref=S.db.collection('beds').doc();await ref.set({...data,gardenId:g.id,createdBy:S.me,createdAt:new Date().toISOString()});S.sel=ref.id}
+    schedule();
+  });
+}
+function plantForm(bedId,p,pre){
+  let confirmKey='';
+  const b=S.beds.find(x=>x.id===bedId);
+  const known=!p||cropBy(p.crop);
+  const opts=Object.keys(FAM).map(f=>{const cs=CROPS.filter(c=>c.f===f);return cs.length?`<optgroup label="${FAM[f].n}">${cs.map(c=>`<option${(p?.crop||pre?.crop)===c.n?' selected':''}>${c.n}</option>`).join('')}</optgroup>`:''}).join('');
+  const del=p?`<button type="button" class="btn danger" data-act="del-plant" data-id="${esc(p.id)}" style="margin-right:auto">Verwijderen</button>`:'';
+  openModal(p?`${p.crop} bewerken`:`Gewas in ${b.name}`,`<div class="fgrid">
+   ${fld('Gewas',`<select name="crop" id="f-crop">${opts}<option value="__anders"${!known?' selected':''}>Anders…</option></select>`,true)}
+   <div class="fgrid full" id="f-custom" ${known?'hidden':''}>${fld('Naam gewas',inp('customName',!known?p.crop:''))}${fld('Familie',`<select name="customFam">${Object.keys(FAM).map(f=>`<option value="${f}"${p?.family===f?' selected':''}>${FAM[f].n}</option>`).join('')}</select>`)}</div>
+   ${fld('Ras',inp('variety',p?.variety,'placeholder="Optioneel, bijv. Moneymaker"'))}
+   ${fld('Status',`<select name="status">${FLOW.map(s=>`<option value="${s}"${(p?.status||'gepland')===s?' selected':''}>${SLABEL[s]}</option>`).join('')}</select>`)}
+   ${fld('Zaai- of plantdatum',inp('sowDate',p?.sowDate||pre?.sowDate||today(),'type="date" required'))}
+   ${fld('Oogst verwacht',inp('harvestDate',p?.harvestDate||'','type="date"'))}
+   ${fld('Aantal planten',inp('count',p?.count||'','type="number" min="1" step="1" inputmode="numeric"'))}
+   ${fld('Notitie',`<textarea name="notes">${esc(p?.notes||'')}</textarea>`,true)}</div><div id="f-hint"></div>`,
+  async d=>{
+    const custom=d.crop==='__anders';const crop=custom?d.customName.trim():d.crop;
+    if(!crop)return 'Vul de naam van het gewas in.';
+    if(!d.sowDate)return 'Kies een zaai- of plantdatum.';
+    const cc=cropBy(crop),sm=parse(d.sowDate).getMonth()+1,changed=!p||p.crop!==crop||p.sowDate!==d.sowDate;
+    if(cc&&changed){
+      const win=sowWin(cc,b);
+      if(!win.includes(sm)&&confirmKey!==crop+'|'+d.sowDate){
+        confirmKey=crop+'|'+d.sowDate;
+        const alt=[cc.bi.includes(sm)?'binnen voorzaaien kan wel':'',!isKas(b)&&cc.k&&cc.k.includes(sm)?'in een kas kan het wel':''].filter(Boolean).join(', ');
+        return `Weet je het zeker? ${MONTHS[sm-1]} is geen goede maand om ${cc.n.toLowerCase()} ${isKas(b)?'in de kas':'buiten'} te zaaien of te planten. Gebruikelijk is ${fmtMonths(win)}${alt?' ('+alt+')':''}. Klik nogmaals op Opslaan om het toch zo te plannen.`;
+      }
+    }
+    const data={crop,family:custom?d.customFam:cropBy(crop).f,variety:d.variety.trim(),status:d.status,sowDate:d.sowDate,harvestDate:d.harvestDate||'',year:parse(d.sowDate).getFullYear(),count:d.count?Math.round(num(d.count)):'',notes:d.notes.trim()};
+    if(p)await S.db.doc('plantings/'+p.id).update(data);
+    else await S.db.collection('plantings').doc().set({...data,bedId,gardenId:b.gardenId,createdBy:S.me,createdAt:new Date().toISOString()});
+  },del);
+  const hint=()=>{
+    const c=$('#f-crop').value;const custom=c==='__anders';$('#f-custom').hidden=!custom;
+    const fam=custom?$('[name=customFam]').value:cropBy(c)?.f;const sd=$('#f-sowDate').value;const y=sd?parse(sd).getFullYear():THISY;
+    const w=rotWarn(bedId,fam,y,p?.id);const cc=cropBy(c);
+    const exp=cc&&sd?`Verwachte oogst rond ${fmt(addDays(sd,cc.d))} (${cc.d} dagen). Laat het oogstveld leeg om dit automatisch te gebruiken.`:'';
+    const cap=capText(b,cc);$('#f-count').placeholder=capacity(b,cc)?(dense(cc)?`±${perMeter(cc)} per meter rij`:`max ± ${capacity(b,cc).n}`):'';
+    const win=cc?sowWin(cc,b):null;const sm=sd?parse(sd).getMonth()+1:0;
+    const winNote=cc&&sd&&!win.includes(sm)?`<p class="notice" style="margin-top:6px">${cc.n} ${isKas(b)?'zaai of plant je in de kas':'zaai of plant je buiten'} meestal in ${fmtMonths(win)}${!isKas(b)&&cc.k&&cc.k.includes(sm)?'. In een kas kan het in deze maand wel':''}${cc.bi.includes(sm)?'. Binnen voorzaaien kan nu wel':''}.</p>`:'';
+    $('#f-hint').innerHTML=winNote+(w.length?`<p class="notice">${FAM[fam].n} stonden in ${b.name} ook in ${[...new Set(w)].sort().join(', ')}. Kies liever een ander bed of een andere familie.</p>`:'')+(exp?`<p class="muted" style="font-size:.85rem;margin:6px 0 0">${exp}</p>`:'')+(cap?`<p class="muted" style="font-size:.85rem;margin:4px 0 0">${dense(cc)?'Dicht gezaaid gewas':`Past in het hele bed (${b.w} × ${b.h} m)`}: ${cap}. Deel je het bed met andere gewassen, reken dan naar rato.</p>`:'');
+    $('#f-harvestDate').placeholder=cc&&sd?addDays(sd,cc.d):'';
+  };
+  ['#f-crop','#f-sowDate'].forEach(s=>$(s).addEventListener('change',hint));$('[name=customFam]').addEventListener('change',hint);hint();
+}
+function logForm(bedId,plantId){
+  const g=G();const beds=bedsOf(g.id);
+  const plantOpts=bid=>`<option value="">— geen specifiek gewas —</option>`+S.plantings.filter(p=>p.bedId===bid&&p.status!=='afgerond').map(p=>`<option value="${esc(p.id)}"${p.id===plantId?' selected':''}>${esc(p.crop)}${p.variety?' ('+esc(p.variety)+')':''}</option>`).join('');
+  const b0=bedId||'';
+  openModal('Notitie of oogst',`<div class="fgrid">
+   ${fld('Datum',inp('date',today(),'type="date" required'))}
+   ${fld('Soort',`<select name="type" id="f-type">${Object.entries(LTYPES).map(([k,v])=>`<option value="${k}"${plantId&&k==='oogst'?' selected':''}>${v}</option>`).join('')}</select>`)}
+   ${fld('Bed',`<select name="bedId" id="f-bed"><option value="">Hele tuin</option>${beds.map(b=>`<option value="${esc(b.id)}"${b.id===b0?' selected':''}>${esc(b.name)}</option>`).join('')}</select>`)}
+   ${fld('Gewas',`<select name="plantingId" id="f-plant">${plantOpts(b0)}</select>`)}
+   <div class="fgrid full" id="f-amt">${fld('Hoeveelheid',inp('amount','','inputmode="decimal" placeholder="Bijv. 850"'))}${fld('Eenheid',`<select name="unit"><option value="g">gram</option><option value="kg">kilo</option><option value="stuks">stuks</option><option value="bos">bos</option></select>`)}</div>
+   ${fld('Notitie',`<textarea name="text" placeholder="Wat heb je gedaan of gezien?"></textarea>`,true)}</div>`,
+  async d=>{
+    if(!d.date)return 'Kies een datum.';
+    const p=S.plantings.find(x=>x.id===d.plantingId);
+    let amount=num(d.amount),unit=d.unit;
+    if(d.type==='oogst'){if(!amount)return 'Vul in hoeveel je hebt geoogst.';if(unit==='kg'){amount=amount*1000;unit='g'}}
+    else{amount=0;unit='';if(!d.text.trim())return 'Schrijf kort wat je hebt gedaan of gezien.'}
+    await S.db.collection('logs').doc().set({gardenId:g.id,bedId:d.bedId,plantingId:d.plantingId,crop:p?.crop||'',date:d.date,type:d.type,amount,unit,text:d.text.trim(),createdBy:S.me,createdAt:new Date().toISOString()});
+    if(d.type==='oogst'&&p&&p.status!=='oogst'&&p.status!=='afgerond')await S.db.doc('plantings/'+p.id).update({status:'oogst'});
+  });
+  const t=()=>{$('#f-amt').hidden=$('#f-type').value!=='oogst'};
+  $('#f-type').addEventListener('change',t);t();
+  $('#f-bed').addEventListener('change',e=>{$('#f-plant').innerHTML=plantOpts(e.target.value)});
+}
+
+/* ---------- actions ---------- */
+function armed(btn,fn){
+  if(btn.dataset.armed){fn();return}
+  btn.dataset.armed='1';const old=btn.textContent;btn.textContent='Zeker? Klik nogmaals';
+  setTimeout(()=>{if(btn.isConnected){delete btn.dataset.armed;btn.textContent=old}},4000);
+}
+async function delMany(col,items){for(const it of items){await S.db.doc(col+'/'+it.id).delete()}}
+async function loadExample(){
+  const db=S.db,me=S.me,now=new Date().toISOString();
+  const gRef=db.collection('gardens').doc();
+  await gRef.set({name:'Voorbeeldtuin',width:8,length:6,place:'Voorbeeld, gerust verwijderen',createdBy:me,createdAt:now});
+  const bedDefs=[['Bed 1',0.5,0.5,1.2,4],['Bed 2',2.2,0.5,1.2,4],['Bed 3',3.9,0.5,1.2,4],['Kruidenbak',5.8,0.5,1.7,1.7],['Kas',5.8,2.8,1.7,2.8,'kas']];
+  const ids=[];
+  for(const [name,x,y,w,h,env] of bedDefs){const r=db.collection('beds').doc();ids.push(r.id);await r.set({name,env:env||'buiten',x,y,w,h,notes:'',gardenId:gRef.id,createdBy:me,createdAt:now})}
+  const Y=THISY;
+  const pl=[[0,'Tomaat','uitgeplant',`${Y}-04-01`],[0,'Aardappel','afgerond',`${Y-1}-04-15`],[1,'Stokboon','oogst',`${Y}-05-20`],[1,'Tomaat','afgerond',`${Y-1}-03-20`],
+    [2,'Boerenkool','uitgeplant',`${Y}-06-01`],[2,'Peen','afgerond',`${Y-1}-04-10`],[3,'Basilicum','oogst',`${Y}-06-10`],[4,'Komkommer','oogst',`${Y}-04-25`],[4,'Veldsla','gezaaid',`${Y}-09-20`],[2,'Knoflook','gepland',`${Y}-10-20`]];
+  const pIds=[];
+  for(const [bi,crop,status,sd] of pl){const r=db.collection('plantings').doc();pIds.push(r.id);await r.set({crop,family:cropBy(crop).f,variety:'',status,sowDate:sd,harvestDate:'',year:parse(sd).getFullYear(),notes:'',bedId:ids[bi],gardenId:gRef.id,createdBy:me,createdAt:now})}
+  const lg=[[2,1,'oogst',950,'g','Eerste flinke pluk',`${Y}-08-02`],[2,1,'oogst',1400,'g','',`${Y}-08-20`],[0,0,'water',0,'','Twee gieters per bed',`${Y}-08-10`],[0,0,'plaag',0,'','Bladvlekken onderaan, blad weggeknipt',`${Y}-08-28`]];
+  for(const [pi,bi,type,amount,unit,text,date] of lg){await db.collection('logs').doc().set({gardenId:gRef.id,bedId:ids[bi],plantingId:pIds[pi],crop:pl[pi][1],date,type,amount,unit,text,createdBy:me,createdAt:now})}
+  S.gid=gRef.id;store.set('mt.gid',gRef.id);schedule();
+}
+
+/* ---------- slepen en formaat wijzigen ---------- */
+var drag=null;
+const snap=v=>Math.round(v*4)/4, clamp=(v,a,b)=>Math.min(Math.max(v,a),b);
+document.addEventListener('pointerdown',e=>{
+  if(!S.layout||!S.canWrite||e.button>0)return;
+  const el=e.target.closest('.map.editing .bed');if(!el)return;
+  const b=S.beds.find(x=>x.id===el.dataset.id),g=G();if(!b||!g)return;
+  const r=el.parentElement.getBoundingClientRect();
+  drag={el,b,g,mode:e.target.closest('.rz')?'rz':'mv',sx:e.clientX,sy:e.clientY,px:r.width/g.width,py:r.height/g.length,x:b.x,y:b.y,w:b.w,h:b.h,moved:false};
+  try{el.setPointerCapture(e.pointerId)}catch(_){}
+  e.preventDefault();
+});
+document.addEventListener('pointermove',e=>{
+  if(!drag)return;const d=drag;
+  if(!d.moved&&Math.hypot(e.clientX-d.sx,e.clientY-d.sy)<4)return;
+  d.moved=true;
+  const dx=(e.clientX-d.sx)/d.px,dy=(e.clientY-d.sy)/d.py,b=d.b,g=d.g;
+  if(d.mode==='mv'){d.x=clamp(snap(b.x+dx),0,g.width-b.w);d.y=clamp(snap(b.y+dy),0,g.length-b.h)}
+  else{d.w=clamp(snap(b.w+dx),0.25,g.width-b.x);d.h=clamp(snap(b.h+dy),0.25,g.length-b.y)}
+  Object.assign(d.el.style,{left:d.x/g.width*100+'%',top:d.y/g.length*100+'%',width:d.w/g.width*100+'%',height:d.h/g.length*100+'%'});
+  const sz=d.el.querySelector('.sz');if(sz)sz.textContent=`${d.w} × ${d.h} m`;
+});
+async function endDrag(){
+  if(!drag)return;const d=drag;drag=null;
+  if(d.moved){
+    S.noClick=true;setTimeout(()=>{S.noClick=false},50);
+    const upd={x:d.x,y:d.y,w:d.w,h:d.h};
+    if(upd.x!==d.b.x||upd.y!==d.b.y||upd.w!==d.b.w||upd.h!==d.b.h){
+      Object.assign(d.b,upd);
+      try{await S.db.doc('beds/'+d.b.id).update(upd)}catch(err){if(err?.code==='invalid_argument'){S.canWrite=false;document.body.classList.add('readonly')}}
+    }
+  }
+  schedule();
+}
+document.addEventListener('pointerup',endDrag);
+document.addEventListener('pointercancel',endDrag);
+
+document.addEventListener('change',e=>{if(e.target.id==='gpick'){S.gid=e.target.value;S.sel=null;store.set('mt.gid',S.gid);render()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modalroot').innerHTML)closeModal()});
+document.addEventListener('click',async e=>{
+  const el=e.target.closest('[data-act]');if(!el)return;
+  const a=el.dataset.act,id=el.dataset.id;
+  if(a==='close-modal-bg'){if(e.target===el)closeModal();return}
+  try{
+  switch(a){
+    case 'view':S.view=el.dataset.v;store.set('mt.view',S.view);render();break;
+    case 'close-modal':closeModal();break;
+    case 'select-bed':if(S.noClick){S.noClick=false;break}S.sel=id;if(el.dataset.goto){S.view='kaart';store.set('mt.view','kaart')}render();break;
+    case 'layout':S.layout=!S.layout;render();break;
+    case 'succ':plantForm(el.dataset.bed,null,{crop:el.dataset.crop,sowDate:el.dataset.date});break;
+    case 'deselect':S.sel=null;render();break;
+    case 'add-garden':gardenForm();break;
+    case 'edit-garden':gardenForm(G());break;
+    case 'add-bed':bedForm();break;
+    case 'edit-bed':bedForm(S.beds.find(b=>b.id===id));break;
+    case 'add-plant':plantForm(el.dataset.bed);break;
+    case 'edit-plant':{const p=S.plantings.find(x=>x.id===id);plantForm(p.bedId,p);break}
+    case 'add-log':logForm(el.dataset.bed,el.dataset.plant);break;
+    case 'logfilter':S.logFilter=el.dataset.v;render();break;
+    case 'weather-auto':{const g=G();el.disabled=true;await S.db.doc('weather/'+g.id).delete();break}
+    case 'logout':el.disabled=true;await window.MT.signOut();break;
+    case 'profile':openModal('Je naam',`${fld('Naam die anderen zien',inp('dname',S.myName||'','required'),true)}`,async d=>{const n=d.dname.trim();if(!n)return 'Vul een naam in.';await window.MT.setName(n);S.myName=n;$('#who').textContent=n;schedule()});break;
+    case 'weather':{const g=G();el.disabled=true;await S.db.doc('weather/'+g.id).set({kind:el.dataset.v,setAt:new Date().toISOString(),setBy:S.me});break}
+    case 'todo-done':{const g=G();el.disabled=true;const p=S.plantings.find(x=>x.id===el.dataset.plant);
+      await S.db.collection('logs').doc().set({gardenId:g.id,bedId:el.dataset.bed||'',plantingId:el.dataset.plant||'',crop:p?.crop||'',date:today(),type:el.dataset.water?'water':'werk',amount:0,unit:'',text:el.dataset.title,taskKey:el.dataset.key,createdBy:S.me,createdAt:new Date().toISOString()});break}
+    case 'calmine':S.calMine=!!el.dataset.v;render();break;
+    case 'load-example':el.disabled=true;el.textContent='Bezig…';await loadExample();break;
+    case 'next':{const p=S.plantings.find(x=>x.id===id);const n=FLOW[FLOW.indexOf(p.status)+1];if(!n)break;el.disabled=true;
+      const upd={status:n};if(p.status==='gepland'&&p.sowDate>today()){upd.sowDate=today();upd.year=THISY}
+      await S.db.doc('plantings/'+id).update(upd);break}
+    case 'del-log':armed(el,()=>S.db.doc('logs/'+id).delete());break;
+    case 'del-plant':armed(el,async()=>{await S.db.doc('plantings/'+id).delete();closeModal()});break;
+    case 'del-bed':armed(el,async()=>{S.sel=null;await delMany('plantings',plantsOf(id));await delMany('logs',S.logs.filter(l=>l.bedId===id));await S.db.doc('beds/'+id).delete()});break;
+    case 'del-garden':armed(el,async()=>{closeModal();await delMany('logs',S.logs.filter(l=>l.gardenId===id));await delMany('plantings',S.plantings.filter(p=>p.gardenId===id));await delMany('beds',S.beds.filter(b=>b.gardenId===id));await S.db.doc('gardens/'+id).delete();S.gid=null;schedule()});break;
+  }}catch(err){console.error(err);if(err?.code==='invalid_argument'){S.canWrite=false;document.body.classList.add('readonly');render()}}
+});
+render();
+</script>
+</body>
+</html>
