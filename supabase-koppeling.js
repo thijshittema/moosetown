@@ -4,7 +4,7 @@
    MT.use('user') → wie er is ingelogd en de namen van anderen (tabel profiles) */
 (function(){
   const cfg=window.MOOSETOWN_CONFIG||{};
-  const TABLES=['gardens','beds','plantings','logs','weather'];
+  const TABLES=['gardens','beds','plantings','logs','weather','plants'];
   const toSnake=k=>k.replace(/[A-Z]/g,m=>'_'+m.toLowerCase());
   const toCamel=k=>k.replace(/_([a-z])/g,(_,c)=>c.toUpperCase());
   const toRow=obj=>{const o={};for(const k in obj)o[toSnake(k)]=obj[k]===''?null:obj[k];return o};

@@ -18,7 +18,7 @@ img{max-width:100%}
 :root{
   --bg:#EFF2EC; --surface:#FFFFFF; --surface-2:#E4E9E0; --ink:#1B2A21; --muted:#56655B; --line:#CFD7CA;
   --accent:#7A2E55; --accent-ink:#FFFFFF; --leaf:#2F6E3E; --warn:#A8591A; --danger:#B3261E;
-  --grass:#DCE6D3; --grass-line:#C7D4BD; --soil:#6E5039; --soil-2:#7E5D44; --soil-ink:#FFF7EE; --path:#D9D2C3; --path-line:#B9AF9B;
+  --grass:#DCE6D3; --grass-line:#C7D4BD; --soil:#6E5039; --soil-2:#7E5D44; --soil-ink:#FFF7EE; --path:#D9D2C3; --path-line:#B9AF9B; --lawn:#9CC77E; --lawn-2:#92BE73; --hedge:#2F5A3A; --hedge-2:#3D6E47; --water:#8EC3DA; --water-2:#5E9FBF; --roof:#B9B4AC; --roof-line:#9C968C; --mulch:#5C4331;
   --glass:#D6ECF2; --glass-line:#A9CFDB; --glass-ink:#173A45; --seed:#B88A3E; --fruit:#C8402E;
   --stake:#9A7B55; --c-red:#D9412F; --c-yellow:#E9B824; --c-pod:#3F8E36; --c-pea:#86C25A; --c-purple:#6B3A8C; --c-zuc:#2E6B2E; --c-cuc:#4F9A3E; --c-orange:#E8862A; --c-rib:#9C4F12; --c-cream:#EADCB8; --c-beet:#8E1F3E; --c-radish:#E0507A; --c-onion:#D9A441; --c-garlic:#F1EBDD; --c-kool:#5E8F86; --c-kale:#2F5A3A; --c-kohl:#A8CF8A; --c-broc:#3D6E3A; --c-potato:#CDA86A; --c-corn:#F2C230; --c-light:#A9D67A; --c-beanseed:#E9DFC8;
   --f-kool:#2F6FA8; --f-nacht:#C0392B; --f-peul:#2E8B57; --f-scherm:#D17A12; --f-ui:#8E5BB5; --f-kom:#B59A12; --f-compo:#3C9C9C; --f-amarant:#A23B6B; --f-overig:#6F7A72;
@@ -30,14 +30,14 @@ img{max-width:100%}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111713; --surface:#19211C; --surface-2:#222C25; --ink:#E3EAE1; --muted:#98A79C; --line:#2E3A32;
   --accent:#D77EA9; --accent-ink:#1C0E15; --leaf:#7CC08A; --warn:#E3A060; --danger:#F08A80;
-  --grass:#1D2A21; --grass-line:#26352A; --soil:#4E3A2B; --soil-2:#5A4332; --soil-ink:#FBEFE2; --path:#4A463D; --path-line:#5E584C;
+  --grass:#1D2A21; --grass-line:#26352A; --soil:#4E3A2B; --soil-2:#5A4332; --soil-ink:#FBEFE2; --path:#4A463D; --path-line:#5E584C; --lawn:#3E5E33; --lawn-2:#38552E; --hedge:#1F3A27; --hedge-2:#2A4C33; --water:#25506A; --water-2:#3A7194; --roof:#4A4743; --roof-line:#5C5853; --mulch:#3E2E22;
   --glass:#1E3A44; --glass-line:#2F5866; --glass-ink:#DDF2F8; --seed:#D9AE62; --fruit:#F07A63;
   --f-kool:#6FA8DC; --f-nacht:#EF7B6E; --f-peul:#6CCB94; --f-scherm:#F0A65A; --f-ui:#B892DA; --f-kom:#D9C45A; --f-compo:#6CC9C9; --f-amarant:#DC7AA7; --f-overig:#A3AFA7;
   color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111713; --surface:#19211C; --surface-2:#222C25; --ink:#E3EAE1; --muted:#98A79C; --line:#2E3A32;
   --accent:#D77EA9; --accent-ink:#1C0E15; --leaf:#7CC08A; --warn:#E3A060; --danger:#F08A80;
-  --grass:#1D2A21; --grass-line:#26352A; --soil:#4E3A2B; --soil-2:#5A4332; --soil-ink:#FBEFE2; --path:#4A463D; --path-line:#5E584C;
+  --grass:#1D2A21; --grass-line:#26352A; --soil:#4E3A2B; --soil-2:#5A4332; --soil-ink:#FBEFE2; --path:#4A463D; --path-line:#5E584C; --lawn:#3E5E33; --lawn-2:#38552E; --hedge:#1F3A27; --hedge-2:#2A4C33; --water:#25506A; --water-2:#3A7194; --roof:#4A4743; --roof-line:#5C5853; --mulch:#3E2E22;
   --glass:#1E3A44; --glass-line:#2F5866; --glass-ink:#DDF2F8; --seed:#D9AE62; --fruit:#F07A63;
   --f-kool:#6FA8DC; --f-nacht:#EF7B6E; --f-peul:#6CCB94; --f-scherm:#F0A65A; --f-ui:#B892DA; --f-kom:#D9C45A; --f-compo:#6CC9C9; --f-amarant:#DC7AA7; --f-overig:#A3AFA7;
   color-scheme:dark}
@@ -171,6 +171,13 @@ textarea{min-height:70px;resize:vertical}
 .flash{color:var(--danger);font-weight:700;font-size:.85rem}
 .shapeprev{width:140px;height:100px;flex:none;border:1px solid var(--line);border-radius:8px;background:var(--grass)}
 .shapeprev polygon{fill:var(--soil);stroke:var(--ink);stroke-width:1.5}
+.shp.k-border{fill:url(#pBorder)} .shp.k-gazon{fill:url(#pGazon)} .shp.k-haag{fill:url(#pHaag)} .shp.k-vijver{fill:url(#pWater);stroke:var(--water-2)} .shp.k-terras{fill:url(#pTerras);stroke:var(--path-line)} .shp.k-gebouw{fill:url(#pGebouw);stroke:var(--roof-line)}
+.plt{fill:color-mix(in srgb,var(--pc) 30%,transparent);stroke:var(--pc);stroke-width:1.5;cursor:pointer}
+.plt:hover{stroke-width:2.5} .plt.sel{stroke:var(--accent);stroke-width:3} .map.editing .plt{cursor:move;touch-action:none} .pdot{pointer-events:none}
+.plbl{position:absolute;transform:translate(-50%,3px);font-size:.62rem;font-weight:700;color:var(--ink);background:color-mix(in srgb,var(--surface) 80%,transparent);padding:0 4px;border-radius:4px;white-space:nowrap;pointer-events:none}
+.mgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px} .mgrid label{display:flex;align-items:center;gap:3px;font-size:.78rem} .mgrid input{width:auto}
+.b-bl{background:var(--c-yellow)} .b-sn{background:var(--accent)} .b-zg{background:var(--leaf)}
+.toolbar select{width:auto}
 .toolbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 /* chips & pills */
 .chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:.78rem;font-weight:700;
@@ -305,7 +312,7 @@ const cropBy=n=>CROPS.find(c=>c.n===n);
 const FLOW=['gepland','gezaaid','uitgeplant','oogst','afgerond'];
 const SLABEL={gepland:'Gepland',gezaaid:'Gezaaid',uitgeplant:'Uitgeplant',oogst:'In oogst',afgerond:'Afgerond'};
 const NEXT={gepland:'Gezaaid',gezaaid:'Uitgeplant',uitgeplant:'Oogst begonnen',oogst:'Afronden'};
-const LTYPES={notitie:'Notitie',oogst:'Oogst',water:'Water gegeven',bemesten:'Bemest',plaag:'Plaag/ziekte',werk:'Onderhoud'};
+const LTYPES={notitie:'Notitie',oogst:'Oogst',water:'Water gegeven',bemesten:'Bemest',snoei:'Gesnoeid',plaag:'Plaag/ziekte',werk:'Onderhoud'};
 
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -364,12 +371,26 @@ function fitsGarden(g,pts){
   return true;
 }
 const outsideBeds=g=>S.beds.filter(b=>b.gardenId===g.id&&!fitsGarden(g,shapeOf(b)));
+/* welke andere bedden of paden raakt deze vorm (aanraken mag, overlappen niet) */
+function overlapsWith(g,pts,exceptId,kind){if(kind==='gazon')return [];return S.beds.filter(b=>b.gardenId===g.id&&b.id!==exceptId&&b.kind!=='gazon'&&polysOverlap(pts,shapeOf(b)))}
+function overlapPairs(g){
+  const bs=S.beds.filter(b=>b.gardenId===g.id&&b.kind!=='gazon'),out=[];
+  for(let i=0;i<bs.length;i++)for(let j=i+1;j<bs.length;j++)if(polysOverlap(shapeOf(bs[i]),shapeOf(bs[j])))out.push([bs[i],bs[j]]);
+  return out;
+}
+/* past een vorm: binnen de tuin en zonder overlap; geeft een foutmelding of '' */
+function placeError(g,pts,exceptId,subj,where='',kind){
+  if(!fitsGarden(g,pts))return `${subj} valt${where} (deels) buiten de tuin.`;
+  const o=overlapsWith(g,pts,exceptId,kind);
+  if(o.length)return `${subj} overlapt${where} met ${o.map(b=>b.name).join(' en ')}.`;
+  return '';
+}
 function moveTo(pts,x,y){const b=bbox(pts);return pts.map(([px,py])=>[r3(px-b.x+x),r3(py-b.y+y)])}
 function rotate90(pts){const b=bbox(pts);return moveTo(pts.map(([x,y])=>[-y,x]),b.x,b.y)}
 function mirrorX(pts){const b=bbox(pts);return moveTo(pts.map(([x,y])=>[-x,y]).reverse(),b.x,b.y)}
 /* zoek een plek waar de vorm past, bij voorkeur zonder andere bedden te raken */
-function findSpot(g,pts){
-  const bb=bbox(pts),W=+g.width,L=+g.length,others=allBedsOf(g.id).map(b=>shapeOf(b));
+function findSpot(g,pts,exceptId){
+  const bb=bbox(pts),W=+g.width,L=+g.length,others=allBedsOf(g.id).filter(b=>b.id!==exceptId&&b.kind!=='gazon').map(b=>shapeOf(b));
   let fallback=null;
   for(let y=0;y<=L-bb.h+1e-9;y+=0.25)for(let x=0;x<=W-bb.w+1e-9;x+=0.25){
     const c=moveTo(pts,x,y);if(!fitsGarden(g,c))continue;
@@ -583,7 +604,7 @@ function successors(bedId){
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 
 /* ---------- state ---------- */
-const S={gardens:[],beds:[],plantings:[],logs:[],weather:[],loaded:{},db:null,user:null,me:null,canWrite:true,
+const S={gardens:[],beds:[],plantings:[],logs:[],weather:[],plants:[],selPlant:null,place:null,loaded:{},db:null,user:null,me:null,canWrite:true,
   gid:store.get('mt.gid'),view:store.get('mt.view')||'kaart',sel:null,logFilter:'alle',calMine:false,status:'laden'};
 const G=()=>S.gardens.find(g=>g.id===S.gid);
 const allBedsOf=gid=>S.beds.filter(b=>b.gardenId===gid);
@@ -597,8 +618,8 @@ let raf=0; const schedule=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;rend
   const db=c?.use?await c.use('db'):null;
   if(!db){S.status='geen-db';render();return}
   S.db=db;
-  ['gardens','beds','plantings','logs','weather'].forEach(col=>{
-    db.collection(col).onSnapshot(snap=>{S[col]=snap.docs.map(d=>({id:d.id,...d.data()}));S.loaded[col]=true;if(Object.keys(S.loaded).length===5)S.status='ok';schedule()},
+  ['gardens','beds','plantings','logs','weather','plants'].forEach(col=>{
+    db.collection(col).onSnapshot(snap=>{S[col]=snap.docs.map(d=>({id:d.id,...d.data()}));S.loaded[col]=true;if(Object.keys(S.loaded).length===6)S.status='ok';schedule()},
       err=>{S.status='fout';S.err=err?.code;schedule()});
   });
   const user=await c.use('user');S.user=user;
@@ -623,7 +644,8 @@ function render(){
   const ro=!S.canWrite?`<p class="notice">Je kunt deze tuinen bekijken, maar niet wijzigen. Vraag de eigenaar om je als bijdrager toe te voegen.</p>`:'';
   if(!S.gardens.length){m.innerHTML=ro+emptyState();return}
   loadForecast(G());
-  const views={kaart:viewMap,planning:viewPlanning,logboek:viewLog,rotatie:viewRotation};
+  const sier=isSier(G());const rt=document.querySelector('#tabs [data-v=rotatie]');if(rt)rt.hidden=sier;if(sier&&S.view==='rotatie')S.view='kaart';
+  const views={kaart:viewMap,planning:sier?viewSierPlanning:viewPlanning,logboek:viewLog,rotatie:viewRotation};
   m.innerHTML=ro+(views[S.view]||viewMap)();
   resolveNames();
 }
@@ -635,7 +657,7 @@ function renderGardenSelect(){
   <button class="btn small ghost w" data-act="add-garden" title="Tuin toevoegen">+ Tuin</button>`;
 }
 function emptyState(){
-  return `<div class="empty"><span class="label">Nog geen tuinen</span><h2>Leg je eerste moestuin vast</h2>
+  return `<div class="empty"><span class="label">Nog geen tuinen</span><h2>Leg je eerste tuin vast</h2>
   <p class="muted">Geef de tuin een naam en afmetingen in meters. Daarna teken je de bedden op de plattegrond en houd je per bed bij wat er groeit, wanneer je zaait en wat je oogst. Iedereen met wie je deze pagina deelt, werkt mee in dezelfde tuinen.</p>
   <div class="row w"><button class="btn primary" data-act="add-garden">Tuin toevoegen</button><button class="btn" data-act="load-example">Voorbeeldtuin laden</button></div></div>`;
 }
@@ -644,20 +666,25 @@ function emptyState(){
 function viewMap(){
   const g=G(); const beds=bedsOf(g.id), all=allBedsOf(g.id);
   if(S.sel&&!all.find(b=>b.id===S.sel))S.sel=null;
+  const sier=isSier(g),plist=sier?plantsIn(g.id):[];
+  if(S.selPlant&&!plist.find(p=>p.id===S.selPlant))S.selPlant=null;
+  if(S.place&&S.place.gardenId!==g.id)S.place=null;
   if(S.draw&&S.draw.gid!==g.id)S.draw=null;
   const W=+g.width||8,L=+g.length||6;
   const outline=Array.isArray(g.outline)&&g.outline.length>=3?g.outline:null;
   const P=pts=>pts.map(q=>q.join(',')).join(' ');
-  const order=all.slice().sort((a,b)=>(isPad(a)?0:1)-(isPad(b)?0:1));
-  const outIds=new Set(outsideBeds(g).map(b=>b.id));
-  const polys=order.map(b=>`<polygon class="shp ${isPad(b)?'pad':isKas(b)?'kas':'bed'}${b.id===S.sel?' sel':''}${outIds.has(b.id)?' out':''}" data-act="select-bed" data-id="${esc(b.id)}" points="${P(shapeOf(b))}" vector-effect="non-scaling-stroke"><title>${esc(b.name)}</title></polygon>`).join('');
+  const LAYER={gazon:0,terras:1,pad:2,bed:3,border:3,vijver:3,gebouw:4,haag:5};
+  const order=all.slice().sort((a,b)=>(LAYER[a.kind||'bed']??3)-(LAYER[b.kind||'bed']??3));
+  const outIds=new Set(outsideBeds(g).map(b=>b.id)),pairs=overlapPairs(g);pairs.forEach(([a,b])=>{outIds.add(a.id);outIds.add(b.id)});
+  const outOnly=outsideBeds(g);
+  const polys=order.map(b=>`<polygon class="shp ${isPad(b)?'pad':isKas(b)?'kas':b.kind&&b.kind!=='bed'?'k-'+b.kind:'bed'}${b.id===S.sel?' sel':''}${outIds.has(b.id)?' out':''}" data-act="select-bed" data-id="${esc(b.id)}" points="${P(shapeOf(b))}" vector-effect="non-scaling-stroke"><title>${esc(b.name)}</title></polygon>`).join('');
   const outside=outline?`<path class="outside" fill-rule="evenodd" d="M0 0H${W}V${L}H0Z M${outline.map(q=>q.join(' ')).join(' L')} Z"/><polygon class="gline" points="${P(outline)}" vector-effect="non-scaling-stroke"/>`:'';
   const d=S.draw;
   const draft=d?(d.pts.length?`<polygon class="draft" points="${P(d.pts)}" vector-effect="non-scaling-stroke"/>`:'')+`<line class="dline" id="dline" x1="0" y1="0" x2="0" y2="0" vector-effect="non-scaling-stroke" style="display:none"/>`:'';
   const labels=order.map(b=>{
     const [lx,ly]=labelPoint(shapeOf(b));
-    const act=isPad(b)?[]:plantsOf(b.id).filter(p=>p.status!=='afgerond');
-    return `<div class="lbl${isPad(b)?' padl':''}" style="left:${lx/W*100}%;top:${ly/L*100}%"><span class="bn">${esc(b.name)}${isKas(b)?' <span class="tag">kas</span>':''}</span>${act.length?`<span class="crops">${act.slice(0,3).map(p=>`<span class="dot" style="${fc(famOf(p))}" title="${STAGES[stageOf(p)]}">${stageIcon(stageOf(p),13,p.crop)}${esc(p.crop)}</span>`).join('')}${act.length>3?`<span class="dot">+${act.length-3}</span>`:''}</span>`:''}</div>`}).join('');
+    const act=isPad(b)||sier?[]:plantsOf(b.id).filter(p=>p.status!=='afgerond');
+    return `<div class="lbl${isPad(b)||['gazon','terras','haag'].includes(b.kind)?' padl':''}" style="left:${lx/W*100}%;top:${ly/L*100}%"><span class="bn">${esc(b.name)}${isKas(b)?' <span class="tag">kas</span>':''}</span>${act.length?`<span class="crops">${act.slice(0,3).map(p=>`<span class="dot" style="${fc(famOf(p))}" title="${STAGES[stageOf(p)]}">${stageIcon(stageOf(p),13,p.crop)}${esc(p.crop)}</span>`).join('')}${act.length>3?`<span class="dot">+${act.length-3}</span>`:''}</span>`:''}</div>`}).join('');
   const selB=S.layout&&!d&&S.sel?S.beds.find(b=>b.id===S.sel):null;
   const handles=selB?(()=>{const p=shapeOf(selB);return p.map(([x,y],i)=>`<span class="vh" data-vi="${i}" style="left:${x/W*100}%;top:${y/L*100}%" title="Sleep om te verplaatsen, dubbelklik om weg te halen"></span>`).join('')
       +p.map(([x,y],i)=>{const [x2,y2]=p[(i+1)%p.length];return `<span class="mh" data-mi="${i}" style="left:${(x+x2)/2/W*100}%;top:${(y+y2)/2/L*100}%" title="Klik om hier een hoekpunt toe te voegen">+</span>`}).join('')
@@ -667,34 +694,40 @@ function viewMap(){
       +`<span class="el live" id="dlen" style="display:none"></span>`:'';
   const area=beds.reduce((s,b)=>s+areaOf(b),0);
   const DRAWN={bed:'een bed',pad:'een pad',outline:'de vorm van de tuin'};
-  const toolbar=!S.canWrite?'':d?`<div class="notice stack" style="margin:0;gap:6px"><span>Je tekent ${DRAWN[d.kind]}. Klik de hoekpunten één voor één aan op de plattegrond; schuin mag ook. Klik op het eerste punt of op Klaar om de vorm te sluiten.</span>
+  const toolbar=!S.canWrite?'':S.place?`<div class="notice stack" style="margin:0;gap:6px"><span>Klik op de plattegrond waar <b>${esc(S.place.species)}</b> staat. Het midden van de cirkel is de stam of het hart van de plant.</span>${S.flash?`<span class="flash">${esc(S.flash)}</span>`:''}<div class="toolbar"><button class="btn small ghost" data-act="place-cancel">Annuleren</button></div></div>`:d?`<div class="notice stack" style="margin:0;gap:6px"><span>Je tekent ${DRAWN[d.kind]}. Klik de hoekpunten één voor één aan op de plattegrond; schuin mag ook. Klik op het eerste punt of op Klaar om de vorm te sluiten.</span>
       ${S.flash?`<span class="flash">${esc(S.flash)}</span>`:''}
       <div class="toolbar"><button class="btn small primary" data-act="draw-done"${d.pts.length<3?' disabled':''}>Klaar (${d.pts.length} ${d.pts.length===1?'punt':'punten'})</button><button class="btn small" data-act="draw-undo"${d.pts.length?'':' disabled'}>Laatste punt weg</button><button class="btn small ghost" data-act="draw-cancel">Annuleren</button></div></div>`
-    :S.layout?`<div class="notice stack" style="margin:0;gap:6px"><span>Sleep een bed of pad om het te verplaatsen. Kies een bed om de hoekpunten te zien: sleep een punt om de vorm te veranderen, klik op + voor een extra hoek, dubbelklik op een punt om het weg te halen. Klik op een lengte om de exacte maat in te typen. Alles springt per 25 cm en wordt direct opgeslagen.</span>
+    :S.layout?`<div class="notice stack" style="margin:0;gap:6px"><span>Sleep ${sier?'een vlak of plant':'een bed of pad'} om het te verplaatsen. Kies ${sier?'een vlak':'een bed'} om de hoekpunten te zien: sleep een punt om de vorm te veranderen, klik op + voor een extra hoek, dubbelklik op een punt om het weg te halen. Klik op een lengte om de exacte maat in te typen. Alles springt per 25 cm en wordt direct opgeslagen.</span>
       ${S.flash?`<span class="flash">${esc(S.flash)}</span>`:''}
       ${selB?`<div class="toolbar"><b style="font-size:.85rem">${esc(selB.name)}:</b><button class="btn small" data-act="rotate">Draai 90°</button><button class="btn small" data-act="mirror">Spiegel</button></div>`:''}
-      <div class="toolbar"><button class="btn small" data-act="draw" data-k="bed">Bed tekenen</button><button class="btn small" data-act="draw" data-k="pad">Pad tekenen</button><button class="btn small" data-act="draw" data-k="outline">${outline?'Tuinvorm opnieuw tekenen':'Tuinvorm tekenen'}</button>${outline?'<button class="btn small ghost danger" data-act="outline-clear">Tuinvorm wissen</button>':''}</div></div>`:'';
+      <div class="toolbar">${sier?`<select id="drawkind" aria-label="Wat wil je tekenen">${SIER_KINDS.map(k=>`<option value="${k}">${SKIND[k]}</option>`).join('')}</select><button class="btn small" data-act="draw-sier">Tekenen</button>`:`<button class="btn small" data-act="draw" data-k="bed">Bed tekenen</button><button class="btn small" data-act="draw" data-k="pad">Pad tekenen</button>`}<button class="btn small" data-act="draw" data-k="outline">${outline?'Tuinvorm opnieuw tekenen':'Tuinvorm tekenen'}</button>${outline?'<button class="btn small ghost danger" data-act="outline-clear">Tuinvorm wissen</button>':''}</div></div>`:'';
   return `<div class="work">
     <section class="mapwrap">
-      <div class="maphead"><div><h2>${esc(g.name)}</h2><span class="muted data">${W} × ${L} m · ${beds.length} bedden · ${fmtNum(area)} m² beplantbaar</span></div>
-        <div class="row w">${d?'':`<button class="btn small${S.layout?' primary':''}" data-act="layout">${S.layout?'Klaar met indelen':'Indeling aanpassen'}</button>`}${S.layout||d?'':`<button class="btn small" data-act="edit-garden">Tuin bewerken</button><button class="btn small primary" data-act="add-bed">+ Bed</button>`}</div></div>
+      <div class="maphead"><div><h2>${esc(g.name)}</h2><span class="muted data">${W} × ${L} m · ${sier?`${plist.length} planten · ${fmtNum(all.filter(b=>b.kind==='border').reduce((s,b)=>s+areaOf(b),0))} m² border · ${fmtNum(all.filter(b=>b.kind==='gazon').reduce((s,b)=>s+areaOf(b),0))} m² gazon`:`${beds.length} bedden · ${fmtNum(area)} m² beplantbaar`}</span></div>
+        <div class="row w">${d?'':`<button class="btn small${S.layout?' primary':''}" data-act="layout">${S.layout?'Klaar met indelen':'Indeling aanpassen'}</button>`}${S.layout||d||S.place?'':`<button class="btn small" data-act="edit-garden">Tuin bewerken</button>${sier?`<button class="btn small" data-act="add-bed">+ Vlak</button><button class="btn small primary" data-act="add-plantx">+ Plant</button>`:`<button class="btn small primary" data-act="add-bed">+ Bed</button>`}`}</div></div>
       ${toolbar}
-      ${outIds.size?`<p class="notice" style="margin:0"><b>Buiten de tuin:</b> ${[...outIds].map(id=>esc(S.beds.find(b=>b.id===id).name)).join(', ')}. Deze ${outIds.size===1?'ligt':'liggen'} (deels) buiten de tuinvorm en ${outIds.size===1?'is':'zijn'} rood omlijnd. Verplaats of verklein ${outIds.size===1?'het':'ze'} via Indeling aanpassen.</p>`:''}
-      <div class="map${S.layout?' editing':''}${d?' drawing':''}" id="map" data-w="${W}" data-l="${L}" style="aspect-ratio:${W}/${L};max-width:calc(70vh * ${(W/L).toFixed(4)});background-size:${100/W}% ${100/L}%">
+      ${outOnly.length||pairs.length?`<p class="notice" style="margin:0">${outOnly.length?`<b>Buiten de tuin:</b> ${outOnly.map(b=>esc(b.name)).join(', ')}. `:''}${pairs.length?`<b>Overlappen elkaar:</b> ${pairs.map(([a,b])=>esc(a.name)+' en '+esc(b.name)).join('; ')}. `:''}Ze zijn rood omlijnd. Verplaats of verklein ze via Indeling aanpassen.</p>`:''}
+      <div class="map${S.layout?' editing':''}${d||S.place?' drawing':''}" id="map" data-w="${W}" data-l="${L}" style="aspect-ratio:${W}/${L};max-width:calc(70vh * ${(W/L).toFixed(4)});background-size:${100/W}% ${100/L}%">
         <svg viewBox="0 0 ${W} ${L}" preserveAspectRatio="none" aria-label="Plattegrond van ${esc(g.name)}">
           <defs>
             <pattern id="pSoil" width="1" height="0.17" patternUnits="userSpaceOnUse"><rect width="1" height="0.17" style="fill:var(--soil)"/><rect y="0.11" width="1" height="0.06" style="fill:var(--soil-2)"/></pattern>
             <pattern id="pKas" width="0.4" height="1" patternUnits="userSpaceOnUse"><rect width="0.4" height="1" style="fill:var(--glass)"/><rect x="0.37" width="0.03" height="1" style="fill:var(--glass-line)"/></pattern>
+            <pattern id="pBorder" width="0.3" height="0.3" patternUnits="userSpaceOnUse"><rect width="0.3" height="0.3" style="fill:var(--mulch)"/><circle cx="0.08" cy="0.1" r="0.025" style="fill:var(--soil-2)"/><circle cx="0.22" cy="0.22" r="0.03" style="fill:var(--soil-2)"/></pattern>
+            <pattern id="pGazon" width="1" height="1" patternUnits="userSpaceOnUse"><rect width="1" height="1" style="fill:var(--lawn)"/><rect width="0.5" height="1" style="fill:var(--lawn-2)"/></pattern>
+            <pattern id="pHaag" width="0.25" height="0.25" patternUnits="userSpaceOnUse"><rect width="0.25" height="0.25" style="fill:var(--hedge)"/><circle cx="0.125" cy="0.125" r="0.09" style="fill:var(--hedge-2)"/></pattern>
+            <pattern id="pWater" width="0.6" height="0.3" patternUnits="userSpaceOnUse"><rect width="0.6" height="0.3" style="fill:var(--water)"/><path d="M0 0.15q0.15 -0.08 0.3 0t0.3 0" style="fill:none;stroke:var(--water-2);stroke-width:0.02"/></pattern>
+            <pattern id="pTerras" width="0.5" height="0.5" patternUnits="userSpaceOnUse"><rect width="0.5" height="0.5" style="fill:var(--path)"/><path d="M0 0H0.5V0.5" style="fill:none;stroke:var(--path-line);stroke-width:0.025"/></pattern>
+            <pattern id="pGebouw" width="0.3" height="0.3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="0.3" height="0.3" style="fill:var(--roof)"/><rect width="0.06" height="0.3" style="fill:var(--roof-line)"/></pattern>
             <pattern id="pPad" width="0.3" height="0.3" patternUnits="userSpaceOnUse"><rect width="0.3" height="0.3" style="fill:var(--path)"/><path d="M0 0H0.3V0.3" style="fill:none;stroke:var(--path-line);stroke-width:0.02"/></pattern>
           </defs>
-          ${outside}${polys}${draft}
+          ${outside}${polys}${plist.map(p=>plantSvg(p,W,L)).join('')}${draft}
         </svg>
-        <div class="ovl">${labels}${handles}${dots}</div>
+        <div class="ovl">${labels}${plist.map(p=>`<span class="plbl" style="left:${+p.x/W*100}%;top:${(+p.y+Math.max(0.15,(+p.size||specOf(p).d)/2))/L*100}%">${esc(p.species)}</span>`).join('')}${handles}${dots}</div>
       </div>
       <div class="ruler" style="max-width:calc(70vh * ${(W/L).toFixed(4)});margin-inline:auto;width:100%"><span>0 m</span><span>raster = 1 m</span><span>${W} m</span></div>
-      ${beds.length?'':`<p class="muted">Nog geen bedden. Klik op <b>+ Bed</b> voor een rechthoek met maten, of op <b>Indeling aanpassen → Bed tekenen</b> om zelf een vorm te tekenen.</p>`}
+      ${sier?(all.length||plist.length?'':`<p class="muted">Nog leeg. Teken een gazon, border, haag of terras met <b>Indeling aanpassen</b>, of zet planten neer met <b>+ Plant</b>.</p>`):beds.length?'':`<p class="muted">Nog geen bedden. Klik op <b>+ Bed</b> voor een rechthoek met maten, of op <b>Indeling aanpassen → Bed tekenen</b> om zelf een vorm te tekenen.</p>`}
     </section>
-    <aside class="panel">${S.sel?(isPad(S.beds.find(b=>b.id===S.sel))?padDetail(S.sel):bedDetail(S.sel)):gardenSummary(g)}</aside>
+    <aside class="panel">${S.selPlant?plantDetail(S.selPlant):S.sel?(sier?shapeDetail(S.sel):isPad(S.beds.find(b=>b.id===S.sel))?padDetail(S.sel):bedDetail(S.sel)):sier?sierSummary(g):gardenSummary(g)}</aside>
   </div>`;
 }
 function padDetail(id){
@@ -796,6 +829,7 @@ const SLUGS=new Set(['Sla','Andijvie','Courgette','Komkommer','Spinazie','Snijbi
 /* klaar = er is binnen `days` dagen een logregel met deze taakcode */
 const doneRecently=(key,days)=>S.logs.some(l=>l.taskKey===key&&l.date&&diff(l.date,today())<=days);
 function todo(gid){
+  if(gKind(gid)==='siertuin')return sierTodo(gid);
   const out=[],t=today(),m=new Date().getMonth()+1,wx=weatherOf(gid).kind;
   const beds=bedsOf(gid),bedName=id=>S.beds.find(b=>b.id===id)?.name||'?';
   const add=(prio,key,title,detail,extra={})=>{if(key&&extra.every&&doneRecently(key,extra.every))return;out.push({prio,key,title,detail,...extra})};
@@ -832,9 +866,9 @@ function todo(gid){
 const PRIO={1:'Nu',2:'Deze week',3:'Binnenkort'};
 function todoRow(x){
   const btn=x.plant&&!x.key&&NEXT[x.plant.status]&&x.title.startsWith('Zaaien')?`<button class="btn small" data-act="next" data-id="${esc(x.plant.id)}">${NEXT[x.plant.status]}</button>`
-    :x.key?`<button class="btn small" data-act="todo-done" data-key="${esc(x.key)}" data-bed="${esc(x.bed?.id||x.plant?.bedId||'')}" data-plant="${esc(x.plant?.id||'')}" data-water="${x.water?1:''}" data-title="${esc(x.title)}">Gedaan</button>`
+    :x.key?`<button class="btn small" data-act="todo-done" data-key="${esc(x.key)}" data-bed="${esc(x.bed?.id||x.plant?.bedId||'')}" data-plant="${esc(x.plant?.id||'')}" data-plantref="${esc(x.plantRef?.id||'')}" data-water="${x.water?1:''}" data-title="${esc(x.title)}">Gedaan</button>`
     :x.plant?`<button class="btn small" data-act="select-bed" data-id="${esc(x.plant.bedId)}" data-goto="1">Bekijk</button>`:'';
-  const icon=x.plant?stageIcon(stageOf(x.plant),22,x.plant.crop):`<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18.5h18v3H3z" fill="var(--soil)"/></svg>`;
+  const icon=x.icon?x.icon:x.plant?stageIcon(stageOf(x.plant),22,x.plant.crop):`<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18.5h18v3H3z" fill="var(--soil)"/></svg>`;
   return `<div class="item todo p${x.prio}"><span class="when">${icon}</span>
    <div class="main"><div><b>${esc(x.title)}</b> <span class="pill pr${x.prio}">${PRIO[x.prio]}</span></div><div class="sub">${esc(x.detail)}</div></div>
    <div class="row w">${btn}</div></div>`;
@@ -848,6 +882,258 @@ function weatherBar(gid){
    ${strip}
    <div class="filters w">${f&&f.days?`<button data-act="weather-auto" aria-pressed="${!w.manual}">Volg weerbericht${!w.manual?': '+WEATHER[w.kind].toLowerCase():''}</button>`:''}${Object.entries(WEATHER).map(([k,v])=>`<button data-act="weather" data-v="${k}" aria-pressed="${!!w.manual&&w.kind===k}">${v}</button>`).join('')}</div>
    <p class="muted" style="margin:0;font-size:.8rem">${f&&f.days?'MooseTown leest de komende drie dagen uit het weerbericht van Open-Meteo. Kies zelf een weertype om dat een week lang te overschrijven.':hasLoc?'Kies wat het weerbericht zegt; de taken passen zich aan.':'Kies wat het weerbericht zegt; de taken passen zich aan. Vul bij Tuin bewerken de coördinaten in, dan haalt MooseTown het weerbericht zelf op.'}</p></div>`;
+}
+
+/* =====================================================================
+   SIERTUIN: bibliotheek, vlakken, planten, verzorging
+   ===================================================================== */
+const STYPE={boom:{n:'Boom',c:'--f-peul'},fruit:{n:'Fruitboom',c:'--f-peul'},struik:{n:'Heester',c:'--leaf'},bes:{n:'Fruitstruik',c:'--f-amarant'},
+  klim:{n:'Klimplant',c:'--f-ui'},haag:{n:'Haag',c:'--f-compo'},vast:{n:'Vaste plant',c:'--f-scherm'},gras:{n:'Siergras',c:'--f-kom'},bol:{n:'Bolgewas',c:'--f-kool'},kruid:{n:'Kruid',c:'--f-overig'}};
+/* c: [code, taak, maanden, (elke n dagen herhalen)]   b: bloeimaanden   d: doorsnede in m   f: vorstgevoelig   e: groenblijvend */
+const SIER=[
+ {n:'Appelboom',t:'fruit',d:4,b:[4,5],c:[['wsnoei','Wintersnoei: dood, kruisend en naar binnen groeiend hout weg',[12,1,2]],['zsnoei','Zomersnoei: waterloten weg en nieuwe scheuten inkorten',[7,8]],['dun','Vruchten dunnen: laat er 1 à 2 per tros zitten',[6]],['oogst','Appels plukken',[8,9,10]],['mest','Bemesten met compost of organische mest',[3]]]},
+ {n:'Perenboom',t:'fruit',d:4,b:[4],c:[['wsnoei','Wintersnoei: dood en kruisend hout weg',[12,1,2]],['zsnoei','Zomersnoei: nieuwe scheuten inkorten',[7,8]],['oogst','Peren plukken: iets onrijp, laten narijpen',[8,9,10]],['mest','Bemesten met compost of organische mest',[3]]]},
+ {n:'Kersenboom',t:'fruit',d:4,b:[4],c:[['net','Net tegen vogels',[5,6]],['oogst','Kersen plukken',[6,7]],['snoei','Snoeien direct na de oogst: niet in de winter, dan kans op loodglans',[7,8]]]},
+ {n:'Pruimenboom',t:'fruit',d:4,b:[4],c:[['snoei','Snoeien in de zomer: niet in de winter, dan kans op loodglans',[6,7,8]],['oogst','Pruimen plukken',[8,9]]]},
+ {n:'Vijgenboom',t:'fruit',d:3,b:[],f:true,c:[['vorst','Beschermen tegen vorst: voet afdekken, kruin in vliesdoek',[11,12,1,2]],['snoei','Snoeien: dood hout weg, te lange takken inkorten',[3,4]],['oogst','Vijgen plukken',[8,9]]]},
+ {n:'Olijfboom',t:'boom',d:2,b:[6],f:true,e:true,c:[['vorst','Beschermen tegen vorst, of binnenzetten als hij in een pot staat',[11,12,1,2]],['snoei','Vormsnoei',[4,5]],['water','Water geven bij droogte, vooral in een pot',[6,7,8]]]},
+ {n:'Japanse esdoorn',t:'boom',d:3,b:[],c:[['snoei','Alleen dood en kruisend hout weghalen',[12,1]],['mulch','Mulchen tegen uitdrogen',[4]]]},
+ {n:'Magnolia',t:'boom',d:4,b:[3,4],c:[['snoei','Licht snoeien direct na de bloei, alleen als het nodig is',[5,6]]]},
+ {n:'Sierkers',t:'boom',d:4,b:[4],c:[['snoei','Snoeien in de zomer: niet in de winter',[7,8]]]},
+ {n:'Krentenboompje',t:'boom',d:4,b:[4],c:[['snoei','Licht uitdunnen na de bloei',[5]]]},
+ {n:'Berk',t:'boom',d:6,b:[],c:[['snoei','Snoeien in de nazomer: in het voorjaar bloedt hij',[8,9]]]},
+ {n:'Leilinde',t:'boom',d:3,b:[6,7],c:[['zsnoei','Zomersnoei: nieuwe scheuten terug tot het leiraam',[7,8]],['wsnoei','Wintersnoei: takken aanbinden en in vorm snoeien',[12,1,2]]]},
+ {n:'Hortensia',t:'struik',d:1.5,b:[6,7,8,9],c:[['snoei','Uitgebloeide bloemen weg tot het eerste dikke knoppenpaar: niet eerder, ze beschermen de knoppen',[3,4]],['mest','Bemesten',[4,6]],['water','Water geven bij droogte',[6,7,8]]]},
+ {n:'Pluimhortensia',t:'struik',d:1.5,b:[7,8,9,10],c:[['snoei','Flink terugsnoeien tot 2 à 3 knoppen boven de grond',[3]],['mest','Bemesten',[4]]]},
+ {n:'Struikroos',t:'struik',d:0.8,b:[6,7,8,9],c:[['snoei','Snoeien als de forsythia bloeit: terug tot 3 à 5 ogen',[3,4]],['mest','Bemesten met rozenmest',[4,6]],['bloem','Uitgebloeide bloemen wegknippen',[6,7,8,9],21],['ziekte','Controleren op meeldauw en sterroetdauw',[6,7,8],30]]},
+ {n:'Klimroos',t:'klim',d:1.5,b:[6,7,8],c:[['snoei','Zijtakken inkorten tot 2 à 3 ogen, oud hout weg',[2,3]],['aanbind','Nieuwe scheuten aanbinden',[5,6,7,8],30],['mest','Bemesten met rozenmest',[4]]]},
+ {n:'Lavendel',t:'struik',d:0.6,b:[6,7,8],e:true,c:[['knip1','Vormsnoei: licht in model knippen, niet in het oude hout',[4]],['knip2','Na de bloei: bloemstelen en een derde van het blad eraf',[8]]]},
+ {n:'Buxus',t:'struik',d:0.8,b:[],e:true,c:[['knip1','Knippen, op een bewolkte dag',[5,6]],['knip2','Tweede keer knippen',[9]],['mot','Controleren op buxusmot: kijk tussen de bladeren naar rupsen en spinsel',[4,5,6,7,8,9],14]]},
+ {n:'Vlinderstruik',t:'struik',d:2,b:[7,8,9],c:[['snoei','Flink terugsnoeien tot 30 à 50 cm',[3]],['bloem','Uitgebloeide pluimen weg voor nieuwe bloei',[7,8,9],21]]},
+ {n:'Forsythia',t:'struik',d:2,b:[3,4],c:[['snoei','Na de bloei de oudste takken bij de grond weghalen',[4,5]]]},
+ {n:'Rododendron',t:'struik',d:1.5,b:[5,6],e:true,c:[['bloem','Uitgebloeide trossen voorzichtig uitbreken',[6]],['mest','Bemesten met mest voor zuurminnende planten',[4]],['water','Water geven bij droogte',[6,7,8]]]},
+ {n:'Sering',t:'struik',d:2.5,b:[5],c:[['snoei','Uitgebloeide pluimen weg en licht snoeien',[6]]]},
+ {n:'Weigela',t:'struik',d:1.5,b:[5,6],c:[['snoei','Na de bloei een derde van de oudste takken weg',[6,7]]]},
+ {n:'Spirea',t:'struik',d:1,b:[4,5,6],c:[['snoei','Na de bloei terugknippen',[6,7]]]},
+ {n:'Sneeuwbal',t:'struik',d:2,b:[5,6],c:[['snoei','Na de bloei licht uitdunnen',[6]]]},
+ {n:'Hibiscus',t:'struik',d:1.5,b:[8,9],c:[['snoei','Licht snoeien en in vorm brengen',[3,4]]]},
+ {n:'Vuurdoorn',t:'struik',d:2,b:[5,6],e:true,c:[['snoei1','Snoeien na de bloei',[6]],['snoei2','Nieuwe scheuten inkorten zodat de bessen zichtbaar blijven',[8]]]},
+ {n:'Skimmia',t:'struik',d:1,b:[3,4],e:true,c:[['mest','Bemesten met mest voor zuurminnende planten',[4]]]},
+ {n:'Hulst',t:'struik',d:2,b:[5],e:true,c:[['snoei','In vorm snoeien',[7,8]]]},
+ {n:'Rozemarijn',t:'kruid',d:0.8,b:[4,5],e:true,f:true,c:[['snoei','Na de bloei licht terugknippen',[5,6]],['vorst','Beschermen bij strenge vorst',[12,1,2]]]},
+ {n:'Rode bes',t:'bes',d:1.2,b:[4],c:[['snoei','Oude takken weg, zijtakken inkorten',[1,2]],['net','Net tegen vogels',[6]],['oogst','Bessen plukken',[7]]]},
+ {n:'Zomerframboos',t:'bes',d:1,b:[5,6],c:[['aanbind','Nieuwe scheuten aanbinden',[5,6,7],30],['oogst','Frambozen plukken',[6,7]],['snoei','Afgedragen takken bij de grond weghalen',[8]]]},
+ {n:'Herfstframboos',t:'bes',d:1,b:[6,7],c:[['snoei','Alle takken bij de grond afknippen',[2,3]],['oogst','Frambozen plukken',[8,9,10]]]},
+ {n:'Blauwe bes',t:'bes',d:1.2,b:[4,5],c:[['snoei','De oudste takken weghalen',[2,3]],['mest','Bemesten met mest voor zuurminnende planten',[4]],['oogst','Bessen plukken',[7,8]]]},
+ {n:'Kruisbes',t:'bes',d:1.2,b:[4],c:[['snoei','Uitdunnen: houd het hart open',[1,2]],['oogst','Kruisbessen plukken',[6,7]]]},
+ {n:'Clematis (late bloei)',t:'klim',d:1,b:[7,8,9],c:[['snoei','Terugknippen tot 30 cm boven de grond',[2,3]],['aanbind','Scheuten leiden en aanbinden',[4,5,6],30]]},
+ {n:'Clematis montana',t:'klim',d:2,b:[4,5],c:[['snoei','Na de bloei terugknippen als hij te groot wordt',[5,6]]]},
+ {n:'Blauwe regen',t:'klim',d:3,b:[5],c:[['zsnoei','Zomersnoei: lange scheuten terug tot 5 à 6 bladeren',[7,8]],['wsnoei','Wintersnoei: dezelfde scheuten terug tot 2 à 3 knoppen',[1,2]]]},
+ {n:'Kamperfoelie',t:'klim',d:1.5,b:[6,7,8],c:[['snoei','Na de bloei uitdunnen',[8,9]]]},
+ {n:'Klimop',t:'klim',d:2,b:[9,10],e:true,c:[['snoei','Terugknippen bij goten, ramen en dak',[4,8]]]},
+ {n:'Beukenhaag',t:'haag',d:0.6,b:[],c:[['knip1','Haag knippen',[6]],['knip2','Haag voor de tweede keer knippen',[8,9]]]},
+ {n:'Haagbeuk',t:'haag',d:0.6,b:[],c:[['knip1','Haag knippen',[6]],['knip2','Haag voor de tweede keer knippen',[8,9]]]},
+ {n:'Ligusterhaag',t:'haag',d:0.6,b:[7],e:true,c:[['knip1','Haag knippen',[5,6]],['knip2','Haag voor de tweede keer knippen',[8,9]]]},
+ {n:'Taxushaag',t:'haag',d:0.6,b:[],e:true,c:[['knip1','Haag knippen',[6]],['knip2','Haag voor de tweede keer knippen',[8,9]]]},
+ {n:'Laurierhaag',t:'haag',d:0.8,b:[5],e:true,c:[['knip1','Haag knippen met een snoeischaar: een heggenschaar beschadigt de grote bladeren',[6]],['knip2','Haag voor de tweede keer knippen',[8,9]]]},
+ {n:'Coniferenhaag',t:'haag',d:0.6,b:[],e:true,c:[['knip1','Haag knippen: niet terug tot in het bruine hout',[5]],['knip2','Haag voor de tweede keer knippen',[8]]]},
+ {n:'Pioenroos',t:'vast',d:0.8,b:[5,6],c:[['steun','Steun geven voordat de knoppen opengaan',[4]],['loof','Afgestorven loof afknippen',[10,11]]]},
+ {n:'Siergras',t:'gras',d:1.2,b:[8,9,10],c:[['snoei','Terugknippen tot 10 à 20 cm, voordat het nieuwe blad komt',[2,3]]]},
+ {n:'Hosta',t:'vast',d:0.6,b:[7,8],c:[['slak','Letten op slakken bij het uitlopen',[4,5,6],14],['loof','Afgestorven blad weghalen',[11]]]},
+ {n:'Kattenkruid',t:'vast',d:0.5,b:[5,6,7,8,9],c:[['snoei','Oude stengels terugknippen',[3]],['knip','Na de eerste bloei terugknippen: dan bloeit hij opnieuw',[7]]]},
+ {n:'Salvia',t:'vast',d:0.5,b:[6,7,8,9],c:[['snoei','Oude stengels terugknippen',[3]],['knip','Na de eerste bloei terugknippen voor een tweede bloei',[7]]]},
+ {n:'Zonnehoed',t:'vast',d:0.5,b:[7,8,9],c:[['snoei','Oude stengels terugknippen: in de winter laten staan voor vogels en insecten',[3]]]},
+ {n:'Rudbeckia',t:'vast',d:0.5,b:[8,9,10],c:[['snoei','Oude stengels terugknippen',[3]]]},
+ {n:'Ooievaarsbek',t:'vast',d:0.5,b:[5,6,7,8],c:[['knip','Na de bloei terugknippen voor nieuw blad en nabloei',[7]]]},
+ {n:'Daglelie',t:'vast',d:0.6,b:[6,7,8],c:[['deel','Delen als de pol te groot wordt, om de paar jaar',[4,9]],['loof','Afgestorven blad weghalen',[10,11]]]},
+ {n:'Astilbe',t:'vast',d:0.5,b:[6,7,8],c:[['snoei','Oude pluimen terugknippen',[3]],['water','Water geven bij droogte',[6,7,8]]]},
+ {n:'Lupine',t:'vast',d:0.5,b:[5,6,7],c:[['slak','Letten op slakken',[4,5],14],['bloem','Uitgebloeide aren wegknippen',[6,7]]]},
+ {n:'Dahlia',t:'vast',d:0.6,b:[7,8,9,10],f:true,c:[['plant','Knollen planten',[5]],['steun','Steun geven',[6]],['bloem','Uitgebloeide bloemen wegknippen',[7,8,9,10],14],['op','Knollen opgraven na de eerste nachtvorst en vorstvrij bewaren',[10,11]]]},
+ {n:'Tulpen en bollen',t:'bol',d:0.3,b:[3,4,5],c:[['loof','Loof laten afsterven, pas daarna weghalen',[6]],['plant','Nieuwe bollen planten',[10,11]]]}
+];
+const sierBy=n=>SIER.find(x=>x.n===n);
+/* soorten vlakken op de plattegrond */
+const SKIND={bed:'Moestuinbed',pad:'Pad',border:'Border',gazon:'Gazon',haag:'Haag',terras:'Terras',vijver:'Vijver',gebouw:'Schuur of gebouw'};
+const SIER_KINDS=['border','gazon','haag','terras','vijver','gebouw','pad'];
+const SHAPECARE={
+  gazon:[['maai','Gras maaien',[4,5,6,7,8,9,10],7],['mest1','Gazon bemesten',[4]],['mest2','Gazon bemesten met herfstmest',[9]],['vert','Verticuteren en kale plekken bijzaaien',[4,9]],['blad','Bladeren van het gras halen',[10,11],14]],
+  border:[['opschoon','Border opschonen: oude stengels weg en mulchen',[3]],['wied','Onkruid wieden',[4,5,6,7,8,9],21]],
+  vijver:[['pomp','Pomp en filter schoonmaken',[3]],['plant','Waterplanten terugknippen',[10]],['blad','Net over de vijver tegen vallend blad, of blad eruit scheppen',[10,11]]],
+  terras:[['voeg','Voegen onkruidvrij maken',[4,8]]],
+  haag:[['knip1','Haag knippen',[6]],['knip2','Haag voor de tweede keer knippen',[9]]]
+};
+const gKind=gid=>(S.gardens.find(g=>g.id===gid)?.kind)||'moestuin';
+const isSier=g=>g?.kind==='siertuin';
+const plantsIn=gid=>S.plants.filter(p=>p.gardenId===gid);
+const specOf=p=>sierBy(p.species)||{n:p.species,t:p.custom?.t||'vast',d:p.size||1,b:p.custom?.b||[],c:(p.custom?.s?.length?[['snoei','Snoeien',p.custom.s]]:[])};
+const ptype=p=>specOf(p).t;
+const shapeCare=b=>b.kind==='haag'&&sierBy(b.species)?sierBy(b.species).c:(SHAPECARE[b.kind]||[]);
+function shapeAt(gid,x,y){return allBedsOf(gid).find(b=>{const q=shapeOf(b);return inPoly(x,y,q)})}
+function typeIcon(t,size=22){
+  const c=`var(${(STYPE[t]||STYPE.vast).c})`,soil='<path d="M2 20h20v2H2z" fill="var(--soil)"/>';
+  const art={
+    boom:`${soil}<rect x="11" y="12" width="2" height="8" fill="var(--soil-2)"/><circle cx="12" cy="9" r="6.5" fill="${c}"/>`,
+    fruit:`${soil}<rect x="11" y="12" width="2" height="8" fill="var(--soil-2)"/><circle cx="12" cy="9" r="6.5" fill="var(--f-peul)"/><circle cx="9" cy="9" r="1.4" fill="var(--c-red)"/><circle cx="14.5" cy="7" r="1.4" fill="var(--c-red)"/><circle cx="13" cy="11.5" r="1.4" fill="var(--c-red)"/>`,
+    struik:`${soil}<circle cx="8" cy="15" r="4.5" fill="${c}"/><circle cx="16" cy="15" r="4.5" fill="${c}"/><circle cx="12" cy="11" r="5" fill="${c}"/>`,
+    bes:`${soil}<circle cx="8" cy="15" r="4.5" fill="var(--leaf)"/><circle cx="16" cy="15" r="4.5" fill="var(--leaf)"/><circle cx="12" cy="11" r="5" fill="var(--leaf)"/><circle cx="9" cy="14" r="1.2" fill="var(--c-red)"/><circle cx="11" cy="15.5" r="1.2" fill="var(--c-red)"/><circle cx="15" cy="13" r="1.2" fill="var(--c-red)"/>`,
+    klim:`${soil}<path d="M6 20V3M18 20V3" stroke="var(--stake)" stroke-width="1.2"/><path d="M12 20c-4-3 4-5 0-8s4-5 0-8" stroke="${c}" stroke-width="1.8" fill="none"/><circle cx="9" cy="10" r="1.6" fill="${c}"/><circle cx="15" cy="6" r="1.6" fill="${c}"/>`,
+    haag:`${soil}<path d="M3 20V9c1.5-2 3-2 4.5 0 1.5-2 3-2 4.5 0 1.5-2 3-2 4.5 0 1.5-2 3-2 4.5 0V20z" fill="${c}"/>`,
+    vast:`${soil}<path d="M12 20v-9" stroke="var(--leaf)" stroke-width="1.6"/><ellipse cx="9" cy="16" rx="3" ry="1.4" fill="var(--leaf)" transform="rotate(-25 9 16)"/><circle cx="12" cy="7" r="2" fill="var(--c-yellow)"/><circle cx="9" cy="7" r="2.3" fill="${c}"/><circle cx="15" cy="7" r="2.3" fill="${c}"/><circle cx="12" cy="4" r="2.3" fill="${c}"/><circle cx="12" cy="10" r="2.3" fill="${c}"/><circle cx="12" cy="7" r="1.6" fill="var(--c-yellow)"/>`,
+    gras:`${soil}<path d="M12 20C11 13 8 9 5 6M12 20c0-7 0-11 0-16M12 20c1-7 4-11 7-14M12 20c-2-5-5-7-8-8M12 20c2-5 5-7 8-8" stroke="${c}" stroke-width="1.4" fill="none" stroke-linecap="round"/>`,
+    bol:`${soil}<path d="M12 20v-8" stroke="var(--leaf)" stroke-width="1.6"/><path d="M8.5 6c0 4 1.5 6 3.5 6s3.5-2 3.5-6l-1.8 1.6L12 5l-1.7 2.6z" fill="var(--c-red)"/><ellipse cx="9" cy="16" rx="1.4" ry="3.5" fill="var(--leaf)" transform="rotate(-20 9 16)"/>`,
+    kruid:`${soil}<path d="M12 20V6" stroke="var(--leaf)" stroke-width="1.4"/><ellipse cx="9.5" cy="9" rx="2.6" ry="1" fill="${c}" transform="rotate(-30 9.5 9)"/><ellipse cx="14.5" cy="11" rx="2.6" ry="1" fill="${c}" transform="rotate(30 14.5 11)"/><ellipse cx="9.5" cy="14" rx="2.6" ry="1" fill="${c}" transform="rotate(-30 9.5 14)"/><ellipse cx="14.5" cy="16" rx="2.6" ry="1" fill="${c}" transform="rotate(30 14.5 16)"/>`
+  };
+  return `<svg class="stg" width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true">${art[t]||art.vast}</svg>`;
+}
+const KICON={border:'vast',gazon:'gras',haag:'haag',vijver:null,terras:null,gebouw:null};
+/* verzorgingstaken voor een siertuin */
+function sierTodo(gid){
+  const out=[],m=new Date().getMonth()+1,nm=m%12+1,wx=weatherOf(gid).kind,t=today();
+  const add=(prio,key,title,detail,extra={})=>{if(key&&doneRecently(key,extra.every||120))return;out.push({prio,key,title,detail,...extra})};
+  const split=txt=>{const i=txt.indexOf(':');return i>0?[txt.slice(0,i),txt.slice(i+1).trim()]:[txt,'']};
+  const careTasks=(items,keyBase,label,where,icon,extra)=>items.forEach(([k,txt,months,every])=>{
+    const [short,rest]=split(txt),key=`care:${keyBase}:${k}`;
+    if(months.includes(m)){
+      const last=!months.includes(nm);
+      add(every?2:(last?1:2),key,`${label}: ${short.charAt(0).toLowerCase()+short.slice(1)}`,[rest,where].filter(Boolean).join(' · '),{every:every||120,icon,...extra});
+    }else if(months.includes(nm)&&!every&&new Date().getDate()>=15){
+      add(3,key,`${label}: ${short.charAt(0).toLowerCase()+short.slice(1)}`,[rest,'vanaf '+MONTHS[nm-1],where].filter(Boolean).join(' · '),{every:120,icon,...extra});
+    }
+  });
+  /* planten: per soort samengenomen */
+  const groups={};
+  plantsIn(gid).forEach(p=>{(groups[p.species]=groups[p.species]||[]).push(p)});
+  Object.entries(groups).forEach(([name,ps])=>{
+    const sp=specOf(ps[0]),label=ps.length>1?`${name} (${ps.length}×)`:name;
+    const wh=[...new Set(ps.map(p=>shapeAt(gid,+p.x,+p.y)?.name).filter(Boolean))].join(', ');
+    careTasks(sp.c,`${gid}:${name}`,label,wh,typeIcon(sp.t,22),{plantRef:ps[0]});
+    if(sp.f&&wx==='vorst')add(1,`frost:${gid}:${name}`,`${label}: beschermen tegen vorst`,'vorst verwacht · dek af met vliesdoek of zet binnen',{every:3,icon:typeIcon(sp.t,22),plantRef:ps[0]});
+    const young=ps.filter(p=>p.planted&&diff(p.planted,t)<365);
+    if(young.length&&wx==='droog')add(1,`water:young:${gid}:${name}`,`${label}: water geven`,'nieuw geplant en warm, droog weer · geef ruim water bij de wortels',{every:2,icon:typeIcon(sp.t,22),water:true,plantRef:ps[0]});
+    if(wx==='storm'&&(sp.t==='boom'||sp.t==='fruit')&&ps.some(p=>p.planted&&diff(p.planted,t)<730))add(1,`storm:${gid}:${name}`,`${label}: boompaal en banden controleren`,'storm verwacht',{every:3,icon:typeIcon(sp.t,22),plantRef:ps[0]});
+  });
+  /* vlakken: gazon, border, haag, vijver, terras */
+  allBedsOf(gid).forEach(b=>{
+    const items=shapeCare(b);if(!items.length)return;
+    if(b.kind==='gazon'&&wx==='regen')return careTasks(items.filter(i=>i[0]!=='maai'),`${b.id}`,b.name,'',shapeIcon(b.kind),{bed:b});
+    careTasks(items,`${b.id}`,b.name,'',shapeIcon(b.kind),{bed:b});
+  });
+  return out.sort((a,b)=>a.prio-b.prio||String(a.title).localeCompare(b.title,'nl'));
+}
+function shapeIcon(kind,size=22){
+  const f={border:'var(--soil)',gazon:'var(--lawn)',haag:'var(--hedge)',terras:'var(--path)',vijver:'var(--water)',gebouw:'var(--roof)',pad:'var(--path)',bed:'var(--soil)'}[kind]||'var(--soil)';
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3" style="fill:${f}"/></svg>`;
+}
+/* een plant als cirkel op de plattegrond */
+function plantSvg(p,W,L){
+  const t=ptype(p),r=Math.max(0.15,(+p.size||specOf(p).d||1)/2);
+  return `<circle class="plt${p.id===S.selPlant?' sel':''}" data-act="select-plant" data-id="${esc(p.id)}" cx="${+p.x}" cy="${+p.y}" r="${r}" style="--pc:var(${(STYPE[t]||STYPE.vast).c})" vector-effect="non-scaling-stroke"><title>${esc(p.species)}${p.variety?' – '+esc(p.variety):''}</title></circle><circle class="pdot" cx="${+p.x}" cy="${+p.y}" r="${Math.min(0.08,r/3)}" style="fill:var(${(STYPE[t]||STYPE.vast).c})"/>`;
+}
+function plantDetail(id){
+  const p=S.plants.find(x=>x.id===id),sp=specOf(p),g=G(),inShape=shapeAt(g.id,+p.x,+p.y),m=new Date().getMonth()+1;
+  const logs=S.logs.filter(l=>l.plantId===id).sort((a,b)=>String(b.date).localeCompare(a.date)).slice(0,5);
+  const age=p.planted?(()=>{const y=diff(p.planted,today())/365.25;return y<1?`${Math.max(0,Math.round(y*12))} maanden`:`${Math.floor(y)} jaar`})():'';
+  return `<div class="row between"><div class="row" style="gap:10px">${typeIcon(sp.t,36)}<div><span class="label">${(STYPE[sp.t]||STYPE.vast).n}${sp.e?' · groenblijvend':''}${sp.f?' · vorstgevoelig':''}</span><h3>${esc(p.species)}${p.variety?` <span class="muted" style="font-weight:400">${esc(p.variety)}</span>`:''}</h3>
+    <span class="data muted">doorsnede ${fmtNum(+p.size||sp.d)} m${inShape?` · in ${esc(inShape.name)}`:''}${age?` · geplant ${fmt(p.planted)} (${age})`:''}</span></div></div>
+    <button class="btn small ghost" data-act="deselect" aria-label="Sluiten">✕</button></div>
+  ${p.notes?`<p class="muted" style="margin:0">${esc(p.notes)}</p>`:''}
+  <div class="stack"><span class="label">Verzorgingskalender</span>${careCalendar([[p.species,sp.b,sp.c]],m,true)}</div>
+  <div class="stack"><div class="row between"><span class="label">Logboek</span><button class="btn small w" data-act="add-log" data-plantx="${esc(id)}">+ Notitie</button></div>
+  ${logs.length?`<div class="list">${logs.map(logRow).join('')}</div>`:'<p class="muted">Nog geen notities voor deze plant.</p>'}</div>
+  <div class="row w"><button class="btn small" data-act="edit-plantx" data-id="${esc(id)}">Bewerken</button><button class="btn small danger" data-act="del-plantx" data-id="${esc(id)}">Verwijderen</button></div>
+  <p class="muted" style="margin:0;font-size:.8rem">Verplaatsen: Indeling aanpassen en de cirkel slepen.</p>`;
+}
+function shapeDetail(id){
+  const b=S.beds.find(x=>x.id===id),g=G(),m=new Date().getMonth()+1;
+  const inside=plantsIn(g.id).filter(p=>{const q=shapeOf(b);return inPoly(+p.x,+p.y,q)});
+  const care=shapeCare(b);
+  const logs=S.logs.filter(l=>l.bedId===id).sort((a,b)=>String(b.date).localeCompare(a.date)).slice(0,5);
+  return `<div class="row between"><div class="row" style="gap:10px">${shapeIcon(b.kind,32)}<div><span class="label">${SKIND[b.kind]||'Vlak'}${b.kind==='haag'&&b.species?' · '+esc(b.species):''}</span><h3>${esc(b.name)}</h3><span class="data muted">${sizeText(b)}</span></div></div>
+    <button class="btn small ghost" data-act="deselect" aria-label="Sluiten">✕</button></div>
+  ${b.notes?`<p class="muted" style="margin:0">${esc(b.notes)}</p>`:''}
+  ${['border','gazon'].includes(b.kind)?`<div class="stack"><div class="row between"><span class="label">Planten hier</span><button class="btn small primary w" data-act="add-plantx">+ Plant</button></div>
+    ${inside.length?`<div class="list">${inside.map(p=>`<div class="item"><span class="when">${typeIcon(ptype(p),22)}</span><div class="main"><b>${esc(p.species)}</b>${p.variety?` <span class="sub">${esc(p.variety)}</span>`:''}</div><button class="btn small ghost" data-act="select-plant" data-id="${esc(p.id)}">Bekijk</button></div>`).join('')}</div>`:'<p class="muted" style="margin:0">Nog geen planten. Voeg er een toe en zet hem op de plattegrond.</p>'}</div>`:''}
+  ${care.length?`<div class="stack"><span class="label">Verzorgingskalender</span>${careCalendar([[b.name,[],care]],m,true)}</div>`:''}
+  <div class="stack"><div class="row between"><span class="label">Logboek</span><button class="btn small w" data-act="add-log" data-bed="${esc(id)}">+ Notitie</button></div>
+  ${logs.length?`<div class="list">${logs.map(logRow).join('')}</div>`:'<p class="muted">Nog geen notities.</p>'}</div>
+  <div class="row w"><button class="btn small" data-act="edit-bed" data-id="${esc(id)}">Bewerken</button><button class="btn small danger" data-act="del-bed" data-id="${esc(id)}">Verwijderen</button></div>`;
+}
+/* kalender: rijen [naam, bloeimaanden, taken]; balken voor bloei, snoeien/knippen, oogst en overige zorg */
+const careCat=k=>/snoei|knip/.test(k)?'s':/oogst/.test(k)?'o':'z';
+function careCalendar(rows,m,compact){
+  const head=`<tr><th>${compact?'':'Plant'}</th>${MONTHS.map((x,i)=>`<th class="${i+1===m?'now':''}">${compact?x.charAt(0):x}</th>`).join('')}</tr>`;
+  const body=rows.map(([name,bloei,care])=>`<tr><td>${compact?'':`<b>${esc(name)}</b>`}</td>${MONTHS.map((_,i)=>{const k=i+1,has=c=>care.some(([kk,,ms])=>careCat(kk)===c&&ms.includes(k));
+    const tip=care.filter(([,,ms])=>ms.includes(k)).map(([,txt])=>txt.split(':')[0]).concat(bloei.includes(k)?['bloei']:[]).join(', ');
+    return `<td class="${k===m?'now':''}" title="${esc(tip)}"><div class="bars"><i class="${bloei.includes(k)?'b-bl':'b-x'}"></i><i class="${has('s')?'b-sn':'b-x'}"></i><i class="${has('z')?'b-zg':'b-x'}"></i><i class="${has('o')?'b-o':'b-x'}"></i></div></td>`}).join('')}</tr>`).join('');
+  const legend=`<div class="legend" style="font-size:.75rem"><span><i class="b-bl"></i>bloei</span><span><i class="b-sn"></i>snoeien of knippen</span><span><i class="b-zg"></i>overige verzorging</span><span><i class="b-o"></i>oogst</span></div>`;
+  const now=rows.flatMap(([,b,c])=>c.filter(([,,ms])=>ms.includes(m)).map(([,txt])=>txt));
+  return `<div class="tscroll"><table class="cal">${head}${body}</table></div>${legend}${compact&&now.length?`<div class="stack" style="gap:2px"><span class="muted" style="font-size:.8rem">Deze maand:</span>${now.map(x=>`<span style="font-size:.85rem">• ${esc(x)}</span>`).join('')}</div>`:''}`;
+}
+function sierSummary(g){
+  const ps=plantsIn(g.id),m=new Date().getMonth()+1;
+  const bloei=[...new Set(ps.filter(p=>specOf(p).b.includes(m)).map(p=>p.species))];
+  const trees=ps.filter(p=>['boom','fruit'].includes(ptype(p))).length;
+  const todos=todo(g.id).slice(0,6);
+  return `<div><span class="label">Overzicht · siertuin</span><h3>Wat speelt er in ${esc(g.name)}</h3></div>
+  <div class="stats"><div class="stat"><div class="v">${ps.length}</div><div class="muted">planten</div></div>
+  <div class="stat"><div class="v">${trees}</div><div class="muted">bomen</div></div>
+  <div class="stat"><div class="v">${bloei.length}</div><div class="muted">in bloei</div></div></div>
+  ${bloei.length?`<div class="row" style="gap:4px">${bloei.map(n=>`<span class="chip" style="--fc:var(--c-yellow)">${esc(n)}</span>`).join('')}</div>`:''}
+  <div class="stack"><div class="row between"><span class="label">Wat moet ik nu doen</span><button class="btn small ghost" data-act="view" data-v="planning">Alle taken</button></div>${todos.length?`<div class="list">${todos.map(todoRow).join('')}</div>`:`<p class="muted">Niets te doen deze maand. Voeg planten toe met <b>+ Plant</b>, of teken een gazon, border of haag.</p>`}</div>`;
+}
+function viewSierPlanning(){
+  const g=G(),m=new Date().getMonth()+1,ts=todo(g.id),ps=plantsIn(g.id);
+  const species=[...new Set(ps.map(p=>p.species))].sort((a,b)=>a.localeCompare(b,'nl'));
+  const rows=(S.calMine&&species.length?species.map(n=>{const sp=specOf(ps.find(p=>p.species===n));return [n,sp.b,sp.c]}):SIER.map(s=>[s.n,s.b,s.c]))
+    .concat(S.calMine?allBedsOf(g.id).filter(b=>shapeCare(b).length).map(b=>[b.name,[],shapeCare(b)]):[]);
+  const bloei=[...new Set(ps.filter(p=>specOf(p).b.includes(m)).map(p=>p.species))];
+  const libBloei=SIER.filter(s=>s.b.includes(m)).map(s=>s.n);
+  return `<div class="work">
+   <section class="panel"><div><span class="label">${esc(g.name)} · ${fmt(today())}</span><h2>Wat moet ik nu doen</h2></div>
+    ${weatherBar(g.id)}
+    ${ts.length?`<div class="list">${ts.map(todoRow).join('')}</div>`:`<p class="muted">Niets te doen deze maand. Voeg planten toe of teken een gazon, border of haag.</p>`}
+    <p class="muted" style="margin:0;font-size:.8rem">Taken komen uit de verzorgingskalender van je planten en vlakken, het weer en je logboek. Planten van dezelfde soort staan samen in één taak. "Gedaan" geldt dan voor allemaal.</p></section>
+   <aside class="panel"><div><span class="label">${MONTHS[m-1]}</span><h3>In bloei</h3></div>
+    <div class="stack"><span class="muted" style="font-size:.85rem">In jouw tuin</span><div class="row">${bloei.map(n=>`<span class="chip" style="--fc:var(--c-yellow)">${esc(n)}</span>`).join('')||'<span class="muted">Nu niets in bloei.</span>'}</div></div>
+    <div class="stack"><span class="muted" style="font-size:.85rem">Uit de plantenlijst</span><div class="row">${libBloei.map(n=>`<span class="chip">${esc(n)}</span>`).join('')||'<span class="muted">Niets.</span>'}</div></div></aside>
+  </div>
+  <section class="stack" style="margin-top:24px">
+   <div class="row between"><div><span class="label">Richtlijn voor Nederland</span><h2>Verzorgingskalender</h2></div>
+    <div class="filters"><button data-act="calmine" aria-pressed="${!S.calMine}">Alle planten</button><button data-act="calmine" data-v="1" aria-pressed="${!!S.calMine}">Alleen in deze tuin</button></div></div>
+   ${rows.length?careCalendar(rows,m,false):'<p class="muted">Nog geen planten of vlakken met verzorging in deze tuin.</p>'}
+  </section>`;
+}
+function sierPlantForm(p){
+  const g=G(),sp=p?sierBy(p.species):null,custom=p&&!sp;
+  const opts=Object.keys(STYPE).map(t=>{const xs=SIER.filter(s=>s.t===t);return xs.length?`<optgroup label="${STYPE[t].n}">${xs.map(s=>`<option${p?.species===s.n?' selected':''}>${s.n}</option>`).join('')}</optgroup>`:''}).join('');
+  const mbox=(name,sel)=>`<div class="mgrid">${MONTHS.map((x,i)=>`<label><input type="checkbox" name="${name}${i+1}"${(sel||[]).includes(i+1)?' checked':''}>${x}</label>`).join('')}</div>`;
+  const del=p?`<button type="button" class="btn danger" data-act="del-plantx" data-id="${esc(p.id)}" style="margin-right:auto">Verwijderen</button>`:'';
+  openModal(p?`${p.species} bewerken`:'Plant toevoegen',`<div class="fgrid">
+   ${fld('Plant',`<select name="species" id="f-species">${opts}<option value="__anders"${custom?' selected':''}>Anders…</option></select>`,true)}
+   <div class="fgrid full" id="f-pcustom" ${custom?'':'hidden'}>
+     ${fld('Naam',inp('cname',custom?p.species:''))}
+     ${fld('Soort',`<select name="ctype">${Object.entries(STYPE).map(([k,v])=>`<option value="${k}"${p?.custom?.t===k?' selected':''}>${v.n}</option>`).join('')}</select>`)}
+     <div class="field full"><span>Bloeit in</span>${mbox('cb',p?.custom?.b)}</div>
+     <div class="field full"><span>Snoeien in</span>${mbox('cs',p?.custom?.s)}</div></div>
+   ${fld('Ras of naam',inp('variety',p?.variety,'placeholder="Optioneel, bijv. Annabelle"'))}
+   ${fld('Geplant op',inp('planted',p?.planted||'','type="date"'))}
+   ${fld('Doorsnede (m)',inp('size',p?.size??'','type="number" min="0.1" step="0.1" inputmode="decimal"'))}
+   ${fld('Notitie',`<textarea name="notes">${esc(p?.notes||'')}</textarea>`,true)}
+   <div id="f-pinfo" class="full"></div></div>
+   ${p?'':'<p class="muted" style="margin:0;font-size:.85rem">Na <b>Opslaan</b> klik je op de plattegrond waar de plant staat.</p>'}`,
+  async d=>{
+    const isC=d.species==='__anders',name=isC?d.cname.trim():d.species;
+    if(!name)return 'Vul de naam van de plant in.';
+    const months=pf=>MONTHS.map((_,i)=>i+1).filter(i=>d[pf+i]==='on');
+    const base=isC?{t:d.ctype}:sierBy(name);
+    const data={species:name,variety:d.variety.trim(),planted:d.planted||'',size:num(d.size)||(isC?1:base.d),custom:isC?{t:d.ctype,b:months('cb'),s:months('cs')}:null,notes:d.notes.trim()};
+    if(p){await S.db.doc('plants/'+p.id).update(data);return}
+    closeModal();S.layout=false;S.place={...data,gardenId:g.id};S.sel=null;S.selPlant=null;render();return '__keep';
+  },del);
+  const info=()=>{const v=$('#f-species').value,c=v==='__anders';$('#f-pcustom').hidden=!c;const s=sierBy(v);
+    $('#f-pinfo').innerHTML=s?`<p class="muted" style="margin:0;font-size:.85rem">${STYPE[s.t].n}${s.e?', groenblijvend':''}${s.f?', vorstgevoelig':''}. Gangbare doorsnede ${fmtNum(s.d)} m.${s.b.length?` Bloeit ${fmtMonths(s.b)}.`:''} ${s.c.map((x,i)=>{const t=x[1].split(':')[0];return (i?t.charAt(0).toLowerCase()+t.slice(1):t)+' ('+fmtMonths(x[2])+')'}).join(', ')}.</p>`:'';
+    $('#f-size').placeholder=s?fmtNum(s.d):'1'};
+  $('#f-species').addEventListener('change',info);info();
 }
 
 /* ---------- planning ---------- */
@@ -973,7 +1259,8 @@ const inp=(name,val,attrs='')=>`<input name="${name}" id="f-${name}" value="${es
 function gardenForm(g){
   const del=g?`<button type="button" class="btn danger" data-act="del-garden" data-id="${esc(g.id)}" style="margin-right:auto">Tuin verwijderen</button>`:'';
   openModal(g?'Tuin bewerken':'Nieuwe tuin',`<div class="fgrid">
-   ${fld('Naam',inp('name',g?.name,'required placeholder="Bijv. Volkstuin De Horst"'),true)}
+   ${fld('Naam',inp('name',g?.name,'required placeholder="Bijv. Volkstuin De Horst"'))}
+   ${fld('Soort tuin',`<select name="kind"><option value="moestuin">Moestuin</option><option value="siertuin"${g?.kind==='siertuin'?' selected':''}>Siertuin of gewone tuin</option></select>`)}
    ${fld('Breedte (m)',inp('width',g?.width??8,'type="number" min="1" max="200" step="0.5" inputmode="decimal"'))}
    ${fld('Lengte (m)',inp('length',g?.length??6,'type="number" min="1" max="200" step="0.5" inputmode="decimal"'))}
    ${fld('Locatie of notitie',inp('place',g?.place,'placeholder="Optioneel"'),true)}
@@ -985,14 +1272,15 @@ function gardenForm(g){
     const lat=d.lat.trim()?num(d.lat):null,lon=d.lon.trim()?num(d.lon):null;
     if((lat===null)!==(lon===null))return 'Vul beide coördinaten in, of laat ze allebei leeg.';
     if(lat!==null&&(Math.abs(lat)>90||Math.abs(lon)>180))return 'Deze coördinaten kloppen niet. De breedtegraad ligt tussen −90 en 90, de lengtegraad tussen −180 en 180.';
-    const data={name:d.name.trim(),width:Math.max(1,num(d.width)),length:Math.max(1,num(d.length)),place:d.place.trim(),lat,lon};
+    const data={name:d.name.trim(),kind:d.kind==='siertuin'?'siertuin':'moestuin',width:Math.max(1,num(d.width)),length:Math.max(1,num(d.length)),place:d.place.trim(),lat,lon};
     if(g){await S.db.doc('gardens/'+g.id).update(data)}
     else{const ref=S.db.collection('gardens').doc();await ref.set({...data,createdBy:S.me,createdAt:new Date().toISOString()});S.gid=ref.id;store.set('mt.gid',ref.id);S.view='kaart'}
     schedule();
   },del);
 }
 function bedForm(b,pre){
-  const g=G(),kind=pre?.kind||b?.kind||'bed',pad=kind==='pad',isNew=!b;
+  const g=G(),sier=isSier(g),kind=pre?.kind||b?.kind||(sier?'border':'bed'),pad=kind==='pad'&&!sier,isNew=!b;
+  const hedges=SIER.filter(x=>x.t==='haag');
   const drawn=pre?.shape||(b&&!isRect(shapeOf(b))?shapeOf(b):null);
   const rect=b?bbox(shapeOf(b)):null;
   const num0=(n,v,a='')=>inp(n,v,`type="number" min="0" step="0.01" inputmode="decimal" ${a}`);
@@ -1011,9 +1299,11 @@ function bedForm(b,pre){
     <div class="fgrid full" data-form="rect tri l">
      ${fld('Van links (m)',num0('x',rect?.x??'','placeholder="Automatisch"'))}
      ${fld('Van boven (m)',num0('y',rect?.y??'','placeholder="Automatisch"'))}</div>`;
-  openModal(b?(pad?'Pad bewerken':'Bed bewerken'):(pad?'Nieuw pad':'Nieuw bed'),`<div class="fgrid">
-   ${fld('Naam',inp('name',b?.name??(pad?'Pad':`Bed ${bedsOf(g.id).length+1}`),'required'),pad)}
-   ${pad?'':fld('Soort',`<select name="env"><option value="buiten">Buitenbed</option><option value="kas"${isKas(b)?' selected':''}>Kas (onverwarmd)</option></select>`)}
+  openModal(sier?(b?`${SKIND[b.kind]||'Vlak'} bewerken`:'Nieuw vlak'):b?(pad?'Pad bewerken':'Bed bewerken'):(pad?'Nieuw pad':'Nieuw bed'),`<div class="fgrid">
+   ${fld('Naam',inp('name',b?.name??(sier?`${SKIND[kind]} ${allBedsOf(g.id).filter(x=>x.kind===kind).length+1}`:pad?'Pad':`Bed ${bedsOf(g.id).length+1}`),'required'),pad)}
+   ${sier?fld('Soort',`<select name="skind" id="f-skind">${SIER_KINDS.map(k=>`<option value="${k}"${k===kind?' selected':''}>${SKIND[k]}</option>`).join('')}</select>`)
+     +`<div class="field full" id="f-hedge" ${kind==='haag'?'':'hidden'}><span>Soort haag</span><select name="species"><option value="">Onbekend</option>${hedges.map(h=>`<option${b?.species===h.n?' selected':''}>${h.n}</option>`).join('')}</select></div>`
+     :pad?'':fld('Soort',`<select name="env"><option value="buiten">Buitenbed</option><option value="kas"${isKas(b)?' selected':''}>Kas (onverwarmd)</option></select>`)}
    ${shapeSel}
    ${posFields}
    ${drawn?'':`<p class="muted full" style="margin:0;font-size:.8rem">Positie in meters vanaf de linkerbovenhoek van ${esc(g.name)}. Laat leeg om automatisch een plek te kiezen.</p>`}
@@ -1021,7 +1311,8 @@ function bedForm(b,pre){
   async d=>{
     if(!d.name.trim())return pad?'Geef het pad een naam.':'Geef het bed een naam.';
     const form=d.form||'rect';
-    if(form==='draw'){closeModal();S.layout=true;S.draw={kind,gid:g.id,pts:[],name:d.name.trim(),env:d.env,notes:d.notes.trim()};S.sel=null;render();return '__keep'}
+    const kk=sier?d.skind:kind;
+    if(form==='draw'){closeModal();S.layout=true;S.draw={kind:kk,gid:g.id,pts:[],name:d.name.trim(),env:d.env,species:d.species||null,notes:d.notes.trim()};S.sel=null;render();return '__keep'}
     let pts;
     if(drawn)pts=drawn;
     else if(form==='tri'){pts=triangleFromSides(num(d.ta),num(d.tb),num(d.tc));if(!pts)return 'Met deze drie zijden kun je geen driehoek maken. Elke zijde moet korter zijn dan de andere twee samen.'}
@@ -1029,16 +1320,17 @@ function bedForm(b,pre){
     else{const w=num(d.w),h=num(d.h);if(w<=0||h<=0)return 'Breedte en lengte moeten groter dan 0 zijn.';pts=[[0,0],[w,0],[w,h],[0,h]]}
     if(!drawn){
       const hasPos=String(d.x).trim()!==''&&String(d.y).trim()!=='';
-      if(hasPos){pts=moveTo(pts,num(d.x),num(d.y));if(!fitsGarden(g,pts))return `Op deze plek valt het ${pad?'pad':'bed'} (deels) buiten de tuin. Pas de positie aan, of laat de positie leeg.`}
-      else{const spot=findSpot(g,pts);if(!spot)return `Het ${pad?'pad':'bed'} past nergens in de tuin. Maak het kleiner of pas de tuin aan.`;pts=spot.pts;if(!spot.free)setTimeout(()=>{S.layout=true;flash('Er was geen vrije plek, dus het bed ligt nu over iets anders heen. Sleep het naar de goede plek.')},50)}
+      if(hasPos){pts=moveTo(pts,num(d.x),num(d.y));const err=placeError(g,pts,b?.id,pad?'Het pad':sier?'Het vlak':'Het bed',' op deze plek',kk);if(err)return err+' Pas de positie aan, of laat de positie leeg.'}
+      else{const spot=findSpot(g,pts,b?.id);if(!spot)return `Het ${pad?'pad':'bed'} past nergens in de tuin. Maak het kleiner of pas de tuin aan.`;if(!spot.free)return `Er is geen vrije plek waar ${pad?'dit pad':'dit bed'} past. Maak ${pad?'het':'het'} kleiner, of maak eerst ruimte in de tuin.`;pts=spot.pts}
     }
     const bb=bbox(pts),rectShape=isRect(pts);
     const geo={shape:rectShape?null:pts,x:r3(bb.x),y:r3(bb.y),w:r3(bb.w),h:r3(bb.h)};
-    const data={name:d.name.trim(),kind,env:pad?'buiten':(d.env==='kas'?'kas':'buiten'),...geo,notes:d.notes.trim()};
+    const data={name:d.name.trim(),kind:kk,env:sier||pad?'buiten':(d.env==='kas'?'kas':'buiten'),species:sier&&kk==='haag'?(d.species||null):null,...geo,notes:d.notes.trim()};
     if(b)await S.db.doc('beds/'+b.id).update(data);
     else{const ref=S.db.collection('beds').doc();await ref.set({...data,gardenId:g.id,createdBy:S.me,createdAt:new Date().toISOString()});S.sel=ref.id}
     schedule();
   });
+  const sk=$('#f-skind');if(sk)sk.addEventListener('change',()=>{$('#f-hedge').hidden=sk.value!=='haag'});
   const sel=$('#f-form');
   const upd=()=>{
     const v=sel?sel.value:'rect';
@@ -1057,7 +1349,7 @@ function edgeLenForm(b,i){
     const len=num(d.len);if(!(len>0))return 'Vul een lengte groter dan 0 in.';
     const ux=(c[0]-a[0])/cur,uy=(c[1]-a[1])/cur,np=pts.map(q=>q.slice());
     np[(i+1)%pts.length]=[r3(a[0]+ux*len),r3(a[1]+uy*len)];
-    if(!fitsGarden(G(),np))return 'Met deze lengte komt het bed buiten de tuin. Verschuif het bed eerst of kies een andere zijde.';
+    const err=placeError(G(),np,b.id,'Het bed',' met deze lengte');if(err)return err+' Verschuif het bed eerst of kies een andere zijde.';
     await saveShape(b,np);
   });
 }
@@ -1106,15 +1398,15 @@ function plantForm(bedId,p,pre){
   };
   ['#f-crop','#f-sowDate'].forEach(s=>$(s).addEventListener('change',hint));$('[name=customFam]').addEventListener('change',hint);hint();
 }
-function logForm(bedId,plantId){
-  const g=G();const beds=bedsOf(g.id);
+function logForm(bedId,plantId,plantX){
+  const g=G(),sier=isSier(g);const beds=sier?allBedsOf(g.id):bedsOf(g.id);
   const plantOpts=bid=>`<option value="">— geen specifiek gewas —</option>`+S.plantings.filter(p=>p.bedId===bid&&p.status!=='afgerond').map(p=>`<option value="${esc(p.id)}"${p.id===plantId?' selected':''}>${esc(p.crop)}${p.variety?' ('+esc(p.variety)+')':''}</option>`).join('');
   const b0=bedId||'';
   openModal('Notitie of oogst',`<div class="fgrid">
    ${fld('Datum',inp('date',today(),'type="date" required'))}
    ${fld('Soort',`<select name="type" id="f-type">${Object.entries(LTYPES).map(([k,v])=>`<option value="${k}"${plantId&&k==='oogst'?' selected':''}>${v}</option>`).join('')}</select>`)}
    ${fld('Bed',`<select name="bedId" id="f-bed"><option value="">Hele tuin</option>${beds.map(b=>`<option value="${esc(b.id)}"${b.id===b0?' selected':''}>${esc(b.name)}</option>`).join('')}</select>`)}
-   ${fld('Gewas',`<select name="plantingId" id="f-plant">${plantOpts(b0)}</select>`)}
+   ${sier?fld('Plant',`<select name="plantX"><option value="">— geen specifieke plant —</option>${plantsIn(g.id).slice().sort((a,b)=>a.species.localeCompare(b.species,'nl')).map(p=>`<option value="${esc(p.id)}"${p.id===plantX?' selected':''}>${esc(p.species)}${p.variety?' ('+esc(p.variety)+')':''}</option>`).join('')}</select>`):fld('Gewas',`<select name="plantingId" id="f-plant">${plantOpts(b0)}</select>`)}
    <div class="fgrid full" id="f-amt">${fld('Hoeveelheid',inp('amount','','inputmode="decimal" placeholder="Bijv. 850"'))}${fld('Eenheid',`<select name="unit"><option value="g">gram</option><option value="kg">kilo</option><option value="stuks">stuks</option><option value="bos">bos</option></select>`)}</div>
    ${fld('Notitie',`<textarea name="text" placeholder="Wat heb je gedaan of gezien?"></textarea>`,true)}</div>`,
   async d=>{
@@ -1123,12 +1415,13 @@ function logForm(bedId,plantId){
     let amount=num(d.amount),unit=d.unit;
     if(d.type==='oogst'){if(!amount)return 'Vul in hoeveel je hebt geoogst.';if(unit==='kg'){amount=amount*1000;unit='g'}}
     else{amount=0;unit='';if(!d.text.trim())return 'Schrijf kort wat je hebt gedaan of gezien.'}
-    await S.db.collection('logs').doc().set({gardenId:g.id,bedId:d.bedId,plantingId:d.plantingId,crop:p?.crop||'',date:d.date,type:d.type,amount,unit,text:d.text.trim(),createdBy:S.me,createdAt:new Date().toISOString()});
+    const px=S.plants.find(x=>x.id===d.plantX);
+    await S.db.collection('logs').doc().set({gardenId:g.id,bedId:d.bedId,plantingId:d.plantingId||'',plantId:px?.id||'',crop:p?.crop||px?.species||'',date:d.date,type:d.type,amount,unit,text:d.text.trim(),createdBy:S.me,createdAt:new Date().toISOString()});
     if(d.type==='oogst'&&p&&p.status!=='oogst'&&p.status!=='afgerond')await S.db.doc('plantings/'+p.id).update({status:'oogst'});
   });
   const t=()=>{$('#f-amt').hidden=$('#f-type').value!=='oogst'};
   $('#f-type').addEventListener('change',t);t();
-  $('#f-bed').addEventListener('change',e=>{$('#f-plant').innerHTML=plantOpts(e.target.value)});
+  $('#f-bed').addEventListener('change',e=>{if($('#f-plant'))$('#f-plant').innerHTML=plantOpts(e.target.value)});
 }
 
 /* ---------- actions ---------- */
@@ -1172,12 +1465,12 @@ async function saveShape(b,pts){
 function flash(msg){S.flash=msg;render();clearTimeout(flash.t);flash.t=setTimeout(()=>{S.flash='';render()},4500)}
 async function finishDraw(){
   const d=S.draw;if(!d||d.pts.length<3)return;
-  if(d.kind!=='outline'&&!fitsGarden(G(),d.pts)){flash('De vorm loopt buiten de tuin. Haal het laatste punt weg of zet het anders.');return}
+  if(d.kind!=='outline'){const err=placeError(G(),d.pts,null,'De vorm','',d.kind);if(err){flash(err+' Haal het laatste punt weg of zet het anders.');return}}
   S.draw=null;S.noClick=true;setTimeout(()=>{S.noClick=false},300);
   if(d.kind==='outline'){const g=S.gardens.find(x=>x.id===d.gid);if(g){g.outline=d.pts;schedule();await S.db.doc('gardens/'+g.id).update({outline:d.pts})}return}
   if(d.name){
     const g=G(),bb=bbox(d.pts),ref=S.db.collection('beds').doc();
-    await ref.set({name:d.name,kind:d.kind,env:d.kind==='pad'?'buiten':(d.env==='kas'?'kas':'buiten'),shape:d.pts,x:r3(bb.x),y:r3(bb.y),w:r3(bb.w),h:r3(bb.h),notes:d.notes||'',gardenId:g.id,createdBy:S.me,createdAt:new Date().toISOString()});
+    await ref.set({name:d.name,kind:d.kind,species:d.species||null,env:d.kind==='bed'&&d.env==='kas'?'kas':'buiten',shape:d.pts,x:r3(bb.x),y:r3(bb.y),w:r3(bb.w),h:r3(bb.h),notes:d.notes||'',gardenId:g.id,createdBy:S.me,createdAt:new Date().toISOString()});
     S.sel=ref.id;schedule();return;
   }
   schedule();bedForm(null,{shape:d.pts,kind:d.kind});
@@ -1191,18 +1484,32 @@ document.addEventListener('pointerdown',e=>{
     if(r&&e.clientX>r.left-16&&e.clientX<r.right+16&&e.clientY>r.top-16&&e.clientY<r.bottom+16)map=m;
   }
   if(!map)return;
+  if(S.place){
+    e.preventDefault();const p=mapPos(e),g=G(),pl=S.place;
+    const x=Math.round(p.rx*20)/20,y=Math.round(p.ry*20)/20;
+    if(!inGarden(g,x,y)){flash('Dit punt ligt buiten de tuin.');return}
+    S.place=null;S.noClick=true;setTimeout(()=>{S.noClick=false},300);
+    const ref=S.db.collection('plants').doc();
+    ref.set({...pl,x,y,createdBy:S.me,createdAt:new Date().toISOString()}).then(()=>{S.selPlant=ref.id;S.sel=null;schedule()}).catch(err=>{flash(errText(err))});
+    return;
+  }
   if(S.draw){
     e.preventDefault();
     const p=mapPos(e),d=S.draw;
     if(d.pts.length>=3){const [fx,fy]=d.pts[0];if(Math.hypot((fx-p.rx)/p.W*p.r.width,(fy-p.ry)/p.L*p.r.height)<14){finishDraw();return}}
     const g=G();
     if(d.kind!=='outline'&&!inGarden(g,p.x,p.y)){flash('Dit punt ligt buiten de tuin.');return}
+    if(d.kind!=='outline'&&d.kind!=='gazon'){const hit=allBedsOf(g.id).find(b=>{if(b.kind==='gazon')return false;const q=shapeOf(b);return inPoly(p.x,p.y,q)&&!onEdge(p.x,p.y,q)});if(hit){flash(`Dit punt ligt in ${hit.name}.`);return}}
     S.flash='';
     const last=d.pts[d.pts.length-1];
     if(!last||last[0]!==p.x||last[1]!==p.y)d.pts.push([p.x,p.y]);
     render();return;
   }
   if(!S.layout)return;
+  const pl=e.target.closest('.plt');
+  if(pl){const pp=S.plants.find(x=>x.id===pl.dataset.id);if(!pp)return;const p0=mapPos(e);
+    drag={mode:'pl',pp,sx:e.clientX,sy:e.clientY,start:[p0.rx,p0.ry],ox:+pp.x,oy:+pp.y,nx:+pp.x,ny:+pp.y,moved:false,W:p0.W,L:p0.L};
+    try{map.setPointerCapture(e.pointerId)}catch(_){};e.preventDefault();return}
   const vh=e.target.closest('.vh'),mh=e.target.closest('.mh'),shp=e.target.closest('.shp');
   if(mh){
     e.preventDefault();const b=S.beds.find(x=>x.id===S.sel);if(!b)return;
@@ -1229,13 +1536,19 @@ document.addEventListener('pointermove',e=>{
   if(!d.moved&&Math.hypot(e.clientX-d.sx,e.clientY-d.sy)<4)return;
   d.moved=true;
   const p=mapPos(e);if(!p)return;
+  if(d.mode==='pl'){
+    const x=Math.round((d.ox+p.rx-d.start[0])*20)/20,y=Math.round((d.oy+p.ry-d.start[1])*20)/20;
+    if(!inGarden(G(),x,y))return;d.nx=x;d.ny=y;
+    const c=document.querySelector(`.plt[data-id="${CSS.escape(d.pp.id)}"]`);if(c){c.setAttribute('cx',x);c.setAttribute('cy',y);const dot=c.nextElementSibling;if(dot){dot.setAttribute('cx',x);dot.setAttribute('cy',y)}}
+    return;
+  }
   let pts;
   if(d.mode==='mv'){
     const bb=bbox(d.orig);
     const dx=clamp(snap(p.rx-d.start[0]),-bb.x,d.W-bb.x-bb.w),dy=clamp(snap(p.ry-d.start[1]),-bb.y,d.L-bb.y-bb.h);
     pts=d.orig.map(([x,y])=>[Math.round((x+dx)*100)/100,Math.round((y+dy)*100)/100]);
   }else{pts=d.orig.map(q=>q.slice());pts[d.vi]=[p.x,p.y]}
-  if(!fitsGarden(G(),pts))return;
+  if(!fitsGarden(G(),pts)||overlapsWith(G(),pts,d.b.id,d.b.kind).length)return;
   d.pts=pts;
   const el=document.querySelector(`.shp[data-id="${CSS.escape(d.b.id)}"]`);if(el)el.setAttribute('points',pts.map(q=>q.join(',')).join(' '));
   document.querySelectorAll('.vh').forEach(h=>{const q=pts[+h.dataset.vi];if(q){h.style.left=q[0]/d.W*100+'%';h.style.top=q[1]/d.L*100+'%'}});
@@ -1243,10 +1556,16 @@ document.addEventListener('pointermove',e=>{
 });
 async function endDrag(){
   if(!drag)return;const d=drag;drag=null;
+  if(d.mode==='pl'){
+    S.noClick=true;setTimeout(()=>{S.noClick=false},50);
+    if(d.moved&&(d.nx!==d.ox||d.ny!==d.oy)){d.pp.x=d.nx;d.pp.y=d.ny;schedule();try{await S.db.doc('plants/'+d.pp.id).update({x:d.nx,y:d.ny})}catch(err){flash(errText(err))}return}
+    if(!d.moved){S.selPlant=d.pp.id;S.sel=null}
+    schedule();return;
+  }
   if(d.moved&&d.pts){
     S.noClick=true;setTimeout(()=>{S.noClick=false},50);
     if(d.pts.some((q,i)=>q[0]!==d.orig[i][0]||q[1]!==d.orig[i][1])){await saveShape(d.b,d.pts);return}
-  }else if(!d.moved&&d.mode==='mv'){S.sel=d.b.id;S.noClick=true;setTimeout(()=>{S.noClick=false},50)}
+  }else if(!d.moved&&d.mode==='mv'){S.sel=d.b.id;S.selPlant=null;S.noClick=true;setTimeout(()=>{S.noClick=false},50)}
   schedule();
 }
 document.addEventListener('pointerup',endDrag);
@@ -1259,7 +1578,7 @@ document.addEventListener('dblclick',e=>{
 });
 
 document.addEventListener('change',e=>{if(e.target.id==='gpick'){S.gid=e.target.value;S.sel=null;store.set('mt.gid',S.gid);render()}});
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('#modalroot').innerHTML)closeModal();else if(S.draw){S.draw=null;render()}});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('#modalroot').innerHTML)closeModal();else if(S.draw){S.draw=null;render()}else if(S.place){S.place=null;render()}});
 document.addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]');if(!el)return;
   const a=el.dataset.act,id=el.dataset.id;
@@ -1268,33 +1587,40 @@ document.addEventListener('click',async e=>{
   switch(a){
     case 'view':S.view=el.dataset.v;store.set('mt.view',S.view);render();break;
     case 'close-modal':closeModal();break;
-    case 'select-bed':if(S.draw)break;if(S.noClick){S.noClick=false;break}S.sel=id;if(el.dataset.goto){S.view='kaart';store.set('mt.view','kaart')}render();break;
+    case 'select-bed':if(S.draw||S.place)break;if(S.noClick){S.noClick=false;break}S.sel=id;S.selPlant=null;if(el.dataset.goto){S.view='kaart';store.set('mt.view','kaart')}render();break;
     case 'layout':S.layout=!S.layout;S.draw=null;render();break;
     case 'draw':S.draw={kind:el.dataset.k,gid:G().id,pts:[]};S.sel=null;render();break;
     case 'draw-done':await finishDraw();break;
     case 'edge-len':{const b=S.beds.find(x=>x.id===S.sel);if(b)edgeLenForm(b,+el.dataset.ei);break}
     case 'rotate':case 'mirror':{const b=S.beds.find(x=>x.id===S.sel);if(!b)break;const np=a==='rotate'?rotate90(shapeOf(b)):mirrorX(shapeOf(b));
-      if(!fitsGarden(G(),np)){const spot=findSpot(G(),np);if(!spot){flash('Zo past het bed niet in de tuin.');break}await saveShape(b,spot.pts);flash('Gedraaid en verplaatst zodat het binnen de tuin past.');break}
+      if(placeError(G(),np,b.id,'Het bed')){const spot=findSpot(G(),np,b.id);if(!spot||!spot.free){flash('Zo past het bed nergens: het komt buiten de tuin of op een ander bed.');break}await saveShape(b,spot.pts);flash('Gedraaid en verplaatst naar een vrije plek.');break}
       await saveShape(b,np);break}
     case 'draw-undo':if(S.draw){S.draw.pts.pop();render()}break;
     case 'draw-cancel':S.draw=null;render();break;
     case 'outline-clear':armed(el,async()=>{const g=G();g.outline=null;schedule();await S.db.doc('gardens/'+g.id).update({outline:null})});break;
     case 'succ':plantForm(el.dataset.bed,null,{crop:el.dataset.crop,sowDate:el.dataset.date});break;
-    case 'deselect':S.sel=null;render();break;
+    case 'deselect':S.sel=null;S.selPlant=null;render();break;
+    case 'select-plant':if(S.draw||S.place)break;if(S.noClick){S.noClick=false;break}S.selPlant=id;S.sel=null;if(S.view!=='kaart'){S.view='kaart';store.set('mt.view','kaart')}render();break;
+    case 'add-plantx':sierPlantForm();break;
+    case 'edit-plantx':sierPlantForm(S.plants.find(x=>x.id===id));break;
+    case 'del-plantx':armed(el,async()=>{closeModal();S.selPlant=null;await S.db.doc('plants/'+id).delete()});break;
+    case 'place-cancel':S.place=null;render();break;
+    case 'draw-sier':S.draw={kind:$('#drawkind').value,gid:G().id,pts:[]};S.sel=null;S.selPlant=null;render();break;
     case 'add-garden':gardenForm();break;
     case 'edit-garden':gardenForm(G());break;
     case 'add-bed':bedForm();break;
     case 'edit-bed':bedForm(S.beds.find(b=>b.id===id));break;
     case 'add-plant':plantForm(el.dataset.bed);break;
     case 'edit-plant':{const p=S.plantings.find(x=>x.id===id);plantForm(p.bedId,p);break}
-    case 'add-log':logForm(el.dataset.bed,el.dataset.plant);break;
+    case 'add-log':logForm(el.dataset.bed,el.dataset.plant,el.dataset.plantx);break;
     case 'logfilter':S.logFilter=el.dataset.v;render();break;
     case 'weather-auto':{const g=G();el.disabled=true;await S.db.doc('weather/'+g.id).delete();break}
     case 'logout':el.disabled=true;await window.MT.signOut();break;
     case 'profile':openModal('Je naam',`${fld('Naam die anderen zien',inp('dname',S.myName||'','required'),true)}`,async d=>{const n=d.dname.trim();if(!n)return 'Vul een naam in.';await window.MT.setName(n);S.myName=n;$('#who').textContent=n;schedule()});break;
     case 'weather':{const g=G();el.disabled=true;await S.db.doc('weather/'+g.id).set({kind:el.dataset.v,setAt:new Date().toISOString(),setBy:S.me});break}
     case 'todo-done':{const g=G();el.disabled=true;const p=S.plantings.find(x=>x.id===el.dataset.plant);
-      await S.db.collection('logs').doc().set({gardenId:g.id,bedId:el.dataset.bed||'',plantingId:el.dataset.plant||'',crop:p?.crop||'',date:today(),type:el.dataset.water?'water':'werk',amount:0,unit:'',text:el.dataset.title,taskKey:el.dataset.key,createdBy:S.me,createdAt:new Date().toISOString()});break}
+      const pr=S.plants.find(x=>x.id===el.dataset.plantref);
+      await S.db.collection('logs').doc().set({gardenId:g.id,bedId:el.dataset.bed||'',plantingId:el.dataset.plant||'',plantId:pr?.id||'',crop:p?.crop||pr?.species||'',date:today(),type:el.dataset.water?'water':'werk',amount:0,unit:'',text:el.dataset.title,taskKey:el.dataset.key,createdBy:S.me,createdAt:new Date().toISOString()});break}
     case 'calmine':S.calMine=!!el.dataset.v;render();break;
     case 'load-example':el.disabled=true;el.textContent='Bezig…';await loadExample();break;
     case 'next':{const p=S.plantings.find(x=>x.id===id);const n=FLOW[FLOW.indexOf(p.status)+1];if(!n)break;el.disabled=true;
@@ -1303,7 +1629,7 @@ document.addEventListener('click',async e=>{
     case 'del-log':armed(el,()=>S.db.doc('logs/'+id).delete());break;
     case 'del-plant':armed(el,async()=>{await S.db.doc('plantings/'+id).delete();closeModal()});break;
     case 'del-bed':armed(el,async()=>{S.sel=null;await delMany('plantings',plantsOf(id));await delMany('logs',S.logs.filter(l=>l.bedId===id));await S.db.doc('beds/'+id).delete()});break;
-    case 'del-garden':armed(el,async()=>{closeModal();await delMany('logs',S.logs.filter(l=>l.gardenId===id));await delMany('plantings',S.plantings.filter(p=>p.gardenId===id));await delMany('beds',S.beds.filter(b=>b.gardenId===id));await S.db.doc('gardens/'+id).delete();S.gid=null;schedule()});break;
+    case 'del-garden':armed(el,async()=>{closeModal();await delMany('logs',S.logs.filter(l=>l.gardenId===id));await delMany('plantings',S.plantings.filter(p=>p.gardenId===id));await delMany('beds',S.beds.filter(b=>b.gardenId===id));await delMany('plants',S.plants.filter(p=>p.gardenId===id));await S.db.doc('gardens/'+id).delete();S.gid=null;schedule()});break;
   }}catch(err){console.error(err);if(err?.code==='invalid_argument'){S.canWrite=false;document.body.classList.add('readonly');render()}}
 });
 render();
