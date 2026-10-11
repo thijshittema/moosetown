@@ -172,9 +172,11 @@ textarea{min-height:70px;resize:vertical}
 .shapeprev{width:140px;height:100px;flex:none;border:1px solid var(--line);border-radius:8px;background:var(--grass)}
 .shapeprev polygon{fill:var(--soil);stroke:var(--ink);stroke-width:1.5}
 .shp.k-border{fill:url(#pBorder)} .shp.k-gazon{fill:url(#pGazon)} .shp.k-haag{fill:url(#pHaag)} .shp.k-vijver{fill:url(#pWater);stroke:var(--water-2)} .shp.k-terras{fill:url(#pTerras);stroke:var(--path-line)} .shp.k-gebouw{fill:url(#pGebouw);stroke:var(--roof-line)}
-.plt{fill:color-mix(in srgb,var(--pc) 30%,transparent);stroke:var(--pc);stroke-width:1.5;cursor:pointer}
-.plt:hover{stroke-width:2.5} .plt.sel{stroke:var(--accent);stroke-width:3} .map.editing .plt{cursor:move;touch-action:none} .pdot{pointer-events:none}
-.plbl{position:absolute;transform:translate(-50%,3px);font-size:.62rem;font-weight:700;color:var(--ink);background:color-mix(in srgb,var(--surface) 80%,transparent);padding:0 4px;border-radius:4px;white-space:nowrap;pointer-events:none}
+.plt{cursor:pointer} .plt .pbg{fill:var(--surface);stroke:var(--pc);stroke-width:1.5} .plt svg{pointer-events:none}
+.plt:hover .pbg{stroke-width:2.5} .plt.sel .pbg{stroke:var(--accent);stroke-width:3} .map.editing .plt{cursor:move;touch-action:none}
+.pcrown{fill:color-mix(in srgb,var(--pc) 10%,transparent);stroke:var(--pc);stroke-width:1.2;stroke-dasharray:4 3;pointer-events:none} .pcrown.sel{stroke:var(--accent);fill:color-mix(in srgb,var(--accent) 8%,transparent)}
+.plbl.al{--tx:-12px} .plbl.ar{--tx:calc(-100% + 12px)} .plbl.ab{--ty:calc(-100% - 3px)} .plbl.hid{visibility:hidden} .plbl.sel{z-index:1;outline:2px solid var(--accent)}
+.plbl{position:absolute;transform:translate(var(--tx,-50%),var(--ty,3px));font-size:.62rem;font-weight:700;color:var(--ink);background:color-mix(in srgb,var(--surface) 80%,transparent);padding:0 4px;border-radius:4px;white-space:nowrap;pointer-events:none}
 .mgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px} .mgrid label{display:flex;align-items:center;gap:3px;font-size:.78rem} .mgrid input{width:auto}
 .b-bl{background:var(--c-yellow)} .b-sn{background:var(--accent)} .b-zg{background:var(--leaf)}
 .toolbar select{width:auto}
@@ -605,7 +607,7 @@ const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},se
 
 /* ---------- state ---------- */
 const S={gardens:[],beds:[],plantings:[],logs:[],weather:[],plants:[],selPlant:null,place:null,loaded:{},db:null,user:null,me:null,canWrite:true,
-  gid:store.get('mt.gid'),view:store.get('mt.view')||'kaart',sel:null,logFilter:'alle',calMine:false,status:'laden'};
+  gid:store.get('mt.gid'),view:store.get('mt.view')||'kaart',sel:null,logFilter:'alle',calMine:false,crowns:!!store.get('mt.crowns'),status:'laden'};
 const G=()=>S.gardens.find(g=>g.id===S.gid);
 const allBedsOf=gid=>S.beds.filter(b=>b.gardenId===gid);
 const bedsOf=gid=>S.beds.filter(b=>b.gardenId===gid&&!isPad(b)).sort((a,b)=>String(a.name).localeCompare(b.name,'nl',{numeric:true}));
@@ -648,7 +650,19 @@ function render(){
   const views={kaart:viewMap,planning:sier?viewSierPlanning:viewPlanning,logboek:viewLog,rotatie:viewRotation};
   m.innerHTML=ro+(views[S.view]||viewMap)();
   resolveNames();
+  tidyPlantLabels();
 }
+/* plantnamen die over elkaar vallen verbergen; de geselecteerde plant houdt altijd zijn naam */
+function tidyPlantLabels(){
+  const ls=[...document.querySelectorAll('.plbl')];if(!ls.length)return;
+  ls.forEach(l=>l.classList.remove('hid'));
+  const kept=[],hit=(a,b)=>a.left<b.right+2&&b.left<a.right+2&&a.top<b.bottom&&b.top<a.bottom;
+  const icons=[...document.querySelectorAll('.plt .pbg')].map(c=>c.getBoundingClientRect());
+  ls.sort((a,b)=>(b.classList.contains('sel')-a.classList.contains('sel'))).forEach(l=>{
+    const r=l.getBoundingClientRect();
+    if(!l.classList.contains('sel')&&(kept.some(k=>hit(r,k))||icons.some(k=>hit(r,k))))l.classList.add('hid');else kept.push(r)});
+}
+let tidyT;window.addEventListener('resize',()=>{clearTimeout(tidyT);tidyT=setTimeout(tidyPlantLabels,150)});
 function renderGardenSelect(){
   const el=$('#gsel');
   if(!S.gardens.length){el.innerHTML='';return}
@@ -694,7 +708,7 @@ function viewMap(){
       +`<span class="el live" id="dlen" style="display:none"></span>`:'';
   const area=beds.reduce((s,b)=>s+areaOf(b),0);
   const DRAWN={bed:'een bed',pad:'een pad',outline:'de vorm van de tuin'};
-  const toolbar=!S.canWrite?'':S.place?`<div class="notice stack" style="margin:0;gap:6px"><span>Klik op de plattegrond waar <b>${esc(S.place.species)}</b> staat. Het midden van de cirkel is de stam of het hart van de plant.</span>${S.flash?`<span class="flash">${esc(S.flash)}</span>`:''}<div class="toolbar"><button class="btn small ghost" data-act="place-cancel">Annuleren</button></div></div>`:d?`<div class="notice stack" style="margin:0;gap:6px"><span>Je tekent ${DRAWN[d.kind]}. Klik de hoekpunten één voor één aan op de plattegrond; schuin mag ook. Klik op het eerste punt of op Klaar om de vorm te sluiten.</span>
+  const toolbar=!S.canWrite?'':S.place?`<div class="notice stack" style="margin:0;gap:6px"><span>Klik op de plattegrond waar <b>${esc(S.place.species)}</b> staat. Het icoontje komt op de stam of het hart van de plant.</span>${S.flash?`<span class="flash">${esc(S.flash)}</span>`:''}<div class="toolbar"><button class="btn small ghost" data-act="place-cancel">Annuleren</button></div></div>`:d?`<div class="notice stack" style="margin:0;gap:6px"><span>Je tekent ${DRAWN[d.kind]}. Klik de hoekpunten één voor één aan op de plattegrond; schuin mag ook. Klik op het eerste punt of op Klaar om de vorm te sluiten.</span>
       ${S.flash?`<span class="flash">${esc(S.flash)}</span>`:''}
       <div class="toolbar"><button class="btn small primary" data-act="draw-done"${d.pts.length<3?' disabled':''}>Klaar (${d.pts.length} ${d.pts.length===1?'punt':'punten'})</button><button class="btn small" data-act="draw-undo"${d.pts.length?'':' disabled'}>Laatste punt weg</button><button class="btn small ghost" data-act="draw-cancel">Annuleren</button></div></div>`
     :S.layout?`<div class="notice stack" style="margin:0;gap:6px"><span>Sleep ${sier?'een vlak of plant':'een bed of pad'} om het te verplaatsen. Kies ${sier?'een vlak':'een bed'} om de hoekpunten te zien: sleep een punt om de vorm te veranderen, klik op + voor een extra hoek, dubbelklik op een punt om het weg te halen. Klik op een lengte om de exacte maat in te typen. Alles springt per 25 cm en wordt direct opgeslagen.</span>
@@ -704,7 +718,7 @@ function viewMap(){
   return `<div class="work">
     <section class="mapwrap">
       <div class="maphead"><div><h2>${esc(g.name)}</h2><span class="muted data">${W} × ${L} m · ${sier?`${plist.length} planten · ${fmtNum(all.filter(b=>b.kind==='border').reduce((s,b)=>s+areaOf(b),0))} m² border · ${fmtNum(all.filter(b=>b.kind==='gazon').reduce((s,b)=>s+areaOf(b),0))} m² gazon`:`${beds.length} bedden · ${fmtNum(area)} m² beplantbaar`}</span></div>
-        <div class="row w">${d?'':`<button class="btn small${S.layout?' primary':''}" data-act="layout">${S.layout?'Klaar met indelen':'Indeling aanpassen'}</button>`}${S.layout||d||S.place?'':`<button class="btn small" data-act="edit-garden">Tuin bewerken</button>${sier?`<button class="btn small" data-act="add-bed">+ Vlak</button><button class="btn small primary" data-act="add-plantx">+ Plant</button>`:`<button class="btn small primary" data-act="add-bed">+ Bed</button>`}`}</div></div>
+        <div class="row w">${sier&&plist.length&&!d?`<button class="btn small" data-act="crowns" aria-pressed="${!!S.crowns}" title="Toon hoe breed elke plant volgroeid wordt">Kroonbreedte</button>`:''}${d?'':`<button class="btn small${S.layout?' primary':''}" data-act="layout">${S.layout?'Klaar met indelen':'Indeling aanpassen'}</button>`}${S.layout||d||S.place?'':`<button class="btn small" data-act="edit-garden">Tuin bewerken</button>${sier?`<button class="btn small" data-act="add-bed">+ Vlak</button><button class="btn small primary" data-act="add-plantx">+ Plant</button>`:`<button class="btn small primary" data-act="add-bed">+ Bed</button>`}`}</div></div>
       ${toolbar}
       ${outOnly.length||pairs.length?`<p class="notice" style="margin:0">${outOnly.length?`<b>Buiten de tuin:</b> ${outOnly.map(b=>esc(b.name)).join(', ')}. `:''}${pairs.length?`<b>Overlappen elkaar:</b> ${pairs.map(([a,b])=>esc(a.name)+' en '+esc(b.name)).join('; ')}. `:''}Ze zijn rood omlijnd. Verplaats of verklein ze via Indeling aanpassen.</p>`:''}
       <div class="map${S.layout?' editing':''}${d||S.place?' drawing':''}" id="map" data-w="${W}" data-l="${L}" style="aspect-ratio:${W}/${L};max-width:calc(70vh * ${(W/L).toFixed(4)});background-size:${100/W}% ${100/L}%">
@@ -720,9 +734,9 @@ function viewMap(){
             <pattern id="pGebouw" width="0.3" height="0.3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="0.3" height="0.3" style="fill:var(--roof)"/><rect width="0.06" height="0.3" style="fill:var(--roof-line)"/></pattern>
             <pattern id="pPad" width="0.3" height="0.3" patternUnits="userSpaceOnUse"><rect width="0.3" height="0.3" style="fill:var(--path)"/><path d="M0 0H0.3V0.3" style="fill:none;stroke:var(--path-line);stroke-width:0.02"/></pattern>
           </defs>
-          ${outside}${polys}${plist.map(p=>plantSvg(p,W,L)).join('')}${draft}
+          ${outside}${polys}${plist.filter(p=>S.crowns||p.id===S.selPlant).map(plantCrown).join('')}${plist.map(p=>plantSvg(p,W,L)).join('')}${draft}
         </svg>
-        <div class="ovl">${labels}${plist.map(p=>`<span class="plbl" style="left:${+p.x/W*100}%;top:${(+p.y+Math.max(0.15,(+p.size||specOf(p).d)/2))/L*100}%">${esc(p.species)}</span>`).join('')}${handles}${dots}</div>
+        <div class="ovl">${labels}${plist.map(p=>`<span class="plbl${p.id===S.selPlant?' sel':''}${+p.x<W*0.1?' al':+p.x>W*0.9?' ar':''}${+p.y>L*0.9?' ab':''}" style="left:${+p.x/W*100}%;top:${(+p.y+(+p.y>L*0.9?-1:1)*iconSize(W,L)/2)/L*100}%">${esc(p.species)}</span>`).join('')}${handles}${dots}</div>
       </div>
       <div class="ruler" style="max-width:calc(70vh * ${(W/L).toFixed(4)});margin-inline:auto;width:100%"><span>0 m</span><span>raster = 1 m</span><span>${W} m</span></div>
       ${sier?(all.length||plist.length?'':`<p class="muted">Nog leeg. Teken een gazon, border, haag of terras met <b>Indeling aanpassen</b>, of zet planten neer met <b>+ Plant</b>.</p>`):beds.length?'':`<p class="muted">Nog geen bedden. Klik op <b>+ Bed</b> voor een rechthoek met maten, of op <b>Indeling aanpassen → Bed tekenen</b> om zelf een vorm te tekenen.</p>`}
@@ -969,7 +983,7 @@ const SIER=[
 ];
 const sierBy=n=>SIER.find(x=>x.n===n);
 /* extra zoekwoorden: Latijnse en andere namen */
-const SIER_ALIAS={'Laurierhaag':'laurierkers prunus laurocerasus','Portugese laurier':'prunus lusitanica laurierhaag','Hortensia':'hydrangea macrophylla boerenhortensia','Pluimhortensia':'hydrangea paniculata limelight','Bolhortensia':'hydrangea arborescens annabelle','Klimhortensia':'hydrangea petiolaris anomala','Trompetplant':'campsis','Blauwe regen':'wisteria','Sering':'syringa','Vlinderstruik':'buddleja','Kattenkruid':'nepeta','Zonnehoed':'echinacea','Ooievaarsbek':'geranium','Ooievaarsbek (Riversleaianum)':'geranium','Bloedooievaarsbek':'geranium sanguineum ooievaarsbek','Zeeuws knoopje':'astrantia','Nieskruid (Helleborus)':'kerstroos','Schildvaren (Dryopteris)':'varen','Lievevrouwebedstro':'galium odoratum','Kleine maagdenpalm':'vinca minor','Schoenlappersplant':'bergenia','Vingerhoedskruid (geel)':'digitalis','Kruipklokje (Campanula poscharskyana)':'klokjesbloem','Klokje (Campanula garganica)':'klokjesbloem','Kamperfoelie':'lonicera','Klimop':'hedera','Vuurdoorn':'pyracantha','Sneeuwbal':'viburnum','Krentenboompje':'amelanchier','Japanse esdoorn':'acer','Rododendron':'azalea','Hulst':'ilex','Taxushaag':'taxus','Ligusterhaag':'ligustrum','Haagbeuk':'carpinus','Beukenhaag':'fagus','Coniferenhaag':'thuja','Siergras':'miscanthus pennisetum','Daglelie':'hemerocallis','Hosta':'funkia','Struikroos':'rosa','Klimroos':'rosa','Lavendel':'lavandula','Rozemarijn':'salvia rosmarinus','Pioenroos':'paeonia','Vijgenboom':'ficus','Olijfboom':'olea'};
+const SIER_ALIAS={'Laurierhaag':'laurierkers prunus laurocerasus','Portugese laurier':'prunus lusitanica laurierhaag','Hortensia':'hydrangea macrophylla boerenhortensia','Pluimhortensia':'hydrangea paniculata limelight','Bolhortensia':'hydrangea arborescens annabelle','Klimhortensia':'hydrangea petiolaris anomala','Trompetplant':'campsis trompetbloem trompetklimmer','Blauwe regen':'wisteria','Sering':'syringa','Vlinderstruik':'buddleja','Kattenkruid':'nepeta','Zonnehoed':'echinacea','Ooievaarsbek':'geranium','Ooievaarsbek (Riversleaianum)':'geranium','Bloedooievaarsbek':'geranium sanguineum ooievaarsbek','Zeeuws knoopje':'astrantia','Nieskruid (Helleborus)':'kerstroos','Schildvaren (Dryopteris)':'varen','Lievevrouwebedstro':'galium odoratum','Kleine maagdenpalm':'vinca minor','Schoenlappersplant':'bergenia','Vingerhoedskruid (geel)':'digitalis','Kruipklokje (Campanula poscharskyana)':'klokjesbloem','Klokje (Campanula garganica)':'klokjesbloem','Kamperfoelie':'lonicera','Klimop':'hedera','Vuurdoorn':'pyracantha','Sneeuwbal':'viburnum','Krentenboompje':'amelanchier','Japanse esdoorn':'acer','Rododendron':'azalea','Hulst':'ilex','Taxushaag':'taxus','Ligusterhaag':'ligustrum','Haagbeuk':'carpinus','Beukenhaag':'fagus','Coniferenhaag':'thuja','Siergras':'miscanthus pennisetum','Daglelie':'hemerocallis','Hosta':'funkia','Struikroos':'rosa','Klimroos':'rosa','Lavendel':'lavandula','Rozemarijn':'salvia rosmarinus','Pioenroos':'paeonia','Vijgenboom':'ficus','Olijfboom':'olea'};
 const norm=t=>String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 const sierMatch=(s,q)=>!q||norm(s.n+' '+(SIER_ALIAS[s.n]||'')+' '+STYPE[s.t].n).includes(q);
 const sierOpts=(q,sel)=>Object.keys(STYPE).map(t=>{const xs=SIER.filter(s=>s.t===t&&sierMatch(s,q));return xs.length?`<optgroup label="${STYPE[t].n}">${xs.map(s=>`<option${sel===s.n?' selected':''}>${s.n}</option>`).join('')}</optgroup>`:''}).join('');
@@ -990,7 +1004,7 @@ const specOf=p=>sierBy(p.species)||{n:p.species,t:p.custom?.t||'vast',d:p.size||
 const ptype=p=>specOf(p).t;
 const shapeCare=b=>b.kind==='haag'&&sierBy(b.species)?sierBy(b.species).c:(SHAPECARE[b.kind]||[]);
 function shapeAt(gid,x,y){return allBedsOf(gid).find(b=>{const q=shapeOf(b);return inPoly(x,y,q)})}
-function typeIcon(t,size=22){
+function typeArt(t){
   const c=`var(${(STYPE[t]||STYPE.vast).c})`,soil='<path d="M2 20h20v2H2z" fill="var(--soil)"/>';
   const art={
     boom:`${soil}<rect x="11" y="12" width="2" height="8" fill="var(--soil-2)"/><circle cx="12" cy="9" r="6.5" fill="${c}"/>`,
@@ -1004,8 +1018,9 @@ function typeIcon(t,size=22){
     bol:`${soil}<path d="M12 20v-8" stroke="var(--leaf)" stroke-width="1.6"/><path d="M8.5 6c0 4 1.5 6 3.5 6s3.5-2 3.5-6l-1.8 1.6L12 5l-1.7 2.6z" fill="var(--c-red)"/><ellipse cx="9" cy="16" rx="1.4" ry="3.5" fill="var(--leaf)" transform="rotate(-20 9 16)"/>`,
     kruid:`${soil}<path d="M12 20V6" stroke="var(--leaf)" stroke-width="1.4"/><ellipse cx="9.5" cy="9" rx="2.6" ry="1" fill="${c}" transform="rotate(-30 9.5 9)"/><ellipse cx="14.5" cy="11" rx="2.6" ry="1" fill="${c}" transform="rotate(30 14.5 11)"/><ellipse cx="9.5" cy="14" rx="2.6" ry="1" fill="${c}" transform="rotate(-30 9.5 14)"/><ellipse cx="14.5" cy="16" rx="2.6" ry="1" fill="${c}" transform="rotate(30 14.5 16)"/>`
   };
-  return `<svg class="stg" width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true">${art[t]||art.vast}</svg>`;
+  return art[t]||art.vast;
 }
+function typeIcon(t,size=22){return `<svg class="stg" width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true">${typeArt(t)}</svg>`}
 const KICON={border:'vast',gazon:'gras',haag:'haag',vijver:null,terras:null,gebouw:null};
 /* verzorgingstaken voor een siertuin */
 function sierTodo(gid){
@@ -1046,9 +1061,17 @@ function shapeIcon(kind,size=22){
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3" style="fill:${f}"/></svg>`;
 }
 /* een plant als cirkel op de plattegrond */
+/* planten op de kaart: vast icoon per soort; de kroonbreedte alleen als stippelcirkel (geselecteerd, of met de knop Kroonbreedte) */
+const iconSize=(W,L)=>Math.max(W,L)/20;
+const pcol=p=>`var(${(STYPE[ptype(p)]||STYPE.vast).c})`;
+function plantCrown(p){
+  const r=Math.max(0.15,(+p.size||specOf(p).d||1)/2);
+  return `<circle class="pcrown${p.id===S.selPlant?' sel':''}" data-id="${esc(p.id)}" cx="${+p.x}" cy="${+p.y}" r="${r}" style="--pc:${pcol(p)}" vector-effect="non-scaling-stroke"/>`;
+}
 function plantSvg(p,W,L){
-  const t=ptype(p),r=Math.max(0.15,(+p.size||specOf(p).d||1)/2);
-  return `<circle class="plt${p.id===S.selPlant?' sel':''}" data-act="select-plant" data-id="${esc(p.id)}" cx="${+p.x}" cy="${+p.y}" r="${r}" style="--pc:var(${(STYPE[t]||STYPE.vast).c})" vector-effect="non-scaling-stroke"><title>${esc(p.species)}${p.variety?' – '+esc(p.variety):''}</title></circle><circle class="pdot" cx="${+p.x}" cy="${+p.y}" r="${Math.min(0.08,r/3)}" style="fill:var(${(STYPE[t]||STYPE.vast).c})"/>`;
+  const z=iconSize(W,L),i=z*0.78;
+  return `<g class="plt${p.id===S.selPlant?' sel':''}" data-act="select-plant" data-id="${esc(p.id)}" transform="translate(${+p.x} ${+p.y})" style="--pc:${pcol(p)}"><title>${esc(p.species)}${p.variety?' – '+esc(p.variety):''}</title>
+   <circle class="pbg" r="${z/2}" vector-effect="non-scaling-stroke"/><svg x="${-i/2}" y="${-i/2}" width="${i}" height="${i}" viewBox="0 0 24 24">${typeArt(ptype(p))}</svg></g>`;
 }
 function plantDetail(id){
   const p=S.plants.find(x=>x.id===id),sp=specOf(p),g=G(),inShape=shapeAt(g.id,+p.x,+p.y),m=new Date().getMonth()+1;
@@ -1572,7 +1595,8 @@ document.addEventListener('pointermove',e=>{
   if(d.mode==='pl'){
     const x=Math.round((d.ox+p.rx-d.start[0])*20)/20,y=Math.round((d.oy+p.ry-d.start[1])*20)/20;
     if(!inGarden(G(),x,y))return;d.nx=x;d.ny=y;
-    const c=document.querySelector(`.plt[data-id="${CSS.escape(d.pp.id)}"]`);if(c){c.setAttribute('cx',x);c.setAttribute('cy',y);const dot=c.nextElementSibling;if(dot){dot.setAttribute('cx',x);dot.setAttribute('cy',y)}}
+    const c=document.querySelector(`.plt[data-id="${CSS.escape(d.pp.id)}"]`);if(c)c.setAttribute('transform',`translate(${x} ${y})`);
+    const cr=document.querySelector(`.pcrown[data-id="${CSS.escape(d.pp.id)}"]`);if(cr){cr.setAttribute('cx',x);cr.setAttribute('cy',y)}
     return;
   }
   let pts;
@@ -1654,6 +1678,7 @@ document.addEventListener('click',async e=>{
     case 'todo-done':{const g=G();el.disabled=true;const p=S.plantings.find(x=>x.id===el.dataset.plant);
       const pr=S.plants.find(x=>x.id===el.dataset.plantref);
       await S.db.collection('logs').doc().set({gardenId:g.id,bedId:el.dataset.bed||'',plantingId:el.dataset.plant||'',plantId:pr?.id||'',crop:p?.crop||pr?.species||'',date:today(),type:el.dataset.water?'water':'werk',amount:0,unit:'',text:el.dataset.title,taskKey:el.dataset.key,createdBy:S.me,createdAt:new Date().toISOString()});break}
+    case 'crowns':S.crowns=!S.crowns;store.set('mt.crowns',S.crowns?'1':'');render();break;
     case 'calmine':S.calMine=!!el.dataset.v;render();break;
     case 'load-example':el.disabled=true;el.textContent='Bezig…';await loadExample();break;
     case 'next':{const p=S.plantings.find(x=>x.id===id);const n=FLOW[FLOW.indexOf(p.status)+1];if(!n)break;el.disabled=true;
