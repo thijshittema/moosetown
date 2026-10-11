@@ -968,6 +968,11 @@ const SIER=[
  {n:'Tulpen en bollen',t:'bol',d:0.3,b:[3,4,5],c:[['loof','Loof laten afsterven, pas daarna weghalen',[6]],['plant','Nieuwe bollen planten',[10,11]]]}
 ];
 const sierBy=n=>SIER.find(x=>x.n===n);
+/* extra zoekwoorden: Latijnse en andere namen */
+const SIER_ALIAS={'Laurierhaag':'laurierkers prunus laurocerasus','Portugese laurier':'prunus lusitanica laurierhaag','Hortensia':'hydrangea macrophylla boerenhortensia','Pluimhortensia':'hydrangea paniculata limelight','Bolhortensia':'hydrangea arborescens annabelle','Klimhortensia':'hydrangea petiolaris anomala','Trompetplant':'campsis','Blauwe regen':'wisteria','Sering':'syringa','Vlinderstruik':'buddleja','Kattenkruid':'nepeta','Zonnehoed':'echinacea','Ooievaarsbek':'geranium','Ooievaarsbek (Riversleaianum)':'geranium','Bloedooievaarsbek':'geranium sanguineum ooievaarsbek','Zeeuws knoopje':'astrantia','Nieskruid (Helleborus)':'kerstroos','Schildvaren (Dryopteris)':'varen','Lievevrouwebedstro':'galium odoratum','Kleine maagdenpalm':'vinca minor','Schoenlappersplant':'bergenia','Vingerhoedskruid (geel)':'digitalis','Kruipklokje (Campanula poscharskyana)':'klokjesbloem','Klokje (Campanula garganica)':'klokjesbloem','Kamperfoelie':'lonicera','Klimop':'hedera','Vuurdoorn':'pyracantha','Sneeuwbal':'viburnum','Krentenboompje':'amelanchier','Japanse esdoorn':'acer','Rododendron':'azalea','Hulst':'ilex','Taxushaag':'taxus','Ligusterhaag':'ligustrum','Haagbeuk':'carpinus','Beukenhaag':'fagus','Coniferenhaag':'thuja','Siergras':'miscanthus pennisetum','Daglelie':'hemerocallis','Hosta':'funkia','Struikroos':'rosa','Klimroos':'rosa','Lavendel':'lavandula','Rozemarijn':'salvia rosmarinus','Pioenroos':'paeonia','Vijgenboom':'ficus','Olijfboom':'olea'};
+const norm=t=>String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const sierMatch=(s,q)=>!q||norm(s.n+' '+(SIER_ALIAS[s.n]||'')+' '+STYPE[s.t].n).includes(q);
+const sierOpts=(q,sel)=>Object.keys(STYPE).map(t=>{const xs=SIER.filter(s=>s.t===t&&sierMatch(s,q));return xs.length?`<optgroup label="${STYPE[t].n}">${xs.map(s=>`<option${sel===s.n?' selected':''}>${s.n}</option>`).join('')}</optgroup>`:''}).join('');
 /* soorten vlakken op de plattegrond */
 const SKIND={bed:'Moestuinbed',pad:'Pad',border:'Border',gazon:'Gazon',haag:'Haag',terras:'Terras',vijver:'Vijver',gebouw:'Schuur of gebouw'};
 const SIER_KINDS=['border','gazon','haag','terras','vijver','gebouw','pad'];
@@ -1121,10 +1126,11 @@ function viewSierPlanning(){
 }
 function sierPlantForm(p){
   const g=G(),sp=p?sierBy(p.species):null,custom=p&&!sp;
-  const opts=Object.keys(STYPE).map(t=>{const xs=SIER.filter(s=>s.t===t);return xs.length?`<optgroup label="${STYPE[t].n}">${xs.map(s=>`<option${p?.species===s.n?' selected':''}>${s.n}</option>`).join('')}</optgroup>`:''}).join('');
+  const opts=sierOpts('',p?.species);
   const mbox=(name,sel)=>`<div class="mgrid">${MONTHS.map((x,i)=>`<label><input type="checkbox" name="${name}${i+1}"${(sel||[]).includes(i+1)?' checked':''}>${x}</label>`).join('')}</div>`;
   const del=p?`<button type="button" class="btn danger" data-act="del-plantx" data-id="${esc(p.id)}" style="margin-right:auto">Verwijderen</button>`:'';
   openModal(p?`${p.species} bewerken`:'Plant toevoegen',`<div class="fgrid">
+   ${fld('Zoeken',`<input type="search" id="f-psearch" placeholder="Typ een deel van de naam, bijv. hort of campsis" autocomplete="off" enterkeyhint="search"><span class="muted" id="f-pcount" style="font-size:.8rem;font-weight:400"></span>`,true)}
    ${fld('Plant',`<select name="species" id="f-species">${opts}<option value="__anders"${custom?' selected':''}>Anders…</option></select>`,true)}
    <div class="fgrid full" id="f-pcustom" ${custom?'':'hidden'}>
      ${fld('Naam',inp('cname',custom?p.species:''))}
@@ -1150,6 +1156,17 @@ function sierPlantForm(p){
     $('#f-pinfo').innerHTML=s?`<p class="muted" style="margin:0;font-size:.85rem">${STYPE[s.t].n}${s.e?', groenblijvend':''}${s.f?', vorstgevoelig':''}. Gangbare doorsnede ${fmtNum(s.d)} m.${s.b.length?` Bloeit ${fmtMonths(s.b)}.`:''} ${s.c.map((x,i)=>{const t=x[1].split(':')[0];return (i?t.charAt(0).toLowerCase()+t.slice(1):t)+' ('+fmtMonths(x[2])+')'}).join(', ')}.</p>`:'';
     $('#f-size').placeholder=s?fmtNum(s.d):'1'};
   $('#f-species').addEventListener('change',info);info();
+  const q=$('#f-psearch'),sel=$('#f-species');
+  q.addEventListener('input',()=>{const t=norm(q.value.trim()),cur=sel.value;
+    sel.innerHTML=sierOpts(t,cur)+`<option value="__anders"${cur==='__anders'?' selected':''}>Anders…</option>`;
+    const n=SIER.filter(s=>sierMatch(s,t)).length;
+    const c=$('#f-cname');
+    if(t&&n&&(cur==='__anders'&&c.dataset.auto||![...sel.options].some(o=>o.selected&&o.value===cur))){sel.selectedIndex=0;if(c.dataset.auto){c.value='';delete c.dataset.auto}}
+    if(t&&!n){sel.value='__anders';if(!c.value||c.dataset.auto){c.value=q.value.trim();c.dataset.auto=1}}
+    $('#f-pcount').textContent=!t?'':n?(n===1?'1 plant gevonden':n+' planten gevonden'):'Niets gevonden. Kies Anders… en vul de naam zelf in.';
+    info()});
+  q.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sel.focus()}});
+  if(p)sel.focus();
 }
 
 /* ---------- planning ---------- */
